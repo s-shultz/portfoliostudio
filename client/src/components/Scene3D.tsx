@@ -116,8 +116,8 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene, monito
     monitor3.rotation.z = 0;
     scene.add(monitor3);
 
-    // Create screen surface that's flush with the hanging monitor screen
-    const screenGeometry = new THREE.PlaneGeometry(2.5, 1.4);
+    // Create large screen surface that covers the hanging monitor screen completely
+    const screenGeometry = new THREE.PlaneGeometry(3.5, 2.0);
     
     // Load the UI/UX design image for the screen
     const textureLoader = new THREE.TextureLoader();
@@ -151,11 +151,11 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene, monito
     });
     
     const activeScreen = new THREE.Mesh(screenGeometry, screenMaterial);
-    activeScreen.position.set(-9.6, -1.0, 5.3);
+    activeScreen.position.set(-9.3, -0.8, 5.8);
     activeScreen.rotation.set(0, Math.PI * 0.55, 0);
     
-    // Add subtle glow effect that matches the screen size
-    const glowGeometry = new THREE.PlaneGeometry(2.8, 1.7);
+    // Add subtle glow effect that matches the larger screen size
+    const glowGeometry = new THREE.PlaneGeometry(3.8, 2.3);
     const glowMaterial = new THREE.MeshBasicMaterial({
       color: 0x4a90e2,
       transparent: true,
@@ -166,7 +166,7 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene, monito
     const screenGlow = new THREE.Mesh(glowGeometry, glowMaterial);
     screenGlow.position.copy(activeScreen.position);
     screenGlow.rotation.copy(activeScreen.rotation);
-    screenGlow.position.z -= 0.01; // Slightly behind the screen
+    screenGlow.position.z -= 0.02; // Slightly behind the screen
     
     scene.add(screenGlow);
     scene.add(activeScreen);
