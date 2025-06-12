@@ -72,8 +72,7 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene) {
     // First monitor (left)
     monitor1.position.set(-5, -5, 6);
     monitor1.scale.setScalar(monitorScale);
-    monitor1.rotation.y = Math.PI * 0.6;
-    monitor1.rotation.z = Math.PI * 0.5; // Vertical orientation
+    monitor1.rotation.x = Math.PI * 0.5; // Rotate 90 degrees so stand is perpendicular to desk
     scene.add(monitor1);
 
     // Second monitor (center)
@@ -81,8 +80,7 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene) {
     const monitor2 = monitor2Data.scene.clone();
     monitor2.position.set(-5, -5, 8);
     monitor2.scale.setScalar(monitorScale);
-    monitor2.rotation.y = Math.PI * 0.6;
-    monitor2.rotation.z = Math.PI * 0.5; // Vertical orientation
+    monitor2.rotation.x = Math.PI * 0.5; // Rotate 90 degrees so stand is perpendicular to desk
     scene.add(monitor2);
 
     // Third monitor (right)
@@ -90,8 +88,7 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene) {
     const monitor3 = monitor3Data.scene.clone();
     monitor3.position.set(-5, -5, 10);
     monitor3.scale.setScalar(monitorScale);
-    monitor3.rotation.y = Math.PI * 0.6;
-    monitor3.rotation.z = Math.PI * 0.5; // Vertical orientation
+    monitor3.rotation.x = Math.PI * 0.5; // Rotate 90 degrees so stand is perpendicular to desk
     scene.add(monitor3);
 
     console.log("Monitor positioned at:", monitor1.position);
