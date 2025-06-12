@@ -59,7 +59,7 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene) {
     console.log("Monitor 1 children count:", monitor1.children.length);
 
     // Traverse the monitor to see its structure
-    monitor1.traverse((child) => {
+    monitor1.traverse((child: any) => {
       console.log("Monitor child:", child.type, child.name);
       if ((child as THREE.Mesh).isMesh) {
         console.log("  - Mesh found:", child.name);
@@ -90,10 +90,10 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene) {
     // Third monitor (right) - Hanging monitor model
     const monitor3Data = await modelLoader.loadGLTF("/models/hanging_monitor.glb");
     const monitor3 = monitor3Data.scene.clone();
-    monitor3.position.set(-5, 1, 5); // Positioned to the right, hanging height
-    monitor3.scale.setScalar(2.5); // Scale for hanging monitor
+    monitor3.position.set(-10, -1.5, -5); // Positioned to the right, hanging height
+    monitor3.scale.setScalar(15); // Scale for hanging monitor
     monitor3.rotation.x = 0; // Upright position
-    monitor3.rotation.y = Math.PI * 0.15; // Angled toward chair from right
+    monitor3.rotation.y = Math.PI * 0.5; // Angled toward chair from right
     monitor3.rotation.z = 0;
     scene.add(monitor3);
 
