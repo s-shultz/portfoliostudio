@@ -35,7 +35,7 @@ export function initializeScene(container: HTMLElement): SceneSetup {
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ReinhardToneMapping;
   renderer.toneMappingExposure = 1.0;
-  renderer.physicallyCorrectLights = false;
+
 
   container.appendChild(renderer.domElement);
 

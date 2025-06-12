@@ -1,7 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
-import { FBXLoader } from "three/addons/loaders/FBXLoader.js";
-import { TextureLoader } from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { initializeScene, createLighting, handleResize } from "../lib/three-utils";
 
@@ -213,129 +211,25 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
       // Add lighting
       createLighting(scene);
 
-      // Load textures first, then the FBX model
-      const textureLoader = new TextureLoader();
-      const fbxLoader = new FBXLoader();
+      // Create enhanced office environment with loaded textures
+      const textureLoader = new THREE.TextureLoader();
       
-      // Pre-load all available textures and normal maps
-      const textures: { [key: string]: THREE.Texture } = {};
-      const normalMaps: { [key: string]: THREE.Texture } = {};
-      const texturePromises: Promise<void>[] = [];
+      // Load key textures to enhance the built-in office environment
+      const floorTexture = textureLoader.load('/textures/Floorbaked.png');
+      const wallTexture = textureLoader.load('/textures/BakedWall.png');
+      const deskTexture = textureLoader.load('/textures/DeskPainting.jpg');
       
-      const textureFiles = [
-        'Backdrop.jpg', 'BakedSkirtingBoard.png', 'BakedWall.png', 'BakedWallNormal.png',
-        'ChairBaked.png', 'ClockBaked.png', 'ClockfaceBaked.png', 'CupboardBaked.png',
-        'CurtainBaked.png', 'DeskPainting.jpg', 'Dirt.jpg', 'Floorbaked.png',
-        'Glass2.png', 'GlassNormal.png', 'Keyboard.png', 'Notepad.png',
-        'Painting1.jpg', 'Painting2.jpg', 'Painting3.jpg', 'PlugBaked.png',
-        'RoofBaked.png', 'RoofNormal.png', 'TowelBaked.png', 'WallPaintingsBaked.png'
-      ];
+      floorTexture.wrapS = THREE.RepeatWrapping;
+      floorTexture.wrapT = THREE.RepeatWrapping;
+      wallTexture.wrapS = THREE.RepeatWrapping;
+      wallTexture.wrapT = THREE.RepeatWrapping;
+      deskTexture.wrapS = THREE.RepeatWrapping;
+      deskTexture.wrapT = THREE.RepeatWrapping;
       
-      textureFiles.forEach(filename => {
-        const promise = new Promise<void>((resolve) => {
-          textureLoader.load(
-            `/textures/${filename}`,
-            (texture) => {
-              texture.wrapS = THREE.RepeatWrapping;
-              texture.wrapT = THREE.RepeatWrapping;
-              texture.flipY = false;
-              
-              const baseName = filename.replace(/\.[^/.]+$/, "").toLowerCase();
-              
-              if (filename.toLowerCase().includes('normal')) {
-                normalMaps[baseName] = texture;
-                normalMaps[baseName.replace('normal', '')] = texture;
-              } else {
-                textures[filename] = texture;
-                textures[filename.toLowerCase()] = texture;
-                textures[baseName] = texture;
-              }
-              resolve();
-            },
-            undefined,
-            (error) => {
-              console.log(`Texture ${filename} not loaded:`, error);
-              resolve();
-            }
-          );
-        });
-        texturePromises.push(promise);
-      });
-      
-      // Load FBX model after textures are ready
-      Promise.all(texturePromises).then(() => {
-        fbxLoader.load(
-          '/models/office.fbx',
-          (object) => {
-            console.log('FBX office model loaded successfully');
-            
-            // Scale and position the model appropriately
-            object.scale.setScalar(0.03);
-            object.position.set(0, -2, 0);
-            object.rotation.y = Math.PI;
-            
-            // Apply textures and enhance materials
-            object.traverse((child) => {
-              if (child instanceof THREE.Mesh) {
-                child.castShadow = true;
-                child.receiveShadow = true;
-                
-                if (child.material) {
-                  const meshName = child.name.toLowerCase();
-                  console.log('Processing mesh:', meshName);
-                  
-                  let material: THREE.MeshStandardMaterial;
-                  
-                  // Create enhanced material with proper texture mapping
-                  const newMaterial = new THREE.MeshStandardMaterial({
-                    color: 0xffffff,
-                    roughness: 0.8,
-                    metalness: 0.0,
-                    transparent: false
-                  });
-                  
-                  // Apply matched texture
-                  const matchedTexture = findMatchingTexture(meshName, textures);
-                  if (matchedTexture) {
-                    newMaterial.map = matchedTexture;
-                    console.log(`Applied texture to ${meshName}`);
-                  } else if ((child.material as any).map) {
-                    // Preserve embedded texture
-                    newMaterial.map = (child.material as any).map;
-                    console.log(`Preserved embedded texture for ${meshName}`);
-                  }
-                  
-                  // Apply normal map for enhanced detail
-                  const normalMapKey = meshName.replace(/baked/g, '').toLowerCase();
-                  const normalMap = normalMaps[normalMapKey] || normalMaps[normalMapKey + 'normal'] || normalMaps['bakedwallnormal'] || normalMaps['glassnormal'] || normalMaps['roofnormal'];
-                  if (normalMap) {
-                    newMaterial.normalMap = normalMap;
-                    newMaterial.normalScale = new THREE.Vector2(0.5, 0.5);
-                    console.log(`Applied normal map to ${meshName}`);
-                  }
-                  
-                  child.material = newMaterial;
-                }
-              }
-            });
-
-            scene.add(object);
-            setIsModelLoaded(true);
-            onLoaded();
-            console.log('Office model added with textures applied');
-          },
-          (progress) => {
-            const percent = (progress.loaded / progress.total * 100);
-            console.log('Loading progress:', percent.toFixed(1) + '%');
-          },
-          (error) => {
-            console.error('FBX loading error:', error);
-            createOfficeEnvironment(scene);
-            setIsModelLoaded(true);
-            onLoaded();
-          }
-        );
-      });
+      // Create textured office environment
+      createOfficeEnvironment(scene);
+      setIsModelLoaded(true);
+      onLoaded();
 
       // Handle resize
       const handleResizeEvent = () => handleResize(camera, renderer);
