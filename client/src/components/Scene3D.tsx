@@ -70,7 +70,7 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene) {
     // Position single monitor in center of desk
     monitor1.position.set(-0.8, monitorY, -0.4);
     monitor1.scale.setScalar(monitorScale);
-    monitor1.rotation.y = Math.PI * 0.9; // Rotate so right side faces camera
+    monitor1.rotation.y = Math.PI * 0.35; // Rotate 80 degrees opposite direction
     scene.add(monitor1);
     
     console.log('Monitor positioned at:', monitor1.position);
