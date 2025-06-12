@@ -67,8 +67,8 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene) {
     const monitorScale = 5.3;
     const monitorY = -1.8; // Lower position on desk
     
-    // Position single monitor in center of desk
-    monitor1.position.set(-1.1, monitorY, -0.4); // Moved to the left
+    // Position single monitor on left side of desk
+    monitor1.position.set(-1.8, -1.95, -0.4); // Much further left and down to desk surface
     monitor1.scale.setScalar(monitorScale);
     monitor1.rotation.y = Math.PI * 0.44; // Rotated back 15 degrees
     scene.add(monitor1);
