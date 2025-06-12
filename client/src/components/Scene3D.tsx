@@ -32,11 +32,47 @@ async function loadOfficeModel(modelLoader: ModelLoader, scene: THREE.Scene) {
     console.log('Model position:', model.position);
     console.log('Model scale:', model.scale);
 
+    // Load and position monitors on the desk
+    await loadMonitors(modelLoader, scene);
+
   } catch (error) {
     console.error('Failed to load FBX office model:', error);
     
     // Don't fall back to procedural environment - indicate loading failure
     throw error;
+  }
+}
+
+// Load monitor models and position them on the desk
+async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene) {
+  try {
+    console.log('Loading monitor models...');
+    
+    // Load the first monitor
+    const monitor1Data = await modelLoader.loadGLTF('/models/monitors.glb');
+    const monitor1 = monitor1Data.scene.clone();
+    
+    // Position first monitor on the desk (in front of plant area)
+    monitor1.position.set(-0.8, -1.4, -0.5); // Adjusted for desk position
+    monitor1.scale.setScalar(0.015); // Scale to fit desk appropriately
+    monitor1.rotation.y = Math.PI + 0.2; // Slight angle for natural positioning
+    scene.add(monitor1);
+    
+    // Load the second monitor  
+    const monitor2Data = await modelLoader.loadGLTF('/models/monitors.glb');
+    const monitor2 = monitor2Data.scene.clone();
+    
+    // Position second monitor next to the first
+    monitor2.position.set(-0.3, -1.4, -0.4); // Slightly offset position
+    monitor2.scale.setScalar(0.015); // Same scale as first monitor
+    monitor2.rotation.y = Math.PI - 0.1; // Slight different angle
+    scene.add(monitor2);
+    
+    console.log('Monitors loaded and positioned successfully');
+    
+  } catch (error) {
+    console.error('Failed to load monitor models:', error);
+    // Don't throw - monitors are optional, office should still work without them
   }
 }
 
