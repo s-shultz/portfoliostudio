@@ -7,6 +7,8 @@ import {
   handleResize,
 } from "../lib/three-utils";
 import { ModelLoader } from "../lib/ModelLoader";
+import { MonitorInteraction, MonitorType } from "../lib/MonitorInteraction";
+import InteractiveScreens, { ScreenType } from "./InteractiveScreens";
 
 interface Scene3DProps {
   onLoaded: () => void;
@@ -47,7 +49,7 @@ async function loadOfficeModel(modelLoader: ModelLoader, scene: THREE.Scene) {
 }
 
 // Load monitor models and position them on the desk
-async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene) {
+async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene, monitorInteraction: MonitorInteraction) {
   try {
     console.log("Loading monitor models...");
 
@@ -59,7 +61,7 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene) {
     console.log("Monitor 1 children count:", monitor1.children.length);
 
     // Traverse the monitor to see its structure
-    monitor1.traverse((child: any) => {
+    monitor1.traverse((child) => {
       console.log("Monitor child:", child.type, child.name);
       if ((child as THREE.Mesh).isMesh) {
         console.log("  - Mesh found:", child.name);
@@ -90,10 +92,10 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene) {
     // Third monitor (right) - Hanging monitor model
     const monitor3Data = await modelLoader.loadGLTF("/models/hanging_monitor.glb");
     const monitor3 = monitor3Data.scene.clone();
-    monitor3.position.set(-10, -1.5, -5); // Positioned to the right, hanging height
+    monitor3.position.set(-10, -1.5, 5); // Positioned to the right, hanging height
     monitor3.scale.setScalar(15); // Scale for hanging monitor
     monitor3.rotation.x = 0; // Upright position
-    monitor3.rotation.y = Math.PI * 0.5; // Angled toward chair from right
+    monitor3.rotation.y = Math.PI * 0.55; // Angled toward chair from right
     monitor3.rotation.z = 0;
     scene.add(monitor3);
 
@@ -558,6 +560,8 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
     controls: OrbitControls;
   } | null>(null);
   const [isModelLoaded, setIsModelLoaded] = useState(false);
+  const [activeScreen, setActiveScreen] = useState<ScreenType | null>(null);
+  const monitorInteractionRef = useRef<MonitorInteraction | null>(null);
 
   useEffect(() => {
     if (!mountRef.current) return;

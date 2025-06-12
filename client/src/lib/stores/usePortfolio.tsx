@@ -44,7 +44,7 @@ interface PortfolioState {
 }
 
 const defaultPortfolioData: PortfolioData = {
-  name: "Shaina Schultz",
+  name: "Shaina Shultz",
   title: "3D Designer & Creative Developer",
   bio: "Creative professional specializing in 3D modeling, animation, and interactive experiences. I blend artistic vision with technical expertise to create immersive digital environments and compelling visual narratives. With a passion for bringing ideas to life through cutting-edge technology and design.",
   skills: [
