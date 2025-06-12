@@ -16,7 +16,7 @@ interface Scene3DProps {
 }
 
 // Load office model with robust ModelLoader system
-async function loadOfficeModel(modelLoader: ModelLoader, scene: THREE.Scene) {
+async function loadOfficeModel(modelLoader: ModelLoader, scene: THREE.Scene, monitorInteraction: MonitorInteraction) {
   try {
     // Define texture configuration for your office model
     const texturesConfig = {};
@@ -39,7 +39,7 @@ async function loadOfficeModel(modelLoader: ModelLoader, scene: THREE.Scene) {
     console.log("Model scale:", model.scale);
 
     // Load and position monitors on the desk
-    await loadMonitors(modelLoader, scene);
+    await loadMonitors(modelLoader, scene, monitorInteraction);
   } catch (error) {
     console.error("Failed to load FBX office model:", error);
 
@@ -71,33 +71,60 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene, monito
     // Three ultrawide monitors side by side
     const monitorScale = 0.65; // 3 times larger than 0.21
 
-    // First monitor (left)
-    monitor1.position.set(-7, -3, 1); // Moved up by 1 unit
+    // First monitor (left) - Creative Coding
+    monitor1.position.set(-7, -3, 1);
     monitor1.scale.setScalar(monitorScale);
-    monitor1.rotation.x = Math.PI; // Flip upright
-    monitor1.rotation.y = Math.PI * 0.55; // Angled toward chair
+    monitor1.rotation.x = Math.PI;
+    monitor1.rotation.y = Math.PI * 0.55;
     monitor1.rotation.z = 0;
     scene.add(monitor1);
 
-    // Second monitor (center)
+    // Create clickable area for monitor 1
+    const screen1 = monitorInteraction.createClickableArea(
+      new THREE.Vector3(-7, -2.5, 1.2),
+      new THREE.Vector2(1.5, 0.8),
+      new THREE.Euler(Math.PI, Math.PI * 0.55, 0)
+    );
+    scene.add(screen1);
+    monitorInteraction.addMonitor(screen1, "coding", "monitor1");
+
+    // Second monitor (center) - 3D Modeling
     const monitor2Data = await modelLoader.loadGLTF("/models/ultrawide_monitor.glb");
     const monitor2 = monitor2Data.scene.clone();
-    monitor2.position.set(-7, -3, 8); // Moved up by 1 unit
+    monitor2.position.set(-7, -3, 8);
     monitor2.scale.setScalar(monitorScale);
-    monitor2.rotation.x = Math.PI; // Flip upright
-    monitor2.rotation.y = Math.PI * 0.45; // Face straight toward chair
+    monitor2.rotation.x = Math.PI;
+    monitor2.rotation.y = Math.PI * 0.45;
     monitor2.rotation.z = 0;
     scene.add(monitor2);
 
-    // Third monitor (right) - Hanging monitor model
+    // Create clickable area for monitor 2
+    const screen2 = monitorInteraction.createClickableArea(
+      new THREE.Vector3(-7, -2.5, 8.2),
+      new THREE.Vector2(1.5, 0.8),
+      new THREE.Euler(Math.PI, Math.PI * 0.45, 0)
+    );
+    scene.add(screen2);
+    monitorInteraction.addMonitor(screen2, "3d", "monitor2");
+
+    // Third monitor (right) - UI/UX Design (Hanging monitor)
     const monitor3Data = await modelLoader.loadGLTF("/models/hanging_monitor.glb");
     const monitor3 = monitor3Data.scene.clone();
-    monitor3.position.set(-10, -1.5, 5); // Positioned to the right, hanging height
-    monitor3.scale.setScalar(15); // Scale for hanging monitor
-    monitor3.rotation.x = 0; // Upright position
-    monitor3.rotation.y = Math.PI * 0.55; // Angled toward chair from right
+    monitor3.position.set(-5, 1, 5);
+    monitor3.scale.setScalar(2.5);
+    monitor3.rotation.x = 0;
+    monitor3.rotation.y = Math.PI * 0.15;
     monitor3.rotation.z = 0;
     scene.add(monitor3);
+
+    // Create clickable area for monitor 3 (hanging)
+    const screen3 = monitorInteraction.createClickableArea(
+      new THREE.Vector3(-4.8, 1.2, 5.2),
+      new THREE.Vector2(0.8, 0.5),
+      new THREE.Euler(0, Math.PI * 0.15, 0)
+    );
+    scene.add(screen3);
+    monitorInteraction.addMonitor(screen3, "uiux", "monitor3");
 
     console.log("Monitor positioned at:", monitor1.position);
     console.log("Monitor scale:", monitor1.scale);
@@ -579,6 +606,15 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
       // Initialize ModelLoader for robust texture and model handling
       const modelLoader = new ModelLoader(scene, renderer);
 
+      // Initialize monitor interaction system
+      const monitorInteraction = new MonitorInteraction(camera);
+      monitorInteractionRef.current = monitorInteraction;
+
+      // Set up monitor click handler
+      monitorInteraction.setClickHandler((type: MonitorType) => {
+        setActiveScreen(type as ScreenType);
+      });
+
       // Set up ModelLoader callbacks
       modelLoader.onLoadProgress = (progress: number, url: string) => {
         console.log(`Loading progress: ${progress.toFixed(1)}% - ${url}`);
@@ -596,11 +632,19 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
       };
 
       // Load your actual office FBX model
-      loadOfficeModel(modelLoader, scene);
+      loadOfficeModel(modelLoader, scene, monitorInteraction);
 
       // Handle resize
       const handleResizeEvent = () => handleResize(camera, renderer);
       window.addEventListener("resize", handleResizeEvent);
+
+      // Handle mouse clicks for monitor interaction
+      const handleClick = (event: MouseEvent) => {
+        if (monitorInteractionRef.current && mountRef.current) {
+          monitorInteractionRef.current.handleClick(event, mountRef.current);
+        }
+      };
+      mountRef.current.addEventListener("click", handleClick);
 
       // Animation loop
       const animate = () => {
@@ -612,6 +656,7 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
 
       return () => {
         window.removeEventListener("resize", handleResizeEvent);
+        mountRef.current?.removeEventListener("click", handleClick);
         if (sceneRef.current) {
           sceneRef.current.renderer.dispose();
           mountRef.current?.removeChild(sceneRef.current.renderer.domElement);
@@ -624,10 +669,16 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
   }, [onLoaded, onError]);
 
   return (
-    <div
-      ref={mountRef}
-      className="absolute inset-0 w-full h-full"
-      style={{ cursor: "grab" }}
-    />
+    <>
+      <div
+        ref={mountRef}
+        className="absolute inset-0 w-full h-full"
+        style={{ cursor: "grab" }}
+      />
+      <InteractiveScreens 
+        activeScreen={activeScreen} 
+        onClose={() => setActiveScreen(null)} 
+      />
+    </>
   );
 }
