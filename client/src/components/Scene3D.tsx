@@ -67,13 +67,13 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene) {
     });
 
     // Three ultrawide monitors side by side
-    const monitorScale = 0.21; // Reduced by 50 times from 10.6
+    const monitorScale = 0.63; // 3 times larger than 0.21
 
     // First monitor (left)
-    monitor1.position.set(-5, -2, 0);
+    monitor1.position.set(-5, -5, 6);
     monitor1.scale.setScalar(monitorScale);
-    monitor1.rotation.y = Math.PI * 0.4;
-    // monitor1.rotation.z = Math.PI * 0.5; // Vertical orientation
+    monitor1.rotation.y = Math.PI * 0.6;
+    monitor1.rotation.z = Math.PI * 0.5; // Vertical orientation
     scene.add(monitor1);
 
     // Second monitor (center)
