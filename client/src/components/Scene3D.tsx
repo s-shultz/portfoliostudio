@@ -116,24 +116,139 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene, monito
     monitor3.rotation.z = 0;
     scene.add(monitor3);
 
-    // Create clickable area for monitor 3 (hanging - directly on screen surface)
-    const screen3 = monitorInteraction.createClickableArea(
-      new THREE.Vector3(-9.8, -1.5, 5.2),
-      new THREE.Vector2(2.8, 1.6),
-      new THREE.Euler(0, Math.PI * 0.55, 0)
-    );
-    scene.add(screen3);
-    monitorInteraction.addMonitor(screen3, "uiux", "monitor3");
+    // Create an active screen surface that appears "turned on"
+    const screenGeometry = new THREE.PlaneGeometry(2.8, 1.6);
+    
+    // Create a canvas texture for the screen content
+    const canvas = document.createElement('canvas');
+    canvas.width = 512;
+    canvas.height = 288;
+    const ctx = canvas.getContext('2d')!;
+    
+    // Draw a subtle UI/UX portfolio preview
+    ctx.fillStyle = '#1a1a2e';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Add subtle grid lines
+    ctx.strokeStyle = '#2a2a3e';
+    ctx.lineWidth = 1;
+    for (let i = 0; i < canvas.width; i += 32) {
+      ctx.beginPath();
+      ctx.moveTo(i, 0);
+      ctx.lineTo(i, canvas.height);
+      ctx.stroke();
+    }
+    for (let i = 0; i < canvas.height; i += 32) {
+      ctx.beginPath();
+      ctx.moveTo(0, i);
+      ctx.lineTo(canvas.width, i);
+      ctx.stroke();
+    }
+    
+    // Add some UI elements
+    ctx.fillStyle = '#4a90e2';
+    ctx.fillRect(20, 20, 120, 40);
+    ctx.fillRect(20, 80, 80, 30);
+    ctx.fillRect(20, 130, 200, 60);
+    
+    ctx.fillStyle = '#6ab7ff';
+    ctx.fillRect(200, 20, 100, 25);
+    ctx.fillRect(200, 55, 140, 25);
+    
+    // Add text
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '16px Arial';
+    ctx.fillText('UI/UX Portfolio', 20, 220);
+    ctx.font = '12px Arial';
+    ctx.fillStyle = '#cccccc';
+    ctx.fillText('Interactive Design Projects', 20, 240);
+    
+    const canvasTexture = new THREE.CanvasTexture(canvas);
+    canvasTexture.needsUpdate = true;
+    
+    const screenMaterial = new THREE.MeshStandardMaterial({ 
+      map: canvasTexture,
+      emissive: 0x0a0a1a,
+      transparent: true,
+      opacity: 0.95,
+      side: THREE.DoubleSide
+    });
+    
+    const activeScreen = new THREE.Mesh(screenGeometry, screenMaterial);
+    activeScreen.position.set(-9.8, -1.5, 5.2);
+    activeScreen.rotation.set(0, Math.PI * 0.55, 0);
+    
+    // Add subtle glow effect
+    const glowGeometry = new THREE.PlaneGeometry(3.0, 1.8);
+    const glowMaterial = new THREE.MeshBasicMaterial({
+      color: 0x4a90e2,
+      transparent: true,
+      opacity: 0.2,
+      side: THREE.DoubleSide
+    });
+    
+    const screenGlow = new THREE.Mesh(glowGeometry, glowMaterial);
+    screenGlow.position.copy(activeScreen.position);
+    screenGlow.rotation.copy(activeScreen.rotation);
+    screenGlow.position.z -= 0.01; // Slightly behind the screen
+    
+    scene.add(screenGlow);
+    scene.add(activeScreen);
+    
+    // Add dynamic animation to simulate active display
+    let time = 0;
+    const animateScreen = () => {
+      time += 0.01;
+      
+      // Pulsing glow effect
+      glowMaterial.opacity = 0.15 + Math.sin(time) * 0.05;
+      
+      // Subtle emissive pulsing
+      (screenMaterial as THREE.MeshStandardMaterial).emissive.setHSL(0.6, 0.3, 0.08 + Math.sin(time * 2) * 0.03);
+      
+      // Update canvas with animated elements every few frames
+      if (Math.floor(time * 60) % 120 === 0) {
+        // Redraw canvas with slight variations
+        ctx.fillStyle = '#1a1a2e';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Animate some UI elements
+        const offset = Math.sin(time) * 5;
+        ctx.fillStyle = '#4a90e2';
+        ctx.fillRect(20 + offset, 20, 120, 40);
+        ctx.fillRect(20, 80 + offset, 80, 30);
+        ctx.fillRect(20, 130, 200, 60);
+        
+        ctx.fillStyle = '#6ab7ff';
+        ctx.fillRect(200, 20, 100, 25);
+        ctx.fillRect(200 + offset, 55, 140, 25);
+        
+        // Add flickering cursor
+        if (Math.sin(time * 8) > 0) {
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(225, 220, 2, 16);
+        }
+        
+        // Redraw text
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '16px Arial';
+        ctx.fillText('UI/UX Portfolio', 20, 220);
+        ctx.font = '12px Arial';
+        ctx.fillStyle = '#cccccc';
+        ctx.fillText('Interactive Design Projects', 20, 240);
+        
+        canvasTexture.needsUpdate = true;
+      }
+      
+      requestAnimationFrame(animateScreen);
+    };
+    animateScreen();
 
-    console.log("Monitor 1 position:", monitor1.position);
-    console.log("Monitor 2 position:", monitor2.position);
-    console.log("Monitor 3 position:", monitor3.position);
-    console.log("Screen 1 clickable area position:", screen1.position);
-    console.log("Screen 2 clickable area position:", screen2.position);
-    console.log("Screen 3 clickable area position:", screen3.position);
+    // Make the active screen clickable
+    monitorInteraction.addMonitor(activeScreen, "uiux", "monitor3");
 
     console.log("Interactive monitors setup complete");
-    return [screen1, screen2, screen3];
+    return [screen1, screen2, activeScreen];
   } catch (error) {
     console.error("Failed to load monitor models:", error);
     return [];
