@@ -66,18 +66,31 @@ export class MonitorInteraction {
     return false;
   }
 
-  // Create invisible clickable areas for monitor screens
+  // Create visible clickable areas for monitor screens
   createClickableArea(position: THREE.Vector3, size: THREE.Vector2, rotation: THREE.Euler): THREE.Mesh {
     const geometry = new THREE.PlaneGeometry(size.x, size.y);
     const material = new THREE.MeshBasicMaterial({ 
       transparent: true, 
-      opacity: 0,
+      opacity: 0.1,
+      color: 0x00ff00,
       side: THREE.DoubleSide
     });
     
     const mesh = new THREE.Mesh(geometry, material);
     mesh.position.copy(position);
     mesh.rotation.copy(rotation);
+    
+    // Add wireframe outline for better visibility
+    const wireframeGeometry = new THREE.EdgesGeometry(geometry);
+    const wireframeMaterial = new THREE.LineBasicMaterial({ 
+      color: 0x00ff00,
+      transparent: true,
+      opacity: 0.3
+    });
+    const wireframe = new THREE.LineSegments(wireframeGeometry, wireframeMaterial);
+    wireframe.position.copy(position);
+    wireframe.rotation.copy(rotation);
+    mesh.add(wireframe);
     
     return mesh;
   }

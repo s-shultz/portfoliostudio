@@ -16,7 +16,7 @@ interface Scene3DProps {
 }
 
 // Load office model with robust ModelLoader system
-async function loadOfficeModel(modelLoader: ModelLoader, scene: THREE.Scene, monitorInteraction: MonitorInteraction) {
+async function loadOfficeModel(modelLoader: ModelLoader, scene: THREE.Scene, monitorInteraction: MonitorInteraction): Promise<THREE.Mesh[]> {
   try {
     // Define texture configuration for your office model
     const texturesConfig = {};
@@ -39,11 +39,10 @@ async function loadOfficeModel(modelLoader: ModelLoader, scene: THREE.Scene, mon
     console.log("Model scale:", model.scale);
 
     // Load and position monitors on the desk
-    await loadMonitors(modelLoader, scene, monitorInteraction);
+    const clickableScreens = await loadMonitors(modelLoader, scene, monitorInteraction);
+    return clickableScreens;
   } catch (error) {
     console.error("Failed to load FBX office model:", error);
-
-    // Don't fall back to procedural environment - indicate loading failure
     throw error;
   }
 }
@@ -110,18 +109,18 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene, monito
     // Third monitor (right) - UI/UX Design (Hanging monitor)
     const monitor3Data = await modelLoader.loadGLTF("/models/hanging_monitor.glb");
     const monitor3 = monitor3Data.scene.clone();
-    monitor3.position.set(-5, 1, 5);
-    monitor3.scale.setScalar(2.5);
+    monitor3.position.set(-10, -1.5, 5);
+    monitor3.scale.setScalar(15);
     monitor3.rotation.x = 0;
-    monitor3.rotation.y = Math.PI * 0.15;
+    monitor3.rotation.y = Math.PI * 0.55;
     monitor3.rotation.z = 0;
     scene.add(monitor3);
 
     // Create clickable area for monitor 3 (hanging)
     const screen3 = monitorInteraction.createClickableArea(
-      new THREE.Vector3(-4.8, 1.2, 5.2),
-      new THREE.Vector2(0.8, 0.5),
-      new THREE.Euler(0, Math.PI * 0.15, 0)
+      new THREE.Vector3(-9, -1, 6),
+      new THREE.Vector2(2, 1.2),
+      new THREE.Euler(0, Math.PI * 0.55, 0)
     );
     scene.add(screen3);
     monitorInteraction.addMonitor(screen3, "uiux", "monitor3");
@@ -132,9 +131,10 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene, monito
     // Tablet removed per user request
 
     console.log("Monitors and tablet loaded and positioned successfully");
+    return [screen1, screen2, screen3];
   } catch (error) {
     console.error("Failed to load monitor models:", error);
-    // Don't throw - monitors are optional, office should still work without them
+    return [];
   }
 }
 
@@ -631,8 +631,11 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
         onError(`Failed to load model: ${url}`);
       };
 
-      // Load your actual office FBX model
-      loadOfficeModel(modelLoader, scene, monitorInteraction);
+      // Load your actual office FBX model and get clickable screens
+      loadOfficeModel(modelLoader, scene, monitorInteraction).then((screens) => {
+        clickableScreens = screens;
+        console.log("Clickable screens loaded:", screens.length);
+      });
 
       // Handle resize
       const handleResizeEvent = () => handleResize(camera, renderer);
@@ -640,11 +643,38 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
 
       // Handle mouse clicks for monitor interaction
       const handleClick = (event: MouseEvent) => {
+        console.log("Click detected at:", event.clientX, event.clientY);
         if (monitorInteractionRef.current && mountRef.current) {
           monitorInteractionRef.current.handleClick(event, mountRef.current);
         }
       };
+      
+      // Store clickable screens reference
+      let clickableScreens: THREE.Mesh[] = [];
+      
+      // Handle mouse movement for hover effects
+      const handleMouseMove = (event: MouseEvent) => {
+        if (mountRef.current && clickableScreens.length > 0) {
+          const rect = mountRef.current.getBoundingClientRect();
+          const mouse = new THREE.Vector2();
+          mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+          mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+          
+          const raycaster = new THREE.Raycaster();
+          raycaster.setFromCamera(mouse, camera);
+          
+          const intersects = raycaster.intersectObjects(clickableScreens, true);
+          
+          if (intersects.length > 0) {
+            mountRef.current.style.cursor = "pointer";
+          } else {
+            mountRef.current.style.cursor = "grab";
+          }
+        }
+      };
+      
       mountRef.current.addEventListener("click", handleClick);
+      mountRef.current.addEventListener("mousemove", handleMouseMove);
 
       // Animation loop
       const animate = () => {
