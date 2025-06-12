@@ -56,10 +56,10 @@ async function loadOfficeModel(modelLoader: ModelLoader, scene: THREE.Scene) {
     console.log('Available objects:', modelLoader.getObjectNames(model));
 
   } catch (error) {
-    console.log('GLB model not available, using enhanced procedural environment');
+    console.error('Failed to load FBX office model:', error);
     
-    // Create enhanced procedural environment with your textures
-    await createEnhancedOfficeEnvironment(scene, modelLoader);
+    // Don't fall back to procedural environment - indicate loading failure
+    throw error;
   }
 }
 
@@ -491,13 +491,10 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
 
       modelLoader.onLoadError = (url: string) => {
         console.error(`Failed to load: ${url}`);
-        // Fallback to procedural environment
-        createOfficeEnvironment(scene);
-        setIsModelLoaded(true);
-        onLoaded();
+        onError(`Failed to load model: ${url}`);
       };
 
-      // Try to load GLB model first, fallback to enhanced procedural environment
+      // Load your actual office FBX model
       loadOfficeModel(modelLoader, scene);
 
       // Handle resize
