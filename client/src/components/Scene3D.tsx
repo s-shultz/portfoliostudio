@@ -66,8 +66,8 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene) {
       }
     });
 
-    // Three hanging monitors side by side
-    const monitorScale = 10.6; // Double the size from 5.3
+    // Three ultrawide monitors side by side
+    const monitorScale = 0.21; // Reduced by 50 times from 10.6
 
     // First monitor (left)
     monitor1.position.set(-5, -2, 0);
