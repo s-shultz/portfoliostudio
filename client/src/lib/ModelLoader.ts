@@ -23,7 +23,7 @@ export class ModelLoader {
       console.log('Loading URL:', url);
       
       // Handle FBX material folder (.fbm) structure
-      if (url.includes('/models/Small Office.fbm/')) {
+      if (url.includes('/models/SmallOffice.fbm/')) {
         // Keep the .fbm folder structure intact
         return url;
       }
