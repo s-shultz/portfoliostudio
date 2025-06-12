@@ -51,8 +51,8 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene) {
   try {
     console.log("Loading monitor models...");
 
-    // Load the hanging monitor
-    const monitor1Data = await modelLoader.loadGLTF("/models/hanging_monitor.glb");
+    // Load the ultrawide monitor
+    const monitor1Data = await modelLoader.loadGLTF("/models/ultrawide_monitor.glb");
     console.log("Monitor GLB data loaded:", monitor1Data);
 
     const monitor1 = monitor1Data.scene.clone();
@@ -70,14 +70,14 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene) {
     const monitorScale = 10.6; // Double the size from 5.3
 
     // First monitor (left)
-    monitor1.position.set(-5, -5, 6);
+    monitor1.position.set(-5, -2, 0);
     monitor1.scale.setScalar(monitorScale);
-    monitor1.rotation.y = Math.PI * 0.6;
-    monitor1.rotation.z = Math.PI * 0.5; // Vertical orientation
+    monitor1.rotation.y = Math.PI * 0.4;
+    // monitor1.rotation.z = Math.PI * 0.5; // Vertical orientation
     scene.add(monitor1);
 
     // Second monitor (center)
-    const monitor2Data = await modelLoader.loadGLTF("/models/hanging_monitor.glb");
+    const monitor2Data = await modelLoader.loadGLTF("/models/ultrawide_monitor.glb");
     const monitor2 = monitor2Data.scene.clone();
     monitor2.position.set(-5, -5, 8);
     monitor2.scale.setScalar(monitorScale);
@@ -86,7 +86,7 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene) {
     scene.add(monitor2);
 
     // Third monitor (right)
-    const monitor3Data = await modelLoader.loadGLTF("/models/hanging_monitor.glb");
+    const monitor3Data = await modelLoader.loadGLTF("/models/ultrawide_monitor.glb");
     const monitor3 = monitor3Data.scene.clone();
     monitor3.position.set(-5, -5, 10);
     monitor3.scale.setScalar(monitorScale);
