@@ -17,6 +17,17 @@ export class ModelLoader {
     this.scene = scene;
     this.renderer = renderer;
     this.loadingManager = new THREE.LoadingManager();
+    
+    // Set up path resolution for FBX embedded textures
+    this.loadingManager.setURLModifier((url) => {
+      // If it's a texture file being loaded from models directory, redirect to textures
+      if (url.includes('/models/') && (url.endsWith('.jpg') || url.endsWith('.jpeg') || url.endsWith('.png'))) {
+        const filename = url.split('/').pop();
+        return `/textures/${filename}`;
+      }
+      return url;
+    });
+    
     this.textureLoader = new THREE.TextureLoader(this.loadingManager);
     this.gltfLoader = new GLTFLoader(this.loadingManager);
     this.fbxLoader = new FBXLoader(this.loadingManager);
