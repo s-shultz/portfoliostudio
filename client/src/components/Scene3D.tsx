@@ -50,23 +50,40 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene) {
     
     // Load the first monitor
     const monitor1Data = await modelLoader.loadGLTF('/models/monitors.glb');
+    console.log('Monitor GLB data loaded:', monitor1Data);
+    
     const monitor1 = monitor1Data.scene.clone();
+    console.log('Monitor 1 children count:', monitor1.children.length);
+    
+    // Traverse the monitor to see its structure
+    monitor1.traverse((child) => {
+      console.log('Monitor child:', child.type, child.name);
+      if ((child as THREE.Mesh).isMesh) {
+        console.log('  - Mesh found:', child.name);
+      }
+    });
     
     // Position first monitor on the desk (in front of plant area)
-    monitor1.position.set(-0.8, -1.4, -0.5); // Adjusted for desk position
-    monitor1.scale.setScalar(0.015); // Scale to fit desk appropriately
+    monitor1.position.set(-1.2, -1.2, -0.8); // Higher on desk surface
+    monitor1.scale.setScalar(0.08); // Much larger scale to be visible
     monitor1.rotation.y = Math.PI + 0.2; // Slight angle for natural positioning
     scene.add(monitor1);
+    
+    console.log('Monitor 1 positioned at:', monitor1.position);
+    console.log('Monitor 1 scale:', monitor1.scale);
     
     // Load the second monitor  
     const monitor2Data = await modelLoader.loadGLTF('/models/monitors.glb');
     const monitor2 = monitor2Data.scene.clone();
     
     // Position second monitor next to the first
-    monitor2.position.set(-0.3, -1.4, -0.4); // Slightly offset position
-    monitor2.scale.setScalar(0.015); // Same scale as first monitor
+    monitor2.position.set(-0.4, -1.2, -0.6); // Higher and more visible position
+    monitor2.scale.setScalar(0.08); // Same larger scale
     monitor2.rotation.y = Math.PI - 0.1; // Slight different angle
     scene.add(monitor2);
+    
+    console.log('Monitor 2 positioned at:', monitor2.position);
+    console.log('Monitor 2 scale:', monitor2.scale);
     
     console.log('Monitors loaded and positioned successfully');
     
