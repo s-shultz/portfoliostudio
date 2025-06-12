@@ -1,7 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import { initializeScene, createLighting, handleResize } from "../lib/three-utils";
+import {
+  initializeScene,
+  createLighting,
+  handleResize,
+} from "../lib/three-utils";
 import { ModelLoader } from "../lib/ModelLoader";
 
 interface Scene3DProps {
@@ -17,8 +21,8 @@ async function loadOfficeModel(modelLoader: ModelLoader, scene: THREE.Scene) {
 
     // Load your actual FBX office model
     const modelData = await modelLoader.loadSmallOfficeModel(
-      '/models/SmallOffice.fbx',
-      texturesConfig
+      "/models/SmallOffice.fbx",
+      texturesConfig,
     );
 
     // Position and scale the loaded model
@@ -27,17 +31,16 @@ async function loadOfficeModel(modelLoader: ModelLoader, scene: THREE.Scene) {
     model.scale.setScalar(0.03);
     model.rotation.y = Math.PI;
 
-    console.log('FBX office model loaded successfully');
-    console.log('Available objects:', modelLoader.getObjectNames(model));
-    console.log('Model position:', model.position);
-    console.log('Model scale:', model.scale);
+    console.log("FBX office model loaded successfully");
+    console.log("Available objects:", modelLoader.getObjectNames(model));
+    console.log("Model position:", model.position);
+    console.log("Model scale:", model.scale);
 
     // Load and position monitors on the desk
     await loadMonitors(modelLoader, scene);
-
   } catch (error) {
-    console.error('Failed to load FBX office model:', error);
-    
+    console.error("Failed to load FBX office model:", error);
+
     // Don't fall back to procedural environment - indicate loading failure
     throw error;
   }
@@ -46,59 +49,77 @@ async function loadOfficeModel(modelLoader: ModelLoader, scene: THREE.Scene) {
 // Load monitor models and position them on the desk
 async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene) {
   try {
-    console.log('Loading monitor models...');
-    
-    // Load the first monitor
-    const monitor1Data = await modelLoader.loadGLTF('/models/monitors.glb');
-    console.log('Monitor GLB data loaded:', monitor1Data);
-    
+    console.log("Loading monitor models...");
+
+    // Load the hanging monitor
+    const monitor1Data = await modelLoader.loadGLTF("/models/hanging_monitor.glb");
+    console.log("Monitor GLB data loaded:", monitor1Data);
+
     const monitor1 = monitor1Data.scene.clone();
-    console.log('Monitor 1 children count:', monitor1.children.length);
-    
+    console.log("Monitor 1 children count:", monitor1.children.length);
+
     // Traverse the monitor to see its structure
     monitor1.traverse((child) => {
-      console.log('Monitor child:', child.type, child.name);
+      console.log("Monitor child:", child.type, child.name);
       if ((child as THREE.Mesh).isMesh) {
-        console.log('  - Mesh found:', child.name);
+        console.log("  - Mesh found:", child.name);
       }
     });
-    
+
     // Single monitor on the desk
     const monitorScale = 5.3;
     const monitorY = -1.8; // Lower position on desk
-    
+
     // Position single monitor on left side of desk
-    monitor1.position.set(-5, -5, -0.4); // Positioned as requested
+    monitor1.position.set(-5, -5, 8); // Positioned as requested
     monitor1.scale.setScalar(monitorScale);
-    monitor1.rotation.y = Math.PI * 0.44; // Rotated back 15 degrees
+    monitor1.rotation.y = Math.PI * 0.6; // Rotated back 15 degrees
     scene.add(monitor1);
-    
-    console.log('Monitor positioned at:', monitor1.position);
-    console.log('Monitor scale:', monitor1.scale);
-    
-    console.log('Monitors loaded and positioned successfully');
-    
+
+    console.log("Monitor positioned at:", monitor1.position);
+    console.log("Monitor scale:", monitor1.scale);
+
+    console.log("Monitors loaded and positioned successfully");
   } catch (error) {
-    console.error('Failed to load monitor models:', error);
+    console.error("Failed to load monitor models:", error);
     // Don't throw - monitors are optional, office should still work without them
   }
 }
 
 // Enhanced procedural environment using ModelLoader for textures
-async function createEnhancedOfficeEnvironment(scene: THREE.Scene, modelLoader: ModelLoader) {
+async function createEnhancedOfficeEnvironment(
+  scene: THREE.Scene,
+  modelLoader: ModelLoader,
+) {
   try {
     // Load textures using ModelLoader's robust system
-    const floorTexture = await modelLoader.loadTexture('/textures/Floorbaked.png');
-    const wallTexture = await modelLoader.loadTexture('/textures/BakedWall.png');
-    const wallNormal = await modelLoader.loadTexture('/textures/BakedWallNormal.png');
-    const deskTexture = await modelLoader.loadTexture('/textures/DeskPainting.jpg');
-    const chairTexture = await modelLoader.loadTexture('/textures/ChairBaked.png');
-    const cupboardTexture = await modelLoader.loadTexture('/textures/CupboardBaked.png');
-    const roofTexture = await modelLoader.loadTexture('/textures/RoofBaked.png');
-    const painting1 = await modelLoader.loadTexture('/textures/Painting1.jpg');
-    const painting2 = await modelLoader.loadTexture('/textures/Painting2.jpg');
-    const painting3 = await modelLoader.loadTexture('/textures/Painting3.jpg');
-    const backdropTexture = await modelLoader.loadTexture('/textures/Backdrop.jpg');
+    const floorTexture = await modelLoader.loadTexture(
+      "/textures/Floorbaked.png",
+    );
+    const wallTexture = await modelLoader.loadTexture(
+      "/textures/BakedWall.png",
+    );
+    const wallNormal = await modelLoader.loadTexture(
+      "/textures/BakedWallNormal.png",
+    );
+    const deskTexture = await modelLoader.loadTexture(
+      "/textures/DeskPainting.jpg",
+    );
+    const chairTexture = await modelLoader.loadTexture(
+      "/textures/ChairBaked.png",
+    );
+    const cupboardTexture = await modelLoader.loadTexture(
+      "/textures/CupboardBaked.png",
+    );
+    const roofTexture = await modelLoader.loadTexture(
+      "/textures/RoofBaked.png",
+    );
+    const painting1 = await modelLoader.loadTexture("/textures/Painting1.jpg");
+    const painting2 = await modelLoader.loadTexture("/textures/Painting2.jpg");
+    const painting3 = await modelLoader.loadTexture("/textures/Painting3.jpg");
+    const backdropTexture = await modelLoader.loadTexture(
+      "/textures/Backdrop.jpg",
+    );
 
     // Create office geometry with loaded textures
     createTexturedOfficeGeometry(scene, {
@@ -112,14 +133,13 @@ async function createEnhancedOfficeEnvironment(scene: THREE.Scene, modelLoader: 
       painting1: painting1,
       painting2: painting2,
       painting3: painting3,
-      backdrop: backdropTexture
+      backdrop: backdropTexture,
     });
 
     // Trigger completion callback
     modelLoader.onLoadComplete && modelLoader.onLoadComplete();
-
   } catch (error) {
-    console.error('Failed to load textures:', error);
+    console.error("Failed to load textures:", error);
     // Ultimate fallback
     createOfficeEnvironment(scene);
     modelLoader.onLoadComplete && modelLoader.onLoadComplete();
@@ -130,10 +150,10 @@ async function createEnhancedOfficeEnvironment(scene: THREE.Scene, modelLoader: 
 function createTexturedOfficeGeometry(scene: THREE.Scene, textures: any) {
   // Office floor with your texture
   const floorGeometry = new THREE.PlaneGeometry(20, 20);
-  const floorMaterial = new THREE.MeshStandardMaterial({ 
+  const floorMaterial = new THREE.MeshStandardMaterial({
     map: textures.floor,
     roughness: 0.8,
-    metalness: 0.1
+    metalness: 0.1,
   });
   const floor = new THREE.Mesh(floorGeometry, floorMaterial);
   floor.rotation.x = -Math.PI / 2;
@@ -142,19 +162,19 @@ function createTexturedOfficeGeometry(scene: THREE.Scene, textures: any) {
   scene.add(floor);
 
   // Office walls with texture and normal maps
-  const wallMaterial = new THREE.MeshStandardMaterial({ 
+  const wallMaterial = new THREE.MeshStandardMaterial({
     map: textures.wall,
     normalMap: textures.wallNormal,
     normalScale: new THREE.Vector2(0.5, 0.5),
-    roughness: 0.9
+    roughness: 0.9,
   });
-  
+
   // Back wall
   const backWall = new THREE.Mesh(new THREE.PlaneGeometry(20, 8), wallMaterial);
   backWall.position.set(0, 2, -10);
   backWall.receiveShadow = true;
   scene.add(backWall);
-  
+
   // Side walls
   const leftWall = new THREE.Mesh(new THREE.PlaneGeometry(20, 8), wallMaterial);
   leftWall.rotation.y = Math.PI / 2;
@@ -165,7 +185,7 @@ function createTexturedOfficeGeometry(scene: THREE.Scene, textures: any) {
   // Ceiling with roof texture
   const ceiling = new THREE.Mesh(
     new THREE.PlaneGeometry(20, 20),
-    new THREE.MeshStandardMaterial({ map: textures.roof, roughness: 0.9 })
+    new THREE.MeshStandardMaterial({ map: textures.roof, roughness: 0.9 }),
   );
   ceiling.rotation.x = Math.PI / 2;
   ceiling.position.y = 6;
@@ -174,10 +194,10 @@ function createTexturedOfficeGeometry(scene: THREE.Scene, textures: any) {
 
   // Desk with your desk texture
   const deskGeometry = new THREE.BoxGeometry(4, 0.1, 2);
-  const deskMaterial = new THREE.MeshStandardMaterial({ 
+  const deskMaterial = new THREE.MeshStandardMaterial({
     map: textures.desk,
     roughness: 0.6,
-    metalness: 0.1
+    metalness: 0.1,
   });
   const desk = new THREE.Mesh(deskGeometry, deskMaterial);
   desk.position.set(-2, -1.5, -4);
@@ -187,19 +207,30 @@ function createTexturedOfficeGeometry(scene: THREE.Scene, textures: any) {
 
   // Chair with your chair texture
   const chairMaterial = new THREE.MeshStandardMaterial({ map: textures.chair });
-  const chairSeat = new THREE.Mesh(new THREE.BoxGeometry(1, 0.1, 1), chairMaterial);
+  const chairSeat = new THREE.Mesh(
+    new THREE.BoxGeometry(1, 0.1, 1),
+    chairMaterial,
+  );
   chairSeat.position.set(-2, -1.3, -2);
   chairSeat.castShadow = true;
   scene.add(chairSeat);
 
-  const chairBack = new THREE.Mesh(new THREE.BoxGeometry(1, 1.2, 0.1), chairMaterial);
+  const chairBack = new THREE.Mesh(
+    new THREE.BoxGeometry(1, 1.2, 0.1),
+    chairMaterial,
+  );
   chairBack.position.set(-2, -0.7, -2.5);
   chairBack.castShadow = true;
   scene.add(chairBack);
 
   // Cupboard with your cupboard texture
-  const shelfMaterial = new THREE.MeshStandardMaterial({ map: textures.cupboard });
-  const shelf = new THREE.Mesh(new THREE.BoxGeometry(1.5, 4, 0.5), shelfMaterial);
+  const shelfMaterial = new THREE.MeshStandardMaterial({
+    map: textures.cupboard,
+  });
+  const shelf = new THREE.Mesh(
+    new THREE.BoxGeometry(1.5, 4, 0.5),
+    shelfMaterial,
+  );
   shelf.position.set(-8, 0, -8);
   shelf.castShadow = true;
   shelf.receiveShadow = true;
@@ -208,11 +239,11 @@ function createTexturedOfficeGeometry(scene: THREE.Scene, textures: any) {
   // Window with backdrop texture
   const windowGlass = new THREE.Mesh(
     new THREE.PlaneGeometry(2.8, 2.3),
-    new THREE.MeshStandardMaterial({ 
+    new THREE.MeshStandardMaterial({
       map: textures.backdrop,
       transparent: true,
-      opacity: 0.8
-    })
+      opacity: 0.8,
+    }),
   );
   windowGlass.position.set(4, 1, -9.85);
   scene.add(windowGlass);
@@ -221,13 +252,13 @@ function createTexturedOfficeGeometry(scene: THREE.Scene, textures: any) {
   const paintings = [
     { texture: textures.painting1, position: [-9.9, 1, -4] },
     { texture: textures.painting2, position: [0, 3, -9.9] },
-    { texture: textures.painting3, position: [6, 2, -9.9] }
+    { texture: textures.painting3, position: [6, 2, -9.9] },
   ];
 
   paintings.forEach(({ texture, position }) => {
     const paintingMesh = new THREE.Mesh(
       new THREE.PlaneGeometry(1.5, 1.2),
-      new THREE.MeshStandardMaterial({ map: texture })
+      new THREE.MeshStandardMaterial({ map: texture }),
     );
     paintingMesh.position.set(position[0], position[1], position[2]);
     if (position[0] < -9) paintingMesh.rotation.y = Math.PI / 2;
@@ -238,7 +269,7 @@ function createTexturedOfficeGeometry(scene: THREE.Scene, textures: any) {
   // Add some office accessories
   const monitor = new THREE.Mesh(
     new THREE.BoxGeometry(1.8, 1, 0.1),
-    new THREE.MeshStandardMaterial({ color: 0x000000 })
+    new THREE.MeshStandardMaterial({ color: 0x000000 }),
   );
   monitor.position.set(-2, -0.8, -4.2);
   monitor.castShadow = true;
@@ -246,7 +277,7 @@ function createTexturedOfficeGeometry(scene: THREE.Scene, textures: any) {
 
   const keyboard = new THREE.Mesh(
     new THREE.BoxGeometry(0.8, 0.05, 0.3),
-    new THREE.MeshStandardMaterial({ color: 0x333333 })
+    new THREE.MeshStandardMaterial({ color: 0x333333 }),
   );
   keyboard.position.set(-1.5, -1.4, -3.5);
   keyboard.castShadow = true;
@@ -256,21 +287,28 @@ function createTexturedOfficeGeometry(scene: THREE.Scene, textures: any) {
 // Create a professional office environment with textures
 function createOfficeEnvironment(scene: THREE.Scene) {
   const textureLoader = new THREE.TextureLoader();
-  
+
   // Load textures
-  const floorTexture = textureLoader.load('/textures/Floorbaked.png');
-  const wallTexture = textureLoader.load('/textures/BakedWall.png');
-  const deskTexture = textureLoader.load('/textures/DeskPainting.jpg');
-  const chairTexture = textureLoader.load('/textures/ChairBaked.png');
-  const cupboardTexture = textureLoader.load('/textures/CupboardBaked.png');
-  const roofTexture = textureLoader.load('/textures/RoofBaked.png');
-  const painting1 = textureLoader.load('/textures/Painting1.jpg');
-  const painting2 = textureLoader.load('/textures/Painting2.jpg');
-  const painting3 = textureLoader.load('/textures/Painting3.jpg');
-  const backdropTexture = textureLoader.load('/textures/Backdrop.jpg');
-  
+  const floorTexture = textureLoader.load("/textures/Floorbaked.png");
+  const wallTexture = textureLoader.load("/textures/BakedWall.png");
+  const deskTexture = textureLoader.load("/textures/DeskPainting.jpg");
+  const chairTexture = textureLoader.load("/textures/ChairBaked.png");
+  const cupboardTexture = textureLoader.load("/textures/CupboardBaked.png");
+  const roofTexture = textureLoader.load("/textures/RoofBaked.png");
+  const painting1 = textureLoader.load("/textures/Painting1.jpg");
+  const painting2 = textureLoader.load("/textures/Painting2.jpg");
+  const painting3 = textureLoader.load("/textures/Painting3.jpg");
+  const backdropTexture = textureLoader.load("/textures/Backdrop.jpg");
+
   // Configure texture settings
-  [floorTexture, wallTexture, deskTexture, chairTexture, cupboardTexture, roofTexture].forEach(texture => {
+  [
+    floorTexture,
+    wallTexture,
+    deskTexture,
+    chairTexture,
+    cupboardTexture,
+    roofTexture,
+  ].forEach((texture) => {
     if (texture) {
       texture.wrapS = THREE.RepeatWrapping;
       texture.wrapT = THREE.RepeatWrapping;
@@ -280,10 +318,10 @@ function createOfficeEnvironment(scene: THREE.Scene) {
 
   // Office floor with texture
   const floorGeometry = new THREE.PlaneGeometry(20, 20);
-  const floorMaterial = new THREE.MeshStandardMaterial({ 
+  const floorMaterial = new THREE.MeshStandardMaterial({
     map: floorTexture,
     roughness: 0.8,
-    metalness: 0.1
+    metalness: 0.1,
   });
   const floor = new THREE.Mesh(floorGeometry, floorMaterial);
   floor.rotation.x = -Math.PI / 2;
@@ -292,17 +330,17 @@ function createOfficeEnvironment(scene: THREE.Scene) {
   scene.add(floor);
 
   // Office walls with texture
-  const wallMaterial = new THREE.MeshStandardMaterial({ 
+  const wallMaterial = new THREE.MeshStandardMaterial({
     map: wallTexture,
-    roughness: 0.9
+    roughness: 0.9,
   });
-  
+
   // Back wall
   const backWall = new THREE.Mesh(new THREE.PlaneGeometry(20, 8), wallMaterial);
   backWall.position.set(0, 2, -10);
   backWall.receiveShadow = true;
   scene.add(backWall);
-  
+
   // Side walls
   const leftWall = new THREE.Mesh(new THREE.PlaneGeometry(20, 8), wallMaterial);
   leftWall.rotation.y = Math.PI / 2;
@@ -313,7 +351,7 @@ function createOfficeEnvironment(scene: THREE.Scene) {
   // Ceiling with roof texture
   const ceiling = new THREE.Mesh(
     new THREE.PlaneGeometry(20, 20),
-    new THREE.MeshStandardMaterial({ map: roofTexture, roughness: 0.9 })
+    new THREE.MeshStandardMaterial({ map: roofTexture, roughness: 0.9 }),
   );
   ceiling.rotation.x = Math.PI / 2;
   ceiling.position.y = 6;
@@ -322,10 +360,10 @@ function createOfficeEnvironment(scene: THREE.Scene) {
 
   // Desk with texture
   const deskGeometry = new THREE.BoxGeometry(4, 0.1, 2);
-  const deskMaterial = new THREE.MeshStandardMaterial({ 
+  const deskMaterial = new THREE.MeshStandardMaterial({
     map: deskTexture,
     roughness: 0.6,
-    metalness: 0.1
+    metalness: 0.1,
   });
   const desk = new THREE.Mesh(deskGeometry, deskMaterial);
   desk.position.set(-2, -1.5, -4);
@@ -336,15 +374,15 @@ function createOfficeEnvironment(scene: THREE.Scene) {
   // Desk legs
   const legGeometry = new THREE.BoxGeometry(0.1, 1.4, 0.1);
   const legMaterial = new THREE.MeshStandardMaterial({ color: 0x654321 });
-  
+
   const legPositions = [
     [-3.8, -2.2, -4.8],
     [-0.2, -2.2, -4.8],
     [-3.8, -2.2, -3.2],
-    [-0.2, -2.2, -3.2]
+    [-0.2, -2.2, -3.2],
   ];
-  
-  legPositions.forEach(pos => {
+
+  legPositions.forEach((pos) => {
     const leg = new THREE.Mesh(legGeometry, legMaterial);
     leg.position.set(pos[0], pos[1], pos[2]);
     leg.castShadow = true;
@@ -353,12 +391,18 @@ function createOfficeEnvironment(scene: THREE.Scene) {
 
   // Office chair with texture
   const chairMaterial = new THREE.MeshStandardMaterial({ map: chairTexture });
-  const chairSeat = new THREE.Mesh(new THREE.BoxGeometry(1, 0.1, 1), chairMaterial);
+  const chairSeat = new THREE.Mesh(
+    new THREE.BoxGeometry(1, 0.1, 1),
+    chairMaterial,
+  );
   chairSeat.position.set(-2, -1.3, -2);
   chairSeat.castShadow = true;
   scene.add(chairSeat);
 
-  const chairBack = new THREE.Mesh(new THREE.BoxGeometry(1, 1.2, 0.1), chairMaterial);
+  const chairBack = new THREE.Mesh(
+    new THREE.BoxGeometry(1, 1.2, 0.1),
+    chairMaterial,
+  );
   chairBack.position.set(-2, -0.7, -2.5);
   chairBack.castShadow = true;
   scene.add(chairBack);
@@ -366,7 +410,7 @@ function createOfficeEnvironment(scene: THREE.Scene) {
   // Monitor
   const monitorScreen = new THREE.Mesh(
     new THREE.BoxGeometry(1.8, 1, 0.1),
-    new THREE.MeshStandardMaterial({ color: 0x000000 })
+    new THREE.MeshStandardMaterial({ color: 0x000000 }),
   );
   monitorScreen.position.set(-2, -0.8, -4.2);
   monitorScreen.castShadow = true;
@@ -375,26 +419,33 @@ function createOfficeEnvironment(scene: THREE.Scene) {
   // Monitor stand
   const monitorStand = new THREE.Mesh(
     new THREE.BoxGeometry(0.3, 0.5, 0.3),
-    new THREE.MeshStandardMaterial({ color: 0x666666 })
+    new THREE.MeshStandardMaterial({ color: 0x666666 }),
   );
   monitorStand.position.set(-2, -1.2, -4);
   monitorStand.castShadow = true;
   scene.add(monitorStand);
 
   // Bookshelf/Cupboard with texture
-  const shelfMaterial = new THREE.MeshStandardMaterial({ map: cupboardTexture });
-  const shelf = new THREE.Mesh(new THREE.BoxGeometry(1.5, 4, 0.5), shelfMaterial);
+  const shelfMaterial = new THREE.MeshStandardMaterial({
+    map: cupboardTexture,
+  });
+  const shelf = new THREE.Mesh(
+    new THREE.BoxGeometry(1.5, 4, 0.5),
+    shelfMaterial,
+  );
   shelf.position.set(-8, 0, -8);
   shelf.castShadow = true;
   shelf.receiveShadow = true;
   scene.add(shelf);
 
   // Books on shelf
-  const bookColors = [0xFF0000, 0x00FF00, 0x0000FF, 0xFFFF00, 0xFF00FF];
+  const bookColors = [0xff0000, 0x00ff00, 0x0000ff, 0xffff00, 0xff00ff];
   for (let i = 0; i < 8; i++) {
     const book = new THREE.Mesh(
       new THREE.BoxGeometry(0.1, 0.3, 0.2),
-      new THREE.MeshStandardMaterial({ color: bookColors[i % bookColors.length] })
+      new THREE.MeshStandardMaterial({
+        color: bookColors[i % bookColors.length],
+      }),
     );
     book.position.set(-8.3 + (i % 4) * 0.15, 1 + Math.floor(i / 4) * 0.5, -8);
     book.castShadow = true;
@@ -404,7 +455,7 @@ function createOfficeEnvironment(scene: THREE.Scene) {
   // Potted plant
   const pot = new THREE.Mesh(
     new THREE.CylinderGeometry(0.3, 0.4, 0.5, 8),
-    new THREE.MeshStandardMaterial({ color: 0x8B4513 })
+    new THREE.MeshStandardMaterial({ color: 0x8b4513 }),
   );
   pot.position.set(2, -1.7, -7);
   pot.castShadow = true;
@@ -412,7 +463,7 @@ function createOfficeEnvironment(scene: THREE.Scene) {
 
   const plant = new THREE.Mesh(
     new THREE.SphereGeometry(0.5, 8, 8),
-    new THREE.MeshStandardMaterial({ color: 0x228B22 })
+    new THREE.MeshStandardMaterial({ color: 0x228b22 }),
   );
   plant.position.set(2, -1.2, -7);
   plant.castShadow = true;
@@ -421,7 +472,7 @@ function createOfficeEnvironment(scene: THREE.Scene) {
   // Window frame
   const windowFrame = new THREE.Mesh(
     new THREE.BoxGeometry(3, 2.5, 0.1),
-    new THREE.MeshStandardMaterial({ color: 0x8B4513 })
+    new THREE.MeshStandardMaterial({ color: 0x8b4513 }),
   );
   windowFrame.position.set(4, 1, -9.9);
   windowFrame.castShadow = true;
@@ -430,11 +481,11 @@ function createOfficeEnvironment(scene: THREE.Scene) {
   // Window with backdrop texture
   const windowGlass = new THREE.Mesh(
     new THREE.PlaneGeometry(2.8, 2.3),
-    new THREE.MeshStandardMaterial({ 
+    new THREE.MeshStandardMaterial({
       map: backdropTexture,
       transparent: true,
-      opacity: 0.8
-    })
+      opacity: 0.8,
+    }),
   );
   windowGlass.position.set(4, 1, -9.85);
   scene.add(windowGlass);
@@ -443,13 +494,13 @@ function createOfficeEnvironment(scene: THREE.Scene) {
   const paintings = [
     { texture: painting1, position: [-9.9, 1, -4] },
     { texture: painting2, position: [0, 3, -9.9] },
-    { texture: painting3, position: [6, 2, -9.9] }
+    { texture: painting3, position: [6, 2, -9.9] },
   ];
 
   paintings.forEach(({ texture, position }) => {
     const paintingMesh = new THREE.Mesh(
       new THREE.PlaneGeometry(1.5, 1.2),
-      new THREE.MeshStandardMaterial({ map: texture })
+      new THREE.MeshStandardMaterial({ map: texture }),
     );
     paintingMesh.position.set(position[0], position[1], position[2]);
     if (position[0] < -9) paintingMesh.rotation.y = Math.PI / 2;
@@ -460,7 +511,7 @@ function createOfficeEnvironment(scene: THREE.Scene) {
   // Office accessories
   const keyboard = new THREE.Mesh(
     new THREE.BoxGeometry(0.8, 0.05, 0.3),
-    new THREE.MeshStandardMaterial({ color: 0x333333 })
+    new THREE.MeshStandardMaterial({ color: 0x333333 }),
   );
   keyboard.position.set(-1.5, -1.4, -3.5);
   keyboard.castShadow = true;
@@ -468,7 +519,7 @@ function createOfficeEnvironment(scene: THREE.Scene) {
 
   const notepad = new THREE.Mesh(
     new THREE.BoxGeometry(0.3, 0.02, 0.4),
-    new THREE.MeshStandardMaterial({ color: 0xffffcc })
+    new THREE.MeshStandardMaterial({ color: 0xffffcc }),
   );
   notepad.position.set(-2.5, -1.4, -3.5);
   notepad.castShadow = true;
@@ -490,7 +541,9 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
 
     try {
       // Initialize scene
-      const { scene, camera, renderer, controls } = initializeScene(mountRef.current);
+      const { scene, camera, renderer, controls } = initializeScene(
+        mountRef.current,
+      );
       sceneRef.current = { scene, camera, renderer, controls };
 
       // Add lighting
@@ -498,14 +551,14 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
 
       // Initialize ModelLoader for robust texture and model handling
       const modelLoader = new ModelLoader(scene, renderer);
-      
+
       // Set up ModelLoader callbacks
       modelLoader.onLoadProgress = (progress: number, url: string) => {
         console.log(`Loading progress: ${progress.toFixed(1)}% - ${url}`);
       };
 
       modelLoader.onLoadComplete = () => {
-        console.log('All assets loaded successfully');
+        console.log("All assets loaded successfully");
         setIsModelLoaded(true);
         onLoaded();
       };
@@ -520,7 +573,7 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
 
       // Handle resize
       const handleResizeEvent = () => handleResize(camera, renderer);
-      window.addEventListener('resize', handleResizeEvent);
+      window.addEventListener("resize", handleResizeEvent);
 
       // Animation loop
       const animate = () => {
@@ -531,25 +584,23 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
       animate();
 
       return () => {
-        window.removeEventListener('resize', handleResizeEvent);
+        window.removeEventListener("resize", handleResizeEvent);
         if (sceneRef.current) {
           sceneRef.current.renderer.dispose();
           mountRef.current?.removeChild(sceneRef.current.renderer.domElement);
         }
       };
     } catch (error) {
-      console.error('Scene initialization error:', error);
-      onError('Failed to initialize 3D scene');
+      console.error("Scene initialization error:", error);
+      onError("Failed to initialize 3D scene");
     }
   }, [onLoaded, onError]);
 
-
-
   return (
-    <div 
-      ref={mountRef} 
+    <div
+      ref={mountRef}
       className="absolute inset-0 w-full h-full"
-      style={{ cursor: 'grab' }}
+      style={{ cursor: "grab" }}
     />
   );
 }
