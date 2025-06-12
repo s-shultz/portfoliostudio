@@ -64,6 +64,8 @@ export class ModelLoader {
 
   async loadSmallOfficeModel(modelPath: string, texturesConfig: Record<string, any> = {}) {
     try {
+      console.log(`Starting to load model from: ${modelPath}`);
+      
       let model: THREE.Object3D;
       let animations: THREE.AnimationClip[] = [];
       let cameras: THREE.Camera[] = [];
@@ -71,23 +73,32 @@ export class ModelLoader {
 
       // Determine file type and load accordingly
       if (modelPath.endsWith('.glb') || modelPath.endsWith('.gltf')) {
+        console.log('Loading as GLTF/GLB format');
         const gltf = await this.loadGLTF(modelPath);
         model = gltf.scene;
         animations = gltf.animations;
         cameras = gltf.cameras;
         scenes = gltf.scenes;
       } else if (modelPath.endsWith('.fbx')) {
+        console.log('Loading as FBX format');
         model = await this.loadFBX(modelPath);
+        console.log('FBX model loaded successfully, processing...');
       } else {
         throw new Error('Unsupported model format');
       }
 
+      console.log('Model loaded, applying optimizations...');
+      
       if (Object.keys(texturesConfig).length > 0) {
+        console.log('Applying custom texture configuration...');
         await this.applyTextures(model, texturesConfig);
       }
 
       this.optimizeModel(model);
       this.scene.add(model);
+      
+      console.log('Model added to scene successfully');
+      console.log('Model object count:', this.getObjectNames(model).length);
 
       return {
         model: model,
@@ -98,6 +109,7 @@ export class ModelLoader {
 
     } catch (error) {
       console.error('Error loading model:', error);
+      console.error('Error details:', error instanceof Error ? error.message : 'Unknown error');
       throw error;
     }
   }

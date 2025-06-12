@@ -17,7 +17,7 @@ async function loadOfficeModel(modelLoader: ModelLoader, scene: THREE.Scene) {
 
     // Load your actual FBX office model
     const modelData = await modelLoader.loadSmallOfficeModel(
-      '/models/office.fbx',
+      '/models/Small Office.fbx',
       texturesConfig
     );
 
