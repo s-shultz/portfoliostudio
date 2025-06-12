@@ -32,23 +32,93 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
 
       // Load FBX model
       const fbxLoader = new FBXLoader();
+      const textureLoader = new THREE.TextureLoader();
       
-      // First try to load the office FBX model
+      // Load the office FBX model
       fbxLoader.load(
         '/models/office.fbx',
         (object) => {
-          // Scale and position the model
-          object.scale.setScalar(0.01);
-          object.position.set(0, 0, 0);
+          // Scale and position the model appropriately for the office
+          object.scale.setScalar(0.03);
+          object.position.set(0, -2, 0);
+          object.rotation.y = Math.PI; // Rotate to face the right direction
           
-          // Traverse and set up materials
+          // Create a mapping of texture names to their paths
+          const textureMap: { [key: string]: string } = {
+            'Backdrop': '/textures/Backdrop.jpg',
+            'BakedSkirtingBoard': '/textures/BakedSkirtingBoard.png',
+            'BakedWall': '/textures/BakedWall.png',
+            'BakedWallNormal': '/textures/BakedWallNormal.png',
+            'ChairBaked': '/textures/ChairBaked.png',
+            'ClockBaked': '/textures/ClockBaked.png',
+            'ClockfaceBaked': '/textures/ClockfaceBaked.png',
+            'CupboardBaked': '/textures/CupboardBaked.png',
+            'CurtainBaked': '/textures/CurtainBaked.png',
+            'DeskPainting': '/textures/DeskPainting.jpg',
+            'Dirt': '/textures/Dirt.jpg',
+            'Floorbaked': '/textures/Floorbaked.png',
+            'Glass2': '/textures/Glass2.png',
+            'GlassNormal': '/textures/GlassNormal.png',
+            'Keyboard': '/textures/Keyboard.png',
+            'Notepad': '/textures/Notepad.png',
+            'Painting1': '/textures/Painting1.jpg',
+            'Painting2': '/textures/Painting2.jpg',
+            'Painting3': '/textures/Painting3.jpg',
+            'PlugBaked': '/textures/PlugBaked.png',
+            'RoofBaked': '/textures/RoofBaked.png',
+            'RoofNormal': '/textures/RoofNormal.png',
+            'TowelBaked': '/textures/TowelBaked.png',
+            'WallPaintingsBaked': '/textures/WallPaintingsBaked.png'
+          };
+          
+          // Traverse and apply proper materials with textures
           object.traverse((child) => {
             if (child instanceof THREE.Mesh) {
               child.castShadow = true;
               child.receiveShadow = true;
               
-              // Enhance materials
+              // Apply appropriate material based on the mesh name or existing material
               if (child.material instanceof THREE.MeshStandardMaterial) {
+                const materialName = child.material.name;
+                
+                // Try to find matching texture
+                for (const [texName, texPath] of Object.entries(textureMap)) {
+                  if (materialName.toLowerCase().includes(texName.toLowerCase()) || 
+                      child.name.toLowerCase().includes(texName.toLowerCase())) {
+                    
+                    const texture = textureLoader.load(texPath);
+                    texture.flipY = false;
+                    texture.wrapS = THREE.RepeatWrapping;
+                    texture.wrapT = THREE.RepeatWrapping;
+                    
+                    child.material.map = texture;
+                    
+                    // Apply normal maps where available
+                    if (texName === 'BakedWall' && textureMap['BakedWallNormal']) {
+                      const normalTexture = textureLoader.load(textureMap['BakedWallNormal']);
+                      normalTexture.flipY = false;
+                      child.material.normalMap = normalTexture;
+                    }
+                    if (texName === 'RoofBaked' && textureMap['RoofNormal']) {
+                      const normalTexture = textureLoader.load(textureMap['RoofNormal']);
+                      normalTexture.flipY = false;
+                      child.material.normalMap = normalTexture;
+                    }
+                    if (texName === 'Glass2' && textureMap['GlassNormal']) {
+                      const normalTexture = textureLoader.load(textureMap['GlassNormal']);
+                      normalTexture.flipY = false;
+                      child.material.normalMap = normalTexture;
+                      child.material.transparent = true;
+                      child.material.opacity = 0.8;
+                    }
+                    
+                    break;
+                  }
+                }
+                
+                // Enhance material properties
+                child.material.roughness = 0.7;
+                child.material.metalness = 0.1;
                 child.material.needsUpdate = true;
               }
             }
@@ -57,15 +127,15 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
           scene.add(object);
           setIsModelLoaded(true);
           onLoaded();
+          console.log('Office FBX model loaded successfully');
         },
         (progress) => {
-          console.log('Loading progress:', (progress.loaded / progress.total * 100) + '%');
+          const percent = (progress.loaded / progress.total * 100);
+          console.log('Loading progress:', percent + '%');
         },
         (error) => {
-          console.warn('FBX model not found, creating fallback environment');
-          createFallbackEnvironment(scene);
-          setIsModelLoaded(true);
-          onLoaded();
+          console.error('Failed to load FBX model:', error);
+          onError('Failed to load 3D office model. Please check if the model file is accessible.');
         }
       );
 
