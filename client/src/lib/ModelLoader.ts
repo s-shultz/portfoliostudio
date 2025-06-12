@@ -149,6 +149,40 @@ export class ModelLoader {
       // Create a separate loading manager for FBX to handle errors gracefully
       const fbxLoadingManager = new THREE.LoadingManager();
       
+      // Copy the URL modifier from the main loading manager
+      fbxLoadingManager.setURLModifier((url) => {
+        console.log('FBX Loading URL:', url);
+        
+        // Handle FBX material folder (.fbm) structure - fix space mismatch
+        if (url.includes('/models/Small Office.fbm/')) {
+          // Convert spaced path to non-spaced path and extract filename
+          const filename = url.split('/').pop();
+          const fixedUrl = `/models/SmallOffice.fbm/${filename}`;
+          console.log(`Fixed .fbm path: ${url} -> ${fixedUrl}`);
+          return fixedUrl;
+        }
+        
+        if (url.includes('/models/SmallOffice.fbm/')) {
+          // Keep the .fbm folder structure intact
+          return url;
+        }
+        
+        // Block attempts to load the .fbm folder itself as a file
+        if (url.endsWith('/models/Small Office.fbm') || url.endsWith('/models/SmallOffice.fbm')) {
+          console.log('Blocking attempt to load .fbm folder as file:', url);
+          // Return a data URL that won't cause loading errors
+          return 'data:text/plain;base64,'; 
+        }
+        
+        // If it's a texture file being loaded from models directory, redirect to textures
+        if (url.includes('/models/') && (url.endsWith('.jpg') || url.endsWith('.jpeg') || url.endsWith('.png'))) {
+          const filename = url.split('/').pop();
+          return `/textures/${filename}`;
+        }
+        
+        return url;
+      });
+      
       fbxLoadingManager.onError = (url) => {
         console.log(`Ignoring FBX loader error for: ${url}`);
         // Don't reject - just log and continue
@@ -159,9 +193,8 @@ export class ModelLoader {
       fbxLoader.load(
         path,
         (object) => {
-          console.log('FBX model loaded successfully, applying material fixes...');
-          // Process and clean up materials to reduce warnings
-          this.cleanupFBXMaterials(object);
+          console.log('FBX model loaded successfully, preserving original materials...');
+          // Don't clean up materials to preserve textures and colors
           resolve(object);
         },
         (progress) => {
