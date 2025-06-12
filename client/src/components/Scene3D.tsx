@@ -119,76 +119,13 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene, monito
     // Create an active screen surface that appears "turned on"
     const screenGeometry = new THREE.PlaneGeometry(2.8, 1.6);
     
-    // Create a canvas texture for the screen content
-    const canvas = document.createElement('canvas');
-    canvas.width = 512;
-    canvas.height = 288;
-    const ctx = canvas.getContext('2d')!;
-    
-    // Create a bright, visible portfolio view
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    // Header section with dark background
-    ctx.fillStyle = '#1a1a2e';
-    ctx.fillRect(0, 0, canvas.width, 60);
-    
-    // Blue accent bar
-    ctx.fillStyle = '#4a90e2';
-    ctx.fillRect(0, 0, canvas.width, 4);
-    
-    // Name and title
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 24px Arial';
-    ctx.fillText('Shaina Shultz', 30, 35);
-    
-    ctx.font = '16px Arial';
-    ctx.fillStyle = '#4a90e2';
-    ctx.fillText('UI/UX Designer', 30, 50);
-    
-    // Create portfolio grid with larger, more visible elements
-    const projects = [
-      { x: 40, y: 80, w: 200, h: 80, title: 'E-commerce App', color: '#4a90e2' },
-      { x: 280, y: 80, w: 200, h: 80, title: 'Dashboard Design', color: '#6ab7ff' },
-      { x: 40, y: 180, w: 200, h: 80, title: 'Mobile Banking', color: '#5bc0de' },
-      { x: 280, y: 180, w: 200, h: 80, title: 'Travel Website', color: '#f0ad4e' }
-    ];
-    
-    projects.forEach(project => {
-      // Project card with bright colors
-      ctx.fillStyle = project.color;
-      ctx.fillRect(project.x, project.y, project.w, project.h);
-      
-      // White text background
-      ctx.fillStyle = 'rgba(255,255,255,0.9)';
-      ctx.fillRect(project.x, project.y + project.h - 30, project.w, 30);
-      
-      // Project title in dark text
-      ctx.fillStyle = '#1a1a2e';
-      ctx.font = 'bold 16px Arial';
-      ctx.fillText(project.title, project.x + 15, project.y + project.h - 8);
-      
-      // Add visual elements to make it look like UI mockups
-      ctx.fillStyle = 'rgba(255,255,255,0.4)';
-      ctx.fillRect(project.x + 15, project.y + 15, project.w - 30, 12);
-      ctx.fillRect(project.x + 15, project.y + 35, project.w - 60, 8);
-      ctx.fillRect(project.x + 15, project.y + 50, project.w - 80, 6);
-    });
-    
-    // Add navigation elements at bottom
-    ctx.fillStyle = '#4a90e2';
-    ctx.fillRect(200, 270, 100, 12);
-    ctx.fillStyle = '#ffffff';
-    ctx.font = '10px Arial';
-    ctx.fillText('View All Projects', 210, 280);
-    
-    const canvasTexture = new THREE.CanvasTexture(canvas);
-    canvasTexture.needsUpdate = true;
+    // Load the UI/UX design image for the screen
+    const textureLoader = new THREE.TextureLoader();
+    const uiuxTexture = textureLoader.load('/attached_assets/uiuxdesign_1749748940133.png');
     
     const screenMaterial = new THREE.MeshBasicMaterial({ 
-      map: canvasTexture,
-      transparent: true,
-      opacity: 1.0,
+      map: uiuxTexture,
+      transparent: false,
       side: THREE.DoubleSide
     });
     
@@ -213,85 +150,13 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene, monito
     scene.add(screenGlow);
     scene.add(activeScreen);
     
-    // Add dynamic animation to simulate active display
+    // Add subtle glow animation for the screen
     let time = 0;
     const animateScreen = () => {
       time += 0.01;
       
-      // Pulsing glow effect
+      // Pulsing glow effect around the screen
       glowMaterial.opacity = 0.15 + Math.sin(time) * 0.05;
-      
-      // Screen brightness pulsing effect
-      const brightness = 0.95 + Math.sin(time * 2) * 0.05;
-      screenMaterial.opacity = brightness;
-      
-      // Update canvas with animated elements every few frames
-      if (Math.floor(time * 60) % 180 === 0) {
-        // Redraw portfolio with subtle animations
-        const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-        gradient.addColorStop(0, '#1e1e2e');
-        gradient.addColorStop(1, '#0f0f1a');
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        // Animated header
-        ctx.fillStyle = '#2a2a3e';
-        ctx.fillRect(0, 0, canvas.width, 50);
-        ctx.fillStyle = '#4a90e2';
-        ctx.fillRect(0, 0, canvas.width, 3);
-        
-        // Navigation with pulse effect
-        const pulse = 0.8 + Math.sin(time * 3) * 0.2;
-        ctx.fillStyle = `rgba(255, 255, 255, ${pulse})`;
-        ctx.font = 'bold 18px Arial';
-        ctx.fillText('Shaina Shultz', 20, 30);
-        
-        ctx.font = '12px Arial';
-        ctx.fillStyle = '#cccccc';
-        ctx.fillText('UI/UX Designer', 180, 20);
-        ctx.fillText('Portfolio', 180, 35);
-        
-        // Animate project thumbnails with subtle movements
-        const projects = [
-          { x: 20, y: 70, w: 140, h: 80, title: 'E-commerce App', color: '#4a90e2' },
-          { x: 180, y: 70, w: 140, h: 80, title: 'Dashboard Design', color: '#6ab7ff' },
-          { x: 340, y: 70, w: 140, h: 80, title: 'Mobile Banking', color: '#5bc0de' },
-          { x: 20, y: 170, w: 140, h: 80, title: 'Travel Website', color: '#f0ad4e' },
-          { x: 180, y: 170, w: 140, h: 80, title: 'Social Platform', color: '#d9534f' },
-          { x: 340, y: 170, w: 140, h: 80, title: 'AR Experience', color: '#5cb85c' }
-        ];
-        
-        projects.forEach((project, index) => {
-          const projectPulse = 0.7 + Math.sin(time * 2 + index * 0.5) * 0.3;
-          
-          // Project background with animation
-          ctx.fillStyle = project.color;
-          ctx.fillRect(project.x, project.y, project.w, project.h);
-          
-          // Animated overlay
-          ctx.fillStyle = `rgba(0,0,0,${0.3 * projectPulse})`;
-          ctx.fillRect(project.x, project.y, project.w, project.h);
-          
-          // Project title
-          ctx.fillStyle = '#ffffff';
-          ctx.font = 'bold 12px Arial';
-          ctx.fillText(project.title, project.x + 10, project.y + project.h - 10);
-          
-          // Animated UI elements
-          ctx.fillStyle = `rgba(255,255,255,${0.2 * projectPulse})`;
-          ctx.fillRect(project.x + 10, project.y + 10, project.w - 20, 8);
-          ctx.fillRect(project.x + 10, project.y + 25, project.w - 40, 6);
-          ctx.fillRect(project.x + 10, project.y + 35, project.w - 60, 4);
-        });
-        
-        // Add flickering cursor in portfolio
-        if (Math.sin(time * 8) > 0) {
-          ctx.fillStyle = '#ffffff';
-          ctx.fillRect(280, 30, 2, 12);
-        }
-        
-        canvasTexture.needsUpdate = true;
-      }
       
       requestAnimationFrame(animateScreen);
     };
