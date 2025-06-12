@@ -78,11 +78,11 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene, monito
     monitor1.rotation.z = 0;
     scene.add(monitor1);
 
-    // Create clickable area for monitor 1 (flush with screen)
+    // Create clickable area for monitor 1 (directly on screen surface)
     const screen1 = monitorInteraction.createClickableArea(
-      new THREE.Vector3(-7, -2.8, 0.8),
-      new THREE.Vector2(2.2, 1.3),
-      new THREE.Euler(Math.PI, Math.PI * 0.55, 0)
+      new THREE.Vector3(-6.8, -2.7, 1.05),
+      new THREE.Vector2(2.0, 1.1),
+      new THREE.Euler(0, Math.PI * 0.55, 0)
     );
     scene.add(screen1);
     monitorInteraction.addMonitor(screen1, "coding", "monitor1");
@@ -97,11 +97,11 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene, monito
     monitor2.rotation.z = 0;
     scene.add(monitor2);
 
-    // Create clickable area for monitor 2 (flush with screen)
+    // Create clickable area for monitor 2 (directly on screen surface)
     const screen2 = monitorInteraction.createClickableArea(
-      new THREE.Vector3(-7, -2.8, 8.0),
-      new THREE.Vector2(2.2, 1.3),
-      new THREE.Euler(Math.PI, Math.PI * 0.45, 0)
+      new THREE.Vector3(-6.85, -2.7, 7.95),
+      new THREE.Vector2(2.0, 1.1),
+      new THREE.Euler(0, Math.PI * 0.45, 0)
     );
     scene.add(screen2);
     monitorInteraction.addMonitor(screen2, "3d", "monitor2");
@@ -116,21 +116,23 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene, monito
     monitor3.rotation.z = 0;
     scene.add(monitor3);
 
-    // Create clickable area for monitor 3 (hanging - flush with screen)
+    // Create clickable area for monitor 3 (hanging - directly on screen surface)
     const screen3 = monitorInteraction.createClickableArea(
-      new THREE.Vector3(-10, -1.5, 5.1),
-      new THREE.Vector2(3.5, 2.0),
+      new THREE.Vector3(-9.8, -1.5, 5.2),
+      new THREE.Vector2(2.8, 1.6),
       new THREE.Euler(0, Math.PI * 0.55, 0)
     );
     scene.add(screen3);
     monitorInteraction.addMonitor(screen3, "uiux", "monitor3");
 
-    console.log("Monitor positioned at:", monitor1.position);
-    console.log("Monitor scale:", monitor1.scale);
+    console.log("Monitor 1 position:", monitor1.position);
+    console.log("Monitor 2 position:", monitor2.position);
+    console.log("Monitor 3 position:", monitor3.position);
+    console.log("Screen 1 clickable area position:", screen1.position);
+    console.log("Screen 2 clickable area position:", screen2.position);
+    console.log("Screen 3 clickable area position:", screen3.position);
 
-    // Tablet removed per user request
-
-    console.log("Monitors and tablet loaded and positioned successfully");
+    console.log("Interactive monitors setup complete");
     return [screen1, screen2, screen3];
   } catch (error) {
     console.error("Failed to load monitor models:", error);
