@@ -35,7 +35,7 @@ export function initializeScene(container: HTMLElement): SceneSetup {
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.4; // Increased for brighter appearance
+  renderer.toneMappingExposure = 2.2; // Much higher exposure for very bright appearance
 
 
   container.appendChild(renderer.domElement);
@@ -56,20 +56,20 @@ export function initializeScene(container: HTMLElement): SceneSetup {
 }
 
 export function createLighting(scene: THREE.Scene): void {
-  // Bright ambient light for natural office lighting
-  const ambientLight = new THREE.AmbientLight(0xf0f8ff, 1.2); // Slightly blue-tinted for daylight
+  // Very bright ambient light for natural office lighting
+  const ambientLight = new THREE.AmbientLight(0xf0f8ff, 2.0); // Much brighter ambient
   scene.add(ambientLight);
 
-  // Strong window light streaming in from outside
-  const windowLight1 = new THREE.DirectionalLight(0xfff5d6, 1.5); // Bright warm sunlight
-  windowLight1.position.set(10, 8, 0); // Coming from the side window
+  // Strong window light streaming in from outside - brighter and lower
+  const windowLight1 = new THREE.DirectionalLight(0xfff5d6, 2.5); // Much brighter warm sunlight
+  windowLight1.position.set(10, 4, 0); // Lower position, coming from the side window
   windowLight1.target.position.set(0, 0, 0);
   scene.add(windowLight1);
   scene.add(windowLight1.target);
 
-  // Additional window light from another angle
-  const windowLight2 = new THREE.DirectionalLight(0xfff8e1, 1.2); // Warm daylight
-  windowLight2.position.set(6, 10, -8); // Coming from back window
+  // Additional window light from another angle - brighter and lower
+  const windowLight2 = new THREE.DirectionalLight(0xfff8e1, 2.0); // Brighter warm daylight
+  windowLight2.position.set(6, 5, -8); // Lower position, coming from back window
   windowLight2.target.position.set(0, 0, 0);
   scene.add(windowLight2);
   scene.add(windowLight2.target);
@@ -92,15 +92,15 @@ export function createLighting(scene: THREE.Scene): void {
   ceilingLight3.position.set(4, 9, 4);
   scene.add(ceilingLight3);
 
-  // Window-adjacent spot lights to simulate focused light spill
-  const windowSpill1 = new THREE.SpotLight(0xfff8e1, 2.5, 15, Math.PI / 4, 0.2);
-  windowSpill1.position.set(8, 6, 0);
+  // Window-adjacent spot lights to simulate focused light spill - brighter and lower
+  const windowSpill1 = new THREE.SpotLight(0xfff8e1, 4.0, 20, Math.PI / 3, 0.1);
+  windowSpill1.position.set(8, 3, 0); // Much lower position
   windowSpill1.target.position.set(0, 0, 0);
   scene.add(windowSpill1);
   scene.add(windowSpill1.target);
 
-  const windowSpill2 = new THREE.SpotLight(0xfff5d6, 2.0, 12, Math.PI / 3, 0.3);
-  windowSpill2.position.set(0, 6, -8);
+  const windowSpill2 = new THREE.SpotLight(0xfff5d6, 3.5, 18, Math.PI / 3, 0.1);
+  windowSpill2.position.set(0, 3, -8); // Much lower position
   windowSpill2.target.position.set(0, 0, 0);
   scene.add(windowSpill2);
   scene.add(windowSpill2.target);
