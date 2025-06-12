@@ -18,27 +18,13 @@ export class ModelLoader {
     this.renderer = renderer;
     this.loadingManager = new THREE.LoadingManager();
     
-    // Note: FBX loader warnings about unsupported material properties are expected and harmless
-    
     // Set up path resolution for FBX embedded textures and fbm folders
     this.loadingManager.setURLModifier((url) => {
       console.log('Loading URL:', url);
       
-      // Handle FBX material folder (.fbm) structure - fix space in embedded path
-      if (url.includes('/models/Small Office.fbm/')) {
-        // Convert space-based path to our renamed folder
-        return url.replace('/models/Small Office.fbm/', '/models/SmallOffice.fbm/');
-      }
-      
-      // Handle the folder itself being requested - FBX loader tries to access folder as file
-      if (url === '/models/Small Office.fbm' || url === '/models/SmallOffice.fbm') {
-        // Return a valid path that won't cause 404 - the individual textures will load correctly
-        console.log('FBX loader accessing .fbm folder - this is expected behavior');
-        return url; // Let it fail gracefully, individual textures will still load
-      }
-      
-      // Handle our renamed folder structure
+      // Handle FBX material folder (.fbm) structure
       if (url.includes('/models/SmallOffice.fbm/')) {
+        // Keep the .fbm folder structure intact
         return url;
       }
       
@@ -71,12 +57,6 @@ export class ModelLoader {
     };
 
     this.loadingManager.onError = (url) => {
-      // Suppress expected .fbm folder access errors - these are normal FBX loader behavior
-      if (url.includes('.fbm') && !url.includes('.fbm/')) {
-        console.log('FBX loader .fbm folder access (expected behavior):', url);
-        return;
-      }
-      
       console.error(`❌ Failed to load: ${url}`);
       console.error('Error occurred at:', new Date().toISOString());
       this.onLoadError && this.onLoadError(url);
