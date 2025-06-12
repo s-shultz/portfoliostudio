@@ -59,7 +59,7 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene) {
     console.log("Monitor 1 children count:", monitor1.children.length);
 
     // Traverse the monitor to see its structure
-    monitor1.traverse((child) => {
+    monitor1.traverse((child: THREE.Object3D) => {
       console.log("Monitor child:", child.type, child.name);
       if ((child as THREE.Mesh).isMesh) {
         console.log("  - Mesh found:", child.name);
