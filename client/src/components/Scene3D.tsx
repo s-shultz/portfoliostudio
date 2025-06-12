@@ -71,63 +71,75 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
             'WallPaintingsBaked': '/textures/WallPaintingsBaked.png'
           };
           
-          // Apply comprehensive material and lighting solution
-          object.traverse((child) => {
-            if (child instanceof THREE.Mesh) {
-              child.castShadow = true;
-              child.receiveShadow = true;
-              
-              // Replace all materials with properly lit MeshStandardMaterials
-              const materials = Array.isArray(child.material) ? child.material : [child.material];
-              const newMaterials: THREE.MeshStandardMaterial[] = [];
-              
-              materials.forEach((material, index) => {
-                // Create a new bright MeshStandardMaterial
-                const newMaterial = new THREE.MeshStandardMaterial({
-                  color: 0xffffff, // Pure white for maximum brightness
-                  roughness: 0.6,
-                  metalness: 0.1,
-                  envMapIntensity: 1.0
-                });
+          // Pre-load all textures with better error handling
+          const loadedTextures: { [key: string]: THREE.Texture } = {};
+          const texturePromises: Promise<void>[] = [];
+          
+          Object.entries(textureMap).forEach(([name, path]) => {
+            const promise = new Promise<void>((resolve, reject) => {
+              const texture = textureLoader.load(
+                path,
+                (loadedTexture) => {
+                  loadedTexture.flipY = false;
+                  loadedTexture.wrapS = THREE.RepeatWrapping;
+                  loadedTexture.wrapT = THREE.RepeatWrapping;
+                  loadedTextures[name] = loadedTexture;
+                  console.log(`Successfully loaded texture: ${name}`);
+                  resolve();
+                },
+                undefined,
+                (error) => {
+                  console.warn(`Failed to load texture ${name}:`, error);
+                  resolve(); // Continue even if texture fails
+                }
+              );
+            });
+            texturePromises.push(promise);
+          });
+          
+          // Apply materials after texture loading
+          Promise.all(texturePromises).then(() => {
+            console.log(`Loaded ${Object.keys(loadedTextures).length} textures`);
+            
+            // Apply comprehensive material replacement
+            object.traverse((child) => {
+              if (child instanceof THREE.Mesh) {
+                child.castShadow = true;
+                child.receiveShadow = true;
                 
-                // Apply the main office texture to the unnamed material (main geometry)
-                if (!material.name || material.name === '' || child.name === 'Small_Office') {
-                  // Load a comprehensive texture for the main office geometry
-                  const mainTexture = textureLoader.load('/textures/Floorbaked.png', 
-                    () => console.log('Applied main office texture'),
-                    undefined,
-                    (error) => {
-                      console.log('Main texture failed, using bright material');
-                      // If texture fails, use a bright colored material
-                      newMaterial.color = new THREE.Color(0xf5f5f5);
-                    }
-                  );
-                  mainTexture.flipY = false;
-                  newMaterial.map = mainTexture;
-                } else if (material.name === 'Backdrop') {
-                  // Apply backdrop texture
-                  const backdropTexture = textureLoader.load('/textures/Backdrop.jpg',
-                    () => console.log('Applied backdrop texture'),
-                    undefined,
-                    (error) => {
-                      console.log('Backdrop texture failed, using default');
-                      newMaterial.color = new THREE.Color(0xe8e8e8);
-                    }
-                  );
-                  backdropTexture.flipY = false;
-                  newMaterial.map = backdropTexture;
+                console.log(`Processing: ${child.name}, Original material: ${child.material?.name || 'unnamed'}`);
+                
+                // Create new material based on mesh name and apply appropriate texture
+                let newMaterial: THREE.MeshStandardMaterial;
+                
+                if (child.name === 'Backdrop' || child.material?.name === 'Backdrop') {
+                  newMaterial = new THREE.MeshStandardMaterial({
+                    map: loadedTextures['Backdrop'] || null,
+                    color: 0xffffff,
+                    roughness: 0.8,
+                    metalness: 0.0
+                  });
+                  console.log('Applied Backdrop material');
+                } else {
+                  // For the main office geometry, apply the comprehensive baked texture
+                  newMaterial = new THREE.MeshStandardMaterial({
+                    map: loadedTextures['Floorbaked'] || loadedTextures['BakedWall'] || null,
+                    color: 0xffffff,
+                    roughness: 0.7,
+                    metalness: 0.1
+                  });
+                  console.log('Applied main office material');
                 }
                 
-                newMaterials.push(newMaterial);
-              });
-              
-              // Apply new materials
-              if (Array.isArray(child.material)) {
-                child.material = newMaterials;
-              } else {
-                child.material = newMaterials[0];
+                // Ensure material is bright enough
+                if (!newMaterial.map) {
+                  newMaterial.color = new THREE.Color(0xf0f0f0);
+                  console.log('No texture available, using bright fallback color');
+                }
+                
+                child.material = newMaterial;
               }
-            }
+            });
           });
 
           scene.add(object);
