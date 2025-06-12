@@ -96,6 +96,20 @@ export class ModelLoader {
     });
   }
 
+  loadFBX(path: string): Promise<THREE.Object3D> {
+    return new Promise((resolve, reject) => {
+      this.fbxLoader.load(
+        path,
+        (object) => resolve(object),
+        (progress) => {
+          const percent = (progress.loaded / progress.total) * 100;
+          console.log(`FBX loading: ${percent.toFixed(1)}%`);
+        },
+        (error) => reject(error)
+      );
+    });
+  }
+
   async applyTextures(model: THREE.Object3D, texturesConfig: Record<string, any>) {
     const texturePromises: Promise<any>[] = [];
     const loadedTextures: Record<string, THREE.Texture> = {};

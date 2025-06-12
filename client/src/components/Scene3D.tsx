@@ -40,9 +40,9 @@ async function loadOfficeModel(modelLoader: ModelLoader, scene: THREE.Scene) {
       }
     };
 
-    // Try to load GLB model first
+    // Load your actual FBX office model
     const modelData = await modelLoader.loadSmallOfficeModel(
-      '/models/office.glb',
+      '/models/office.fbx',
       texturesConfig
     );
 
