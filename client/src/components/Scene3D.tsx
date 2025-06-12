@@ -286,58 +286,35 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
                   
                   let material: THREE.MeshStandardMaterial;
                   
-                  if (Array.isArray(child.material)) {
-                    // Handle multiple materials
-                    child.material = child.material.map((mat) => {
-                      const newMat = new THREE.MeshStandardMaterial({
-                        color: mat.color || 0xffffff,
-                        roughness: 0.7,
-                        metalness: 0.1
-                      });
-                      
-                      // Try to find matching texture
-                      const matchedTexture = findMatchingTexture(meshName, textures);
-                      if (matchedTexture) {
-                        newMat.map = matchedTexture;
-                        console.log(`Applied texture to ${meshName}`);
-                      }
-                      
-                      return newMat;
-                    });
-                  } else {
-                    // Single material
-                    material = new THREE.MeshStandardMaterial({
-                      color: child.material.color || 0xffffff,
-                      roughness: 0.7,
-                      metalness: 0.1
-                    });
-                    
-                    // Smart texture mapping based on mesh names
-                    let textureApplied = false;
-                    
-                    // Find matching texture and normal map
-                    const matchedTexture = findMatchingTexture(meshName, textures);
-                    if (matchedTexture) {
-                      material.map = matchedTexture;
-                      console.log(`Applied texture to ${meshName}`);
-                    }
-                    
-                    // Apply normal map if available
-                    const normalMapKey = meshName.replace(/baked/g, '').toLowerCase();
-                    if (normalMaps[normalMapKey] || normalMaps[normalMapKey + 'normal']) {
-                      material.normalMap = normalMaps[normalMapKey] || normalMaps[normalMapKey + 'normal'];
-                      material.normalScale = new THREE.Vector2(1, 1);
-                      console.log(`Applied normal map to ${meshName}`);
-                    }
-                    
-                    // Preserve existing texture if available
-                    if (!material.map && (child.material as any).map) {
-                      material.map = (child.material as any).map;
-                      console.log(`Preserved original texture for ${meshName}`);
-                    }
-                    
-                    child.material = material;
+                  // Create enhanced material with proper texture mapping
+                  const newMaterial = new THREE.MeshStandardMaterial({
+                    color: 0xffffff,
+                    roughness: 0.8,
+                    metalness: 0.0,
+                    transparent: false
+                  });
+                  
+                  // Apply matched texture
+                  const matchedTexture = findMatchingTexture(meshName, textures);
+                  if (matchedTexture) {
+                    newMaterial.map = matchedTexture;
+                    console.log(`Applied texture to ${meshName}`);
+                  } else if ((child.material as any).map) {
+                    // Preserve embedded texture
+                    newMaterial.map = (child.material as any).map;
+                    console.log(`Preserved embedded texture for ${meshName}`);
                   }
+                  
+                  // Apply normal map for enhanced detail
+                  const normalMapKey = meshName.replace(/baked/g, '').toLowerCase();
+                  const normalMap = normalMaps[normalMapKey] || normalMaps[normalMapKey + 'normal'] || normalMaps['bakedwallnormal'] || normalMaps['glassnormal'] || normalMaps['roofnormal'];
+                  if (normalMap) {
+                    newMaterial.normalMap = normalMap;
+                    newMaterial.normalScale = new THREE.Vector2(0.5, 0.5);
+                    console.log(`Applied normal map to ${meshName}`);
+                  }
+                  
+                  child.material = newMaterial;
                 }
               }
             });

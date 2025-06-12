@@ -33,8 +33,9 @@ export function initializeScene(container: HTMLElement): SceneSetup {
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 2.2;
+  renderer.toneMapping = THREE.ReinhardToneMapping;
+  renderer.toneMappingExposure = 1.0;
+  renderer.physicallyCorrectLights = false;
 
   container.appendChild(renderer.domElement);
 
