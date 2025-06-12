@@ -22,9 +22,19 @@ export class ModelLoader {
     this.loadingManager.setURLModifier((url) => {
       console.log('Loading URL:', url);
       
-      // Handle FBX material folder (.fbm) structure
+      // Handle FBX material folder (.fbm) structure - fix space in embedded path
+      if (url.includes('/models/Small Office.fbm/')) {
+        // Convert space-based path to our renamed folder
+        return url.replace('/models/Small Office.fbm/', '/models/SmallOffice.fbm/');
+      }
+      
+      // Handle the folder itself being requested
+      if (url === '/models/Small Office.fbm') {
+        return '/models/SmallOffice.fbm';
+      }
+      
+      // Handle our renamed folder structure
       if (url.includes('/models/SmallOffice.fbm/')) {
-        // Keep the .fbm folder structure intact
         return url;
       }
       
