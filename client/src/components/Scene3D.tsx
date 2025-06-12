@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
-import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { FBXLoader } from "three/addons/loaders/FBXLoader.js";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { initializeScene, createLighting, handleResize } from "../lib/three-utils";
 
 interface Scene3DProps {
@@ -219,8 +219,9 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
             console.log(`Child ${index}:`, child.name, child.type);
             if (child instanceof THREE.Mesh) {
               const mesh = child as THREE.Mesh;
-              console.log('  Material:', mesh.material?.name, mesh.material?.type);
-              console.log('  Has texture map:', !!(mesh.material as any)?.map);
+              const material = Array.isArray(mesh.material) ? mesh.material[0] : mesh.material;
+              console.log('  Material:', (material as any)?.name, (material as any)?.type);
+              console.log('  Has texture map:', !!(material as any)?.map);
             }
           });
 
