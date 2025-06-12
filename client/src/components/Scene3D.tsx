@@ -10,6 +10,29 @@ interface Scene3DProps {
   onError: (error: string) => void;
 }
 
+// Helper function to find matching texture
+function findMatchingTexture(meshName: string, textures: { [key: string]: THREE.Texture }): THREE.Texture | null {
+  const lowerMeshName = meshName.toLowerCase();
+  
+  // Direct matches
+  for (const texName in textures) {
+    const texBaseName = texName.toLowerCase().replace(/baked|\.png|\.jpg/g, '');
+    if (lowerMeshName.includes(texBaseName) || texBaseName.includes(lowerMeshName)) {
+      return textures[texName];
+    }
+  }
+  
+  // Pattern matches
+  if (lowerMeshName.includes('floor')) return textures['Floorbaked.png'] || null;
+  if (lowerMeshName.includes('wall')) return textures['BakedWall.png'] || null;
+  if (lowerMeshName.includes('chair')) return textures['ChairBaked.png'] || null;
+  if (lowerMeshName.includes('desk')) return textures['DeskPainting.jpg'] || null;
+  if (lowerMeshName.includes('roof') || lowerMeshName.includes('ceiling')) return textures['RoofBaked.png'] || null;
+  if (lowerMeshName.includes('cupboard')) return textures['CupboardBaked.png'] || null;
+  
+  return null;
+}
+
 // Create a professional office environment
 function createOfficeEnvironment(scene: THREE.Scene) {
   // Office floor
@@ -194,8 +217,9 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
       const textureLoader = new TextureLoader();
       const fbxLoader = new FBXLoader();
       
-      // Pre-load all available textures
-      const textureMap = new Map<string, THREE.Texture>();
+      // Pre-load all available textures and normal maps
+      const textures: { [key: string]: THREE.Texture } = {};
+      const normalMaps: { [key: string]: THREE.Texture } = {};
       const texturePromises: Promise<void>[] = [];
       
       const textureFiles = [
@@ -215,9 +239,17 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
               texture.wrapS = THREE.RepeatWrapping;
               texture.wrapT = THREE.RepeatWrapping;
               texture.flipY = false;
-              textureMap.set(filename, texture);
-              textureMap.set(filename.toLowerCase(), texture);
-              textureMap.set(filename.replace(/\.[^/.]+$/, ""), texture);
+              
+              const baseName = filename.replace(/\.[^/.]+$/, "").toLowerCase();
+              
+              if (filename.toLowerCase().includes('normal')) {
+                normalMaps[baseName] = texture;
+                normalMaps[baseName.replace('normal', '')] = texture;
+              } else {
+                textures[filename] = texture;
+                textures[filename.toLowerCase()] = texture;
+                textures[baseName] = texture;
+              }
               resolve();
             },
             undefined,
@@ -264,12 +296,10 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
                       });
                       
                       // Try to find matching texture
-                      for (const [texName, texture] of textureMap) {
-                        if (meshName.includes(texName.toLowerCase().replace(/baked|\.png|\.jpg/g, ''))) {
-                          newMat.map = texture;
-                          console.log(`Applied texture ${texName} to ${meshName}`);
-                          break;
-                        }
+                      const matchedTexture = findMatchingTexture(meshName, textures);
+                      if (matchedTexture) {
+                        newMat.map = matchedTexture;
+                        console.log(`Applied texture to ${meshName}`);
                       }
                       
                       return newMat;
@@ -285,36 +315,19 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
                     // Smart texture mapping based on mesh names
                     let textureApplied = false;
                     
-                    // Direct name matching
-                    for (const [texName, texture] of textureMap) {
-                      const texBaseName = texName.toLowerCase().replace(/baked|\.png|\.jpg/g, '');
-                      if (meshName.includes(texBaseName) || texBaseName.includes(meshName)) {
-                        material.map = texture;
-                        console.log(`Applied texture ${texName} to ${meshName}`);
-                        textureApplied = true;
-                        break;
-                      }
+                    // Find matching texture and normal map
+                    const matchedTexture = findMatchingTexture(meshName, textures);
+                    if (matchedTexture) {
+                      material.map = matchedTexture;
+                      console.log(`Applied texture to ${meshName}`);
                     }
                     
-                    // Fallback pattern matching
-                    if (!textureApplied) {
-                      if (meshName.includes('floor')) {
-                        material.map = textureMap.get('Floorbaked.png');
-                      } else if (meshName.includes('wall')) {
-                        material.map = textureMap.get('BakedWall.png');
-                      } else if (meshName.includes('chair')) {
-                        material.map = textureMap.get('ChairBaked.png');
-                      } else if (meshName.includes('desk')) {
-                        material.map = textureMap.get('DeskPainting.jpg');
-                      } else if (meshName.includes('roof') || meshName.includes('ceiling')) {
-                        material.map = textureMap.get('RoofBaked.png');
-                      } else if (meshName.includes('cupboard')) {
-                        material.map = textureMap.get('CupboardBaked.png');
-                      }
-                      
-                      if (material.map) {
-                        console.log(`Applied fallback texture to ${meshName}`);
-                      }
+                    // Apply normal map if available
+                    const normalMapKey = meshName.replace(/baked/g, '').toLowerCase();
+                    if (normalMaps[normalMapKey] || normalMaps[normalMapKey + 'normal']) {
+                      material.normalMap = normalMaps[normalMapKey] || normalMaps[normalMapKey + 'normal'];
+                      material.normalScale = new THREE.Vector2(1, 1);
+                      console.log(`Applied normal map to ${meshName}`);
                     }
                     
                     // Preserve existing texture if available

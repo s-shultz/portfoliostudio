@@ -54,29 +54,15 @@ export function initializeScene(container: HTMLElement): SceneSetup {
 }
 
 export function createLighting(scene: THREE.Scene): void {
-  // Higher ambient light for better overall illumination
-  const ambientLight = new THREE.AmbientLight(0x404040, 1.2);
+  // Bright ambient light for baked textures - reduced intensity
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
   scene.add(ambientLight);
 
-  // Main directional light (key light) - positioned to light the office interior
-  const directionalLight = new THREE.DirectionalLight(0xffffff, 2.0);
-  directionalLight.position.set(5, 15, 5);
-  directionalLight.target.position.set(0, 0, 0);
-  directionalLight.castShadow = true;
-  
-  // Shadow camera settings optimized for office space
-  directionalLight.shadow.camera.near = 0.1;
-  directionalLight.shadow.camera.far = 30;
-  directionalLight.shadow.camera.left = -10;
-  directionalLight.shadow.camera.right = 10;
-  directionalLight.shadow.camera.top = 10;
-  directionalLight.shadow.camera.bottom = -10;
-  directionalLight.shadow.mapSize.width = 1024;
-  directionalLight.shadow.mapSize.height = 1024;
-  directionalLight.shadow.bias = -0.001;
-
+  // Soft directional light to enhance details without overpowering baked lighting
+  const directionalLight = new THREE.DirectionalLight(0xffffff, 0.4);
+  directionalLight.position.set(5, 10, 5);
+  directionalLight.castShadow = false; // Disable shadows for baked lighting
   scene.add(directionalLight);
-  scene.add(directionalLight.target);
 
   // Fill light from the opposite side
   const fillLight = new THREE.DirectionalLight(0xffffff, 1.0);
