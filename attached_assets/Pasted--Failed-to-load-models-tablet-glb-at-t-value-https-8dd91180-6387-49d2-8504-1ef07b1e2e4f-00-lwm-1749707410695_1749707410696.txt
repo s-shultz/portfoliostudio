@@ -1,0 +1,22 @@
+❌ Failed to load: /models/tablet.glb
+at t.value (https://8dd91180-6387-49d2-8504-1ef07b1e2e4f-00-lwm4pp35mmc8.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://8dd91180-6387-49d2-8504-1ef07b1e2e4f-00-lwm4pp35mmc8.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://8dd91180-6387-49d2-8504-1ef07b1e2e4f-00-lwm4pp35mmc8.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://8dd91180-6387-49d2-8504-1ef07b1e2e4f-00-lwm4pp35mmc8.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+Error occurred at: 2025-06-12T05:49:55.271Z
+at t.value (https://8dd91180-6387-49d2-8504-1ef07b1e2e4f-00-lwm4pp35mmc8.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://8dd91180-6387-49d2-8504-1ef07b1e2e4f-00-lwm4pp35mmc8.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://8dd91180-6387-49d2-8504-1ef07b1e2e4f-00-lwm4pp35mmc8.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://8dd91180-6387-49d2-8504-1ef07b1e2e4f-00-lwm4pp35mmc8.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+Failed to load: /models/tablet.glb
+at t.value (https://8dd91180-6387-49d2-8504-1ef07b1e2e4f-00-lwm4pp35mmc8.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://8dd91180-6387-49d2-8504-1ef07b1e2e4f-00-lwm4pp35mmc8.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://8dd91180-6387-49d2-8504-1ef07b1e2e4f-00-lwm4pp35mmc8.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://8dd91180-6387-49d2-8504-1ef07b1e2e4f-00-lwm4pp35mmc8.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+Failed to load tablet model: 
+SyntaxError {}
+
+at t.value (https://8dd91180-6387-49d2-8504-1ef07b1e2e4f-00-lwm4pp35mmc8.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://8dd91180-6387-49d2-8504-1ef07b1e2e4f-00-lwm4pp35mmc8.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://8dd91180-6387-49d2-8504-1ef07b1e2e4f-00-lwm4pp35mmc8.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://8dd91180-6387-49d2-8504-1ef07b1e2e4f-00-lwm4pp35mmc8.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
