@@ -70,8 +70,7 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene) {
     // First monitor (left)
     monitor1.position.set(-1.5, monitorY, -0.5);
     monitor1.scale.setScalar(monitorScale);
-    monitor1.rotation.x = -Math.PI * 0.1; // Tilt screens down to face camera
-    monitor1.rotation.y = Math.PI * 0.7; // Face towards camera
+    monitor1.rotation.y = Math.PI * 0.6; // Angled towards camera
     scene.add(monitor1);
     
     // Load second monitor (center)
@@ -79,8 +78,7 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene) {
     const monitor2 = monitor2Data.scene.clone();
     monitor2.position.set(-0.8, monitorY, -0.4);
     monitor2.scale.setScalar(monitorScale);
-    monitor2.rotation.x = -Math.PI * 0.08; // Slight tilt down to face camera
-    monitor2.rotation.y = Math.PI * 0.75; // Face towards camera
+    monitor2.rotation.y = Math.PI * 0.75; // Center monitor facing camera
     scene.add(monitor2);
     
     // Load third monitor (right)
@@ -88,8 +86,7 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene) {
     const monitor3 = monitor3Data.scene.clone();
     monitor3.position.set(-0.1, monitorY, -0.3);
     monitor3.scale.setScalar(monitorScale);
-    monitor3.rotation.x = -Math.PI * 0.06; // Slight tilt down for rightmost monitor
-    monitor3.rotation.y = Math.PI * 0.8; // Face towards camera
+    monitor3.rotation.y = Math.PI * 0.9; // Right monitor angled inward
     scene.add(monitor3);
     
     console.log('Monitor 2 positioned at:', monitor2.position);
