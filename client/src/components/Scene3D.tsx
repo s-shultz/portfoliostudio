@@ -46,6 +46,38 @@ async function loadOfficeModel(modelLoader: ModelLoader, scene: THREE.Scene) {
   }
 }
 
+// Load tablet model and position it on the desk
+async function loadTablet(modelLoader: ModelLoader, scene: THREE.Scene) {
+  try {
+    console.log("Loading tablet model...");
+
+    // Load the tablet GLB model
+    const tabletData = await modelLoader.loadGLTF("/models/tablet.glb");
+    console.log("Tablet GLB data loaded:", tabletData);
+
+    const tablet = tabletData.scene.clone();
+    console.log("Tablet children count:", tablet.children.length);
+
+    // Position the tablet on the desk in front of the monitors
+    const tabletScale = 2.5; // Scale up as recommended for generated models
+    
+    tablet.position.set(-2, -1.35, -2.8); // On the desk, in front of the monitors
+    tablet.scale.setScalar(tabletScale);
+    tablet.rotation.x = 0; // Lying flat on the desk
+    tablet.rotation.y = 0; // Facing forward
+    tablet.rotation.z = 0;
+    
+    scene.add(tablet);
+
+    console.log("Tablet positioned at:", tablet.position);
+    console.log("Tablet scale:", tablet.scale);
+    console.log("Tablet loaded and positioned successfully");
+  } catch (error) {
+    console.error("Failed to load tablet model:", error);
+    // Don't throw - tablet is optional
+  }
+}
+
 // Load monitor models and position them on the desk
 async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene) {
   try {
@@ -100,7 +132,37 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene) {
     console.log("Monitor positioned at:", monitor1.position);
     console.log("Monitor scale:", monitor1.scale);
 
-    console.log("Monitors loaded and positioned successfully");
+    // Load and position tablet on the desk
+    try {
+      console.log("Loading tablet model...");
+
+      // Load the tablet GLB model
+      const tabletData = await modelLoader.loadGLTF("/models/tablet.glb");
+      console.log("Tablet GLB data loaded:", tabletData);
+
+      const tablet = tabletData.scene.clone();
+      console.log("Tablet children count:", tablet.children.length);
+
+      // Position the tablet on the desk in front of the monitors
+      const tabletScale = 2.5; // Scale up as recommended for generated models
+      
+      tablet.position.set(-2, -1.35, -2.8); // On the desk, in front of the monitors
+      tablet.scale.setScalar(tabletScale);
+      tablet.rotation.x = 0; // Lying flat on the desk
+      tablet.rotation.y = 0; // Facing forward
+      tablet.rotation.z = 0;
+      
+      scene.add(tablet);
+
+      console.log("Tablet positioned at:", tablet.position);
+      console.log("Tablet scale:", tablet.scale);
+      console.log("Tablet loaded and positioned successfully");
+    } catch (tabletError) {
+      console.error("Failed to load tablet model:", tabletError);
+      // Don't throw - tablet is optional
+    }
+
+    console.log("Monitors and tablet loaded and positioned successfully");
   } catch (error) {
     console.error("Failed to load monitor models:", error);
     // Don't throw - monitors are optional, office should still work without them
