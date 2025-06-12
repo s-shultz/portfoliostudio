@@ -13,32 +13,7 @@ interface Scene3DProps {
 async function loadOfficeModel(modelLoader: ModelLoader, scene: THREE.Scene) {
   try {
     // Define texture configuration for your office model
-    const texturesConfig = {
-      'Floor': {
-        map: '/textures/Floorbaked.png'
-      },
-      'Wall': {
-        map: '/textures/BakedWall.png',
-        normalMap: '/textures/BakedWallNormal.png'
-      },
-      'Desk': {
-        map: '/textures/DeskPainting.jpg'
-      },
-      'Chair': {
-        map: '/textures/ChairBaked.png'
-      },
-      'Cupboard': {
-        map: '/textures/CupboardBaked.png'
-      },
-      'Roof': {
-        map: '/textures/RoofBaked.png',
-        normalMap: '/textures/RoofNormal.png'
-      },
-      'Glass': {
-        map: '/textures/Glass2.png',
-        normalMap: '/textures/GlassNormal.png'
-      }
-    };
+    const texturesConfig = {};
 
     // Load your actual FBX office model
     const modelData = await modelLoader.loadSmallOfficeModel(
@@ -52,8 +27,10 @@ async function loadOfficeModel(modelLoader: ModelLoader, scene: THREE.Scene) {
     model.scale.setScalar(0.03);
     model.rotation.y = Math.PI;
 
-    console.log('GLB office model loaded successfully');
+    console.log('FBX office model loaded successfully');
     console.log('Available objects:', modelLoader.getObjectNames(model));
+    console.log('Model position:', model.position);
+    console.log('Model scale:', model.scale);
 
   } catch (error) {
     console.error('Failed to load FBX office model:', error);
