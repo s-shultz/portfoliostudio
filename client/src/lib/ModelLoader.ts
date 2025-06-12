@@ -23,7 +23,7 @@ export class ModelLoader {
       console.log('Loading URL:', url);
       
       // Handle FBX material folder (.fbm) structure
-      if (url.includes('/models/SmallOffice.fbm/')) {
+      if (url.includes('/models/Small Office.fbm/')) {
         // Keep the .fbm folder structure intact
         return url;
       }
@@ -46,18 +46,19 @@ export class ModelLoader {
 
   setupLoadingManager() {
     this.loadingManager.onLoad = () => {
-      console.log('All assets loaded successfully');
+      console.log('✅ All assets loaded successfully');
       this.onLoadComplete && this.onLoadComplete();
     };
 
     this.loadingManager.onProgress = (url, itemsLoaded, itemsTotal) => {
       const progress = (itemsLoaded / itemsTotal) * 100;
-      console.log(`Loading progress: ${progress.toFixed(1)}% (${url})`);
+      console.log(`📦 Loading progress: ${progress.toFixed(1)}% - ${url}`);
       this.onLoadProgress && this.onLoadProgress(progress, url);
     };
 
     this.loadingManager.onError = (url) => {
-      console.error(`Failed to load: ${url}`);
+      console.error(`❌ Failed to load: ${url}`);
+      console.error('Error occurred at:', new Date().toISOString());
       this.onLoadError && this.onLoadError(url);
     };
   }
