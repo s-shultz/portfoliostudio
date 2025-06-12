@@ -3,10 +3,94 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { initializeScene, createLighting, handleResize } from "../lib/three-utils";
 import { ModelLoader } from "../lib/ModelLoader";
+import { usePortfolio } from "../lib/stores/usePortfolio";
 
 interface Scene3DProps {
   onLoaded: () => void;
   onError: (error: string) => void;
+}
+
+// Create interactive hotspots for portfolio navigation
+function createInteractiveHotspots(scene: THREE.Scene, onHotspotClick: (section: string) => void) {
+  const hotspots: { mesh: THREE.Mesh; section: string; originalColor: THREE.Color }[] = [];
+  
+  // Create glowing sphere material
+  const createHotspotMaterial = (color: number) => {
+    const material = new THREE.MeshBasicMaterial({
+      color: color,
+      transparent: true,
+      opacity: 0.6
+    });
+    // Add emissive properties after creation
+    (material as any).emissive = new THREE.Color(color);
+    (material as any).emissiveIntensity = 0.3;
+    return material;
+  };
+
+  // About hotspot - near the desk
+  const aboutGeometry = new THREE.SphereGeometry(0.05, 16, 16);
+  const aboutMaterial = createHotspotMaterial(0x3b82f6);
+  const aboutHotspot = new THREE.Mesh(aboutGeometry, aboutMaterial);
+  aboutHotspot.position.set(-0.8, 0.5, 0.3);
+  aboutHotspot.userData = { section: 'about', interactive: true };
+  scene.add(aboutHotspot);
+  hotspots.push({ 
+    mesh: aboutHotspot, 
+    section: 'about', 
+    originalColor: new THREE.Color(0x3b82f6) 
+  });
+
+  // Projects hotspot - near the computer monitor
+  const projectsGeometry = new THREE.SphereGeometry(0.05, 16, 16);
+  const projectsMaterial = createHotspotMaterial(0x10b981);
+  const projectsHotspot = new THREE.Mesh(projectsGeometry, projectsMaterial);
+  projectsHotspot.position.set(-0.2, 0.7, 0.1);
+  projectsHotspot.userData = { section: 'projects', interactive: true };
+  scene.add(projectsHotspot);
+  hotspots.push({ 
+    mesh: projectsHotspot, 
+    section: 'projects', 
+    originalColor: new THREE.Color(0x10b981) 
+  });
+
+  // Experience hotspot - near the bookshelf
+  const experienceGeometry = new THREE.SphereGeometry(0.05, 16, 16);
+  const experienceMaterial = createHotspotMaterial(0xf59e0b);
+  const experienceHotspot = new THREE.Mesh(experienceGeometry, experienceMaterial);
+  experienceHotspot.position.set(0.8, 0.6, -0.5);
+  experienceHotspot.userData = { section: 'experience', interactive: true };
+  scene.add(experienceHotspot);
+  hotspots.push({ 
+    mesh: experienceHotspot, 
+    section: 'experience', 
+    originalColor: new THREE.Color(0xf59e0b) 
+  });
+
+  // Contact hotspot - near the phone
+  const contactGeometry = new THREE.SphereGeometry(0.05, 16, 16);
+  const contactMaterial = createHotspotMaterial(0xef4444);
+  const contactHotspot = new THREE.Mesh(contactGeometry, contactMaterial);
+  contactHotspot.position.set(0.3, 0.5, 0.8);
+  contactHotspot.userData = { section: 'contact', interactive: true };
+  scene.add(contactHotspot);
+  hotspots.push({ 
+    mesh: contactHotspot, 
+    section: 'contact', 
+    originalColor: new THREE.Color(0xef4444) 
+  });
+
+  // Add pulsing animation
+  const animateHotspots = () => {
+    const time = Date.now() * 0.003;
+    hotspots.forEach(({ mesh }) => {
+      const scale = 1 + Math.sin(time) * 0.2;
+      mesh.scale.setScalar(scale);
+    });
+    requestAnimationFrame(animateHotspots);
+  };
+  animateHotspots();
+
+  return hotspots;
 }
 
 // Load office model with robust ModelLoader system
@@ -32,10 +116,10 @@ async function loadOfficeModel(modelLoader: ModelLoader, scene: THREE.Scene) {
     console.log('Model position:', model.position);
     console.log('Model scale:', model.scale);
 
+    return model;
+
   } catch (error) {
     console.error('Failed to load FBX office model:', error);
-    
-    // Don't fall back to procedural environment - indicate loading failure
     throw error;
   }
 }
@@ -440,6 +524,10 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
     controls: OrbitControls;
   } | null>(null);
   const [isModelLoaded, setIsModelLoaded] = useState(false);
+  const { setCurrentSection } = usePortfolio();
+  const raycaster = useRef(new THREE.Raycaster());
+  const mouse = useRef(new THREE.Vector2());
+  const hotspotsRef = useRef<{ mesh: THREE.Mesh; section: string; originalColor: THREE.Color }[]>([]);
 
   useEffect(() => {
     if (!mountRef.current) return;
@@ -474,6 +562,69 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
       // Load your actual office FBX model
       loadOfficeModel(modelLoader, scene);
 
+      // Create interactive hotspots
+      const hotspots = createInteractiveHotspots(scene, (section) => {
+        setCurrentSection(section as any);
+      });
+      hotspotsRef.current = hotspots;
+
+      // Handle click interactions
+      const handleClick = (event: MouseEvent) => {
+        event.preventDefault();
+        
+        // Calculate mouse position in normalized device coordinates
+        const rect = renderer.domElement.getBoundingClientRect();
+        mouse.current.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        mouse.current.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+        // Update raycaster
+        raycaster.current.setFromCamera(mouse.current, camera);
+
+        // Check for intersections with hotspots
+        const hotspotMeshes = hotspotsRef.current.map(h => h.mesh);
+        const intersects = raycaster.current.intersectObjects(hotspotMeshes);
+
+        if (intersects.length > 0) {
+          const clickedObject = intersects[0].object;
+          const hotspot = hotspotsRef.current.find(h => h.mesh === clickedObject);
+          if (hotspot && clickedObject.userData.interactive) {
+            console.log(`Clicked on ${hotspot.section} section`);
+            setCurrentSection(hotspot.section as any);
+          }
+        }
+      };
+
+      // Handle hover effects
+      const handleMouseMove = (event: MouseEvent) => {
+        const rect = renderer.domElement.getBoundingClientRect();
+        mouse.current.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        mouse.current.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+        raycaster.current.setFromCamera(mouse.current, camera);
+        const hotspotMeshes = hotspotsRef.current.map(h => h.mesh);
+        const intersects = raycaster.current.intersectObjects(hotspotMeshes);
+
+        // Reset all hotspots to normal state
+        hotspotsRef.current.forEach(({ mesh, originalColor }) => {
+          (mesh.material as THREE.MeshBasicMaterial).color.copy(originalColor);
+          (mesh.material as any).emissiveIntensity = 0.3;
+        });
+
+        // Highlight hovered hotspot
+        if (intersects.length > 0) {
+          const hoveredMesh = intersects[0].object as THREE.Mesh;
+          const material = hoveredMesh.material as THREE.MeshBasicMaterial;
+          material.color.setHex(0xffffff);
+          (material as any).emissiveIntensity = 0.8;
+          renderer.domElement.style.cursor = 'pointer';
+        } else {
+          renderer.domElement.style.cursor = 'grab';
+        }
+      };
+
+      renderer.domElement.addEventListener('click', handleClick);
+      renderer.domElement.addEventListener('mousemove', handleMouseMove);
+
       // Handle resize
       const handleResizeEvent = () => handleResize(camera, renderer);
       window.addEventListener('resize', handleResizeEvent);
@@ -489,6 +640,8 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
       return () => {
         window.removeEventListener('resize', handleResizeEvent);
         if (sceneRef.current) {
+          sceneRef.current.renderer.domElement.removeEventListener('click', handleClick);
+          sceneRef.current.renderer.domElement.removeEventListener('mousemove', handleMouseMove);
           sceneRef.current.renderer.dispose();
           mountRef.current?.removeChild(sceneRef.current.renderer.domElement);
         }
