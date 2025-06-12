@@ -24,8 +24,9 @@ export class ModelLoader {
       
       // Handle FBX material folder (.fbm) structure - fix space mismatch
       if (url.includes('/models/Small Office.fbm/')) {
-        // Convert spaced path to non-spaced path
-        const fixedUrl = url.replace('/models/Small Office.fbm/', '/models/SmallOffice.fbm/');
+        // Convert spaced path to non-spaced path and extract filename
+        const filename = url.split('/').pop();
+        const fixedUrl = `/models/SmallOffice.fbm/${filename}`;
         console.log(`Fixed .fbm path: ${url} -> ${fixedUrl}`);
         return fixedUrl;
       }
@@ -33,6 +34,13 @@ export class ModelLoader {
       if (url.includes('/models/SmallOffice.fbm/')) {
         // Keep the .fbm folder structure intact
         return url;
+      }
+      
+      // Block attempts to load the .fbm folder itself as a file
+      if (url.endsWith('/models/Small Office.fbm') || url.endsWith('/models/SmallOffice.fbm')) {
+        console.log('Blocking attempt to load .fbm folder as file:', url);
+        // Return a data URL that won't cause loading errors
+        return 'data:text/plain;base64,'; 
       }
       
       // If it's a texture file being loaded from models directory, redirect to textures
@@ -138,9 +146,20 @@ export class ModelLoader {
 
   loadFBX(path: string): Promise<THREE.Object3D> {
     return new Promise((resolve, reject) => {
-      this.fbxLoader.load(
+      // Create a separate loading manager for FBX to handle errors gracefully
+      const fbxLoadingManager = new THREE.LoadingManager();
+      
+      fbxLoadingManager.onError = (url) => {
+        console.log(`Ignoring FBX loader error for: ${url}`);
+        // Don't reject - just log and continue
+      };
+      
+      const fbxLoader = new FBXLoader(fbxLoadingManager);
+      
+      fbxLoader.load(
         path,
         (object) => {
+          console.log('FBX model loaded successfully, applying material fixes...');
           // Process and clean up materials to reduce warnings
           this.cleanupFBXMaterials(object);
           resolve(object);
