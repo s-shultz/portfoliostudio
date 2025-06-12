@@ -18,18 +18,7 @@ export class ModelLoader {
     this.renderer = renderer;
     this.loadingManager = new THREE.LoadingManager();
     
-    // Suppress expected FBX loader warnings about unsupported material properties
-    const originalWarn = console.warn;
-    console.warn = (message, ...args) => {
-      if (typeof message === 'string' && (
-        message.includes('ShininessExponent map is not supported') ||
-        message.includes('ReflectionFactor map is not supported') ||
-        message.includes('SpecularFactor map is not supported')
-      )) {
-        return; // Suppress these expected warnings
-      }
-      originalWarn(message, ...args);
-    };
+    // Note: FBX loader warnings about unsupported material properties are expected and harmless
     
     // Set up path resolution for FBX embedded textures and fbm folders
     this.loadingManager.setURLModifier((url) => {
