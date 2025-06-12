@@ -71,8 +71,8 @@ export class MonitorInteraction {
     const geometry = new THREE.PlaneGeometry(size.x, size.y);
     const material = new THREE.MeshBasicMaterial({ 
       transparent: true, 
-      opacity: 0.1,
-      color: 0x00ff00,
+      opacity: 0.3,
+      color: 0x4444ff,
       side: THREE.DoubleSide
     });
     
@@ -80,12 +80,23 @@ export class MonitorInteraction {
     mesh.position.copy(position);
     mesh.rotation.copy(rotation);
     
-    // Add wireframe outline for better visibility
+    // Add pulsing animation
+    const originalOpacity = 0.3;
+    let time = 0;
+    const animate = () => {
+      time += 0.02;
+      material.opacity = originalOpacity + Math.sin(time) * 0.2;
+      requestAnimationFrame(animate);
+    };
+    animate();
+    
+    // Add bright border for visibility
     const wireframeGeometry = new THREE.EdgesGeometry(geometry);
     const wireframeMaterial = new THREE.LineBasicMaterial({ 
-      color: 0x00ff00,
+      color: 0x00ffff,
       transparent: true,
-      opacity: 0.3
+      opacity: 0.8,
+      linewidth: 3
     });
     const wireframe = new THREE.LineSegments(wireframeGeometry, wireframeMaterial);
     wireframe.position.copy(position);
