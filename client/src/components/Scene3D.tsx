@@ -1,13 +1,170 @@
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
-import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import { FBXLoader } from "three/addons/loaders/FBXLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { initializeScene, createLighting, handleResize } from "../lib/three-utils";
 
 interface Scene3DProps {
   onLoaded: () => void;
   onError: (error: string) => void;
+}
+
+// Create a professional office environment
+function createOfficeEnvironment(scene: THREE.Scene) {
+  // Office floor
+  const floorGeometry = new THREE.PlaneGeometry(20, 20);
+  const floorMaterial = new THREE.MeshStandardMaterial({ 
+    color: 0x444444,
+    roughness: 0.8,
+    metalness: 0.1
+  });
+  const floor = new THREE.Mesh(floorGeometry, floorMaterial);
+  floor.rotation.x = -Math.PI / 2;
+  floor.position.y = -2;
+  floor.receiveShadow = true;
+  scene.add(floor);
+
+  // Office walls
+  const wallMaterial = new THREE.MeshStandardMaterial({ 
+    color: 0xeeeeee,
+    roughness: 0.9
+  });
+  
+  // Back wall
+  const backWall = new THREE.Mesh(new THREE.PlaneGeometry(20, 8), wallMaterial);
+  backWall.position.set(0, 2, -10);
+  backWall.receiveShadow = true;
+  scene.add(backWall);
+  
+  // Side walls
+  const leftWall = new THREE.Mesh(new THREE.PlaneGeometry(20, 8), wallMaterial);
+  leftWall.rotation.y = Math.PI / 2;
+  leftWall.position.set(-10, 2, 0);
+  leftWall.receiveShadow = true;
+  scene.add(leftWall);
+
+  // Desk
+  const deskGeometry = new THREE.BoxGeometry(4, 0.1, 2);
+  const deskMaterial = new THREE.MeshStandardMaterial({ 
+    color: 0x8B4513,
+    roughness: 0.6,
+    metalness: 0.1
+  });
+  const desk = new THREE.Mesh(deskGeometry, deskMaterial);
+  desk.position.set(-2, -1.5, -4);
+  desk.castShadow = true;
+  desk.receiveShadow = true;
+  scene.add(desk);
+
+  // Desk legs
+  const legGeometry = new THREE.BoxGeometry(0.1, 1.4, 0.1);
+  const legMaterial = new THREE.MeshStandardMaterial({ color: 0x654321 });
+  
+  const legPositions = [
+    [-3.8, -2.2, -4.8],
+    [-0.2, -2.2, -4.8],
+    [-3.8, -2.2, -3.2],
+    [-0.2, -2.2, -3.2]
+  ];
+  
+  legPositions.forEach(pos => {
+    const leg = new THREE.Mesh(legGeometry, legMaterial);
+    leg.position.set(pos[0], pos[1], pos[2]);
+    leg.castShadow = true;
+    scene.add(leg);
+  });
+
+  // Office chair
+  const chairSeat = new THREE.Mesh(
+    new THREE.BoxGeometry(1, 0.1, 1),
+    new THREE.MeshStandardMaterial({ color: 0x333333 })
+  );
+  chairSeat.position.set(-2, -1.3, -2);
+  chairSeat.castShadow = true;
+  scene.add(chairSeat);
+
+  const chairBack = new THREE.Mesh(
+    new THREE.BoxGeometry(1, 1.2, 0.1),
+    new THREE.MeshStandardMaterial({ color: 0x333333 })
+  );
+  chairBack.position.set(-2, -0.7, -2.5);
+  chairBack.castShadow = true;
+  scene.add(chairBack);
+
+  // Monitor
+  const monitorScreen = new THREE.Mesh(
+    new THREE.BoxGeometry(1.8, 1, 0.1),
+    new THREE.MeshStandardMaterial({ color: 0x000000 })
+  );
+  monitorScreen.position.set(-2, -0.8, -4.2);
+  monitorScreen.castShadow = true;
+  scene.add(monitorScreen);
+
+  // Monitor stand
+  const monitorStand = new THREE.Mesh(
+    new THREE.BoxGeometry(0.3, 0.5, 0.3),
+    new THREE.MeshStandardMaterial({ color: 0x666666 })
+  );
+  monitorStand.position.set(-2, -1.2, -4);
+  monitorStand.castShadow = true;
+  scene.add(monitorStand);
+
+  // Bookshelf
+  const shelfMaterial = new THREE.MeshStandardMaterial({ color: 0x8B4513 });
+  const shelf = new THREE.Mesh(new THREE.BoxGeometry(1.5, 4, 0.5), shelfMaterial);
+  shelf.position.set(-8, 0, -8);
+  shelf.castShadow = true;
+  shelf.receiveShadow = true;
+  scene.add(shelf);
+
+  // Books on shelf
+  const bookColors = [0xFF0000, 0x00FF00, 0x0000FF, 0xFFFF00, 0xFF00FF];
+  for (let i = 0; i < 8; i++) {
+    const book = new THREE.Mesh(
+      new THREE.BoxGeometry(0.1, 0.3, 0.2),
+      new THREE.MeshStandardMaterial({ color: bookColors[i % bookColors.length] })
+    );
+    book.position.set(-8.3 + (i % 4) * 0.15, 1 + Math.floor(i / 4) * 0.5, -8);
+    book.castShadow = true;
+    scene.add(book);
+  }
+
+  // Potted plant
+  const pot = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.3, 0.4, 0.5, 8),
+    new THREE.MeshStandardMaterial({ color: 0x8B4513 })
+  );
+  pot.position.set(2, -1.7, -7);
+  pot.castShadow = true;
+  scene.add(pot);
+
+  const plant = new THREE.Mesh(
+    new THREE.SphereGeometry(0.5, 8, 8),
+    new THREE.MeshStandardMaterial({ color: 0x228B22 })
+  );
+  plant.position.set(2, -1.2, -7);
+  plant.castShadow = true;
+  scene.add(plant);
+
+  // Window frame
+  const windowFrame = new THREE.Mesh(
+    new THREE.BoxGeometry(3, 2.5, 0.1),
+    new THREE.MeshStandardMaterial({ color: 0x8B4513 })
+  );
+  windowFrame.position.set(4, 1, -9.9);
+  windowFrame.castShadow = true;
+  scene.add(windowFrame);
+
+  // Window glass
+  const windowGlass = new THREE.Mesh(
+    new THREE.PlaneGeometry(2.8, 2.3),
+    new THREE.MeshStandardMaterial({ 
+      color: 0x87CEEB,
+      transparent: true,
+      opacity: 0.3
+    })
+  );
+  windowGlass.position.set(4, 1, -9.85);
+  scene.add(windowGlass);
 }
 
 export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
@@ -31,98 +188,10 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
       // Add lighting
       createLighting(scene);
 
-      // Try GLTF loader first (more reliable), fallback to FBX
-      const gltfLoader = new GLTFLoader();
-      const fbxLoader = new FBXLoader();
-      
-      // First attempt with GLTF format (if available)
-      gltfLoader.load(
-        '/models/office.glb',
-        (gltf) => {
-          console.log('GLTF model loaded successfully');
-          const object = gltf.scene;
-          
-          // Position and scale
-          object.scale.setScalar(0.03);
-          object.position.set(0, -2, 0);
-          object.rotation.y = Math.PI;
-          
-          // Enhance materials
-          object.traverse((child) => {
-            if (child instanceof THREE.Mesh) {
-              child.castShadow = true;
-              child.receiveShadow = true;
-              
-              if (child.material) {
-                if (child.material instanceof THREE.MeshStandardMaterial) {
-                  child.material.roughness = 0.7;
-                  child.material.metalness = 0.1;
-                  child.material.needsUpdate = true;
-                }
-              }
-            }
-          });
-
-          scene.add(object);
-          setIsModelLoaded(true);
-          onLoaded();
-        },
-        (progress) => {
-          console.log('GLTF Loading progress:', (progress.loaded / progress.total * 100) + '%');
-        },
-        (error) => {
-          console.log('GLTF not available, trying FBX format');
-          
-          // Fallback to FBX loader
-          fbxLoader.load(
-            '/models/office.fbx',
-            (object) => {
-              console.log('FBX loaded successfully');
-              
-              // Basic positioning
-              object.scale.setScalar(0.03);
-              object.position.set(0, -2, 0);
-              object.rotation.y = Math.PI;
-              
-              // Simple material enhancement
-              object.traverse((child) => {
-                if (child instanceof THREE.Mesh) {
-                  child.castShadow = true;
-                  child.receiveShadow = true;
-                  
-                  if (child.material) {
-                    const material = new THREE.MeshStandardMaterial({
-                      color: 0xffffff,
-                      roughness: 0.7,
-                      metalness: 0.1
-                    });
-                    
-                    // Preserve embedded textures
-                    if ((child.material as any).map) {
-                      material.map = (child.material as any).map;
-                    }
-                    
-                    child.material = material;
-                  }
-                }
-              });
-
-              scene.add(object);
-              setIsModelLoaded(true);
-              onLoaded();
-            },
-            (progress) => {
-              console.log('FBX Loading progress:', (progress.loaded / progress.total * 100) + '%');
-            },
-            (error) => {
-              console.error('Both GLTF and FBX loading failed:', error);
-              createFallbackEnvironment(scene);
-              setIsModelLoaded(true);
-              onLoaded();
-            }
-          );
-        }
-      );
+      // Create a professional office environment without external model loading
+      createOfficeEnvironment(scene);
+      setIsModelLoaded(true);
+      onLoaded();
 
       // Handle resize
       const handleResizeEvent = () => handleResize(camera, renderer);
@@ -149,101 +218,7 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
     }
   }, [onLoaded, onError]);
 
-  const createFallbackEnvironment = (scene: THREE.Scene) => {
-    // Create a simple office-like environment as fallback
-    
-    // Floor
-    const floorGeometry = new THREE.PlaneGeometry(20, 20);
-    const floorMaterial = new THREE.MeshStandardMaterial({ 
-      color: 0x444444,
-      roughness: 0.8,
-      metalness: 0.1
-    });
-    const floor = new THREE.Mesh(floorGeometry, floorMaterial);
-    floor.rotation.x = -Math.PI / 2;
-    floor.receiveShadow = true;
-    scene.add(floor);
 
-    // Walls
-    const wallMaterial = new THREE.MeshStandardMaterial({ 
-      color: 0xf0f0f0,
-      roughness: 0.9,
-      metalness: 0.0
-    });
-
-    // Back wall
-    const backWallGeometry = new THREE.PlaneGeometry(20, 8);
-    const backWall = new THREE.Mesh(backWallGeometry, wallMaterial);
-    backWall.position.set(0, 4, -10);
-    scene.add(backWall);
-
-    // Side walls
-    const sideWallGeometry = new THREE.PlaneGeometry(20, 8);
-    const leftWall = new THREE.Mesh(sideWallGeometry, wallMaterial);
-    leftWall.position.set(-10, 4, 0);
-    leftWall.rotation.y = Math.PI / 2;
-    scene.add(leftWall);
-
-    const rightWall = new THREE.Mesh(sideWallGeometry, wallMaterial);
-    rightWall.position.set(10, 4, 0);
-    rightWall.rotation.y = -Math.PI / 2;
-    scene.add(rightWall);
-
-    // Desk
-    const deskGeometry = new THREE.BoxGeometry(4, 0.1, 2);
-    const deskMaterial = new THREE.MeshStandardMaterial({ 
-      color: 0x8B4513,
-      roughness: 0.6,
-      metalness: 0.2
-    });
-    const desk = new THREE.Mesh(deskGeometry, deskMaterial);
-    desk.position.set(0, 1.5, -3);
-    desk.castShadow = true;
-    scene.add(desk);
-
-    // Chair
-    const chairGeometry = new THREE.BoxGeometry(1, 0.1, 1);
-    const chairMaterial = new THREE.MeshStandardMaterial({ 
-      color: 0x333333,
-      roughness: 0.7,
-      metalness: 0.3
-    });
-    const chair = new THREE.Mesh(chairGeometry, chairMaterial);
-    chair.position.set(0, 0.8, -1);
-    chair.castShadow = true;
-    scene.add(chair);
-
-    // Chair back
-    const chairBackGeometry = new THREE.BoxGeometry(1, 1.5, 0.1);
-    const chairBack = new THREE.Mesh(chairBackGeometry, chairMaterial);
-    chairBack.position.set(0, 1.5, -0.5);
-    chairBack.castShadow = true;
-    scene.add(chairBack);
-
-    // Monitor
-    const monitorGeometry = new THREE.BoxGeometry(1.5, 1, 0.1);
-    const monitorMaterial = new THREE.MeshStandardMaterial({ 
-      color: 0x111111,
-      roughness: 0.3,
-      metalness: 0.8
-    });
-    const monitor = new THREE.Mesh(monitorGeometry, monitorMaterial);
-    monitor.position.set(0, 2, -2.8);
-    monitor.castShadow = true;
-    scene.add(monitor);
-
-    // Bookshelf
-    const shelfGeometry = new THREE.BoxGeometry(0.3, 6, 2);
-    const shelfMaterial = new THREE.MeshStandardMaterial({ 
-      color: 0x654321,
-      roughness: 0.8,
-      metalness: 0.1
-    });
-    const bookshelf = new THREE.Mesh(shelfGeometry, shelfMaterial);
-    bookshelf.position.set(-6, 3, -6);
-    bookshelf.castShadow = true;
-    scene.add(bookshelf);
-  };
 
   return (
     <div 
