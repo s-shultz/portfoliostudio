@@ -43,27 +43,26 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
           object.position.set(0, -2, 0);
           object.rotation.y = Math.PI; // Rotate to face the right direction
           
-          // Create a mapping of texture names to their paths
+          // Updated texture mapping with correct file extensions
           const textureMap: { [key: string]: string } = {
-            'Backdrop': '/textures/Backdrop.jpg',
+            'Backdrop': '/textures/Backdrop.jpeg',
             'BakedSkirtingBoard': '/textures/BakedSkirtingBoard.png',
             'BakedWall': '/textures/BakedWall.png',
             'BakedWallNormal': '/textures/BakedWallNormal.png',
             'ChairBaked': '/textures/ChairBaked.png',
-            'ClockBaked': '/textures/ClockBaked.png',
             'ClockfaceBaked': '/textures/ClockfaceBaked.png',
             'CupboardBaked': '/textures/CupboardBaked.png',
             'CurtainBaked': '/textures/CurtainBaked.png',
-            'DeskPainting': '/textures/DeskPainting.jpg',
-            'Dirt': '/textures/Dirt.jpg',
+            'DeskPainting': '/textures/DeskPainting.jpeg',
+            'Dirt': '/textures/Dirt.jpeg',
             'Floorbaked': '/textures/Floorbaked.png',
             'Glass2': '/textures/Glass2.png',
             'GlassNormal': '/textures/GlassNormal.png',
             'Keyboard': '/textures/Keyboard.png',
             'Notepad': '/textures/Notepad.png',
-            'Painting1': '/textures/Painting1.jpg',
-            'Painting2': '/textures/Painting2.jpg',
-            'Painting3': '/textures/Painting3.jpg',
+            'Painting1': '/textures/Painting1.jpeg',
+            'Painting2': '/textures/Painting2.jpeg',
+            'Painting3': '/textures/Painting3.jpeg',
             'PlugBaked': '/textures/PlugBaked.png',
             'RoofBaked': '/textures/RoofBaked.png',
             'RoofNormal': '/textures/RoofNormal.png',
@@ -75,14 +74,14 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
           // Let's examine the structure and apply textures based on FBX material names
           console.log('Analyzing FBX structure...');
           
-          // Create texture atlas for different parts of the office
+          // Create texture atlas with correct file extensions
           const officeTextures = {
             floor: textureLoader.load('/textures/Floorbaked.png'),
             wall: textureLoader.load('/textures/BakedWall.png'),
             roof: textureLoader.load('/textures/RoofBaked.png'),
             chair: textureLoader.load('/textures/ChairBaked.png'),
             cupboard: textureLoader.load('/textures/CupboardBaked.png'),
-            backdrop: textureLoader.load('/textures/Backdrop.jpg'),
+            backdrop: textureLoader.load('/textures/Backdrop.jpeg'),
             clock: textureLoader.load('/textures/ClockfaceBaked.png'),
             towel: textureLoader.load('/textures/TowelBaked.png'),
             curtain: textureLoader.load('/textures/CurtainBaked.png'),
@@ -94,13 +93,21 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
             notepad: textureLoader.load('/textures/Notepad.png')
           };
           
-          // Configure all textures
-          Object.values(officeTextures).forEach(texture => {
+          // Configure all textures with proper settings
+          Object.entries(officeTextures).forEach(([name, texture]) => {
             texture.flipY = false;
             texture.wrapS = THREE.RepeatWrapping;
             texture.wrapT = THREE.RepeatWrapping;
             texture.generateMipmaps = true;
           });
+          
+          // Test texture loading with explicit callbacks
+          const testTexture = textureLoader.load(
+            '/textures/Floorbaked.png',
+            () => console.log('✓ Test texture loaded successfully'),
+            undefined,
+            (error) => console.error('✗ Test texture failed:', error)
+          );
           
           // Create materials for different office components
           const officeMaterials = {
@@ -148,40 +155,52 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
             })
           };
           
-          // Apply materials based on FBX structure and names
+          // Detailed analysis and material application
+          let meshCount = 0;
+          let materialCount = 0;
+          
           object.traverse((child) => {
             if (child instanceof THREE.Mesh) {
+              meshCount++;
               child.castShadow = true;
               child.receiveShadow = true;
               
               const meshName = child.name.toLowerCase();
               const materialName = child.material?.name?.toLowerCase() || '';
               
-              console.log(`Mesh: "${child.name}", Material: "${child.material?.name || 'none'}"`);
+              console.log(`[${meshCount}] Mesh: "${child.name}"`);
+              console.log(`     Material: "${child.material?.name || 'none'}"`);
+              console.log(`     Geometry: ${child.geometry.type}, Vertices: ${child.geometry.attributes.position?.count || 0}`);
               
-              // Apply appropriate material based on mesh/material names
+              // The FBX appears to have a simple structure - let's apply comprehensive texturing
+              // For the main office mesh, apply multiple textures or a comprehensive one
               if (meshName.includes('backdrop') || materialName.includes('backdrop')) {
                 child.material = officeMaterials.backdrop.clone();
-              } else if (meshName.includes('floor') || materialName.includes('floor')) {
-                child.material = officeMaterials.floor.clone();
-              } else if (meshName.includes('wall') || materialName.includes('wall')) {
-                child.material = officeMaterials.wall.clone();
-              } else if (meshName.includes('roof') || meshName.includes('ceiling') || materialName.includes('roof')) {
-                child.material = officeMaterials.roof.clone();
-              } else if (meshName.includes('chair') || materialName.includes('chair')) {
-                child.material = officeMaterials.chair.clone();
-              } else if (meshName.includes('glass') || materialName.includes('glass')) {
-                child.material = officeMaterials.glass.clone();
-              } else if (meshName.includes('furniture') || meshName.includes('cupboard') || meshName.includes('desk')) {
-                child.material = officeMaterials.furniture.clone();
+                console.log(`     → Applied backdrop material`);
               } else {
-                // For the main office geometry, apply a comprehensive material
-                child.material = officeMaterials.generic.clone();
+                // For the main office geometry, let's try the floor texture which seems comprehensive
+                const mainMaterial = new THREE.MeshStandardMaterial({
+                  map: officeTextures.floor,
+                  color: 0xffffff,
+                  roughness: 0.7,
+                  metalness: 0.1
+                });
+                child.material = mainMaterial;
+                console.log(`     → Applied main office material with floor texture`);
+                materialCount++;
               }
-              
-              console.log(`Applied material to ${child.name}`);
             }
           });
+          
+          console.log(`Total meshes processed: ${meshCount}, Materials applied: ${materialCount}`);
+          
+          // Also check if textures are actually loaded by testing one
+          setTimeout(() => {
+            console.log('Texture loading status after 2 seconds:');
+            console.log('Floor texture loaded:', officeTextures.floor.image?.complete || false);
+            console.log('Backdrop texture loaded:', officeTextures.backdrop.image?.complete || false);
+            console.log('Wall texture loaded:', officeTextures.wall.image?.complete || false);
+          }, 2000);
 
           scene.add(object);
           setIsModelLoaded(true);
