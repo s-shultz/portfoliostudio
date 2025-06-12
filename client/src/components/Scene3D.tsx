@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { FBXLoader } from "three/addons/loaders/FBXLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { initializeScene, createLighting, handleResize } from "../lib/three-utils";
@@ -30,67 +31,98 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
       // Add lighting
       createLighting(scene);
 
-      // Minimal FBX loader to avoid runtime errors
-      try {
-        const fbxLoader = new FBXLoader();
-        
-        fbxLoader.load(
-          '/models/office.fbx',
-          (object) => {
-            console.log('FBX loaded successfully');
-            
-            // Basic positioning
-            object.scale.setScalar(0.03);
-            object.position.set(0, -2, 0);
-            object.rotation.y = Math.PI;
-            
-            // Simple material enhancement without complex texture loading
-            object.traverse((child) => {
-              if (child instanceof THREE.Mesh) {
-                child.castShadow = true;
-                child.receiveShadow = true;
-                
-                // Convert to MeshStandardMaterial for better lighting
-                if (child.material) {
-                  const material = new THREE.MeshStandardMaterial({
-                    color: 0xffffff,
-                    roughness: 0.7,
-                    metalness: 0.1
-                  });
-                  
-                  // If the original material has a texture, keep it
-                  if ((child.material as any).map) {
-                    material.map = (child.material as any).map;
-                  }
-                  
-                  child.material = material;
+      // Try GLTF loader first (more reliable), fallback to FBX
+      const gltfLoader = new GLTFLoader();
+      const fbxLoader = new FBXLoader();
+      
+      // First attempt with GLTF format (if available)
+      gltfLoader.load(
+        '/models/office.glb',
+        (gltf) => {
+          console.log('GLTF model loaded successfully');
+          const object = gltf.scene;
+          
+          // Position and scale
+          object.scale.setScalar(0.03);
+          object.position.set(0, -2, 0);
+          object.rotation.y = Math.PI;
+          
+          // Enhance materials
+          object.traverse((child) => {
+            if (child instanceof THREE.Mesh) {
+              child.castShadow = true;
+              child.receiveShadow = true;
+              
+              if (child.material) {
+                if (child.material instanceof THREE.MeshStandardMaterial) {
+                  child.material.roughness = 0.7;
+                  child.material.metalness = 0.1;
+                  child.material.needsUpdate = true;
                 }
               }
-            });
+            }
+          });
 
-            scene.add(object);
-            setIsModelLoaded(true);
-            onLoaded();
-            console.log('Office model added to scene');
-          },
-          (progress) => {
-            const percent = (progress.loaded / progress.total * 100);
-            console.log('Loading progress:', percent + '%');
-          },
-          (error) => {
-            console.error('FBX loading error:', error);
-            // Create fallback environment
-            createFallbackEnvironment(scene);
-            setIsModelLoaded(true);
-            onLoaded();
-          }
-        );
-      } catch (error) {
-        console.error('FBX loader initialization error:', error);
-        createFallbackEnvironment(scene);
-        setIsModelLoaded(true);
-        onLoaded();
-      }
+          scene.add(object);
+          setIsModelLoaded(true);
+          onLoaded();
+        },
+        (progress) => {
+          console.log('GLTF Loading progress:', (progress.loaded / progress.total * 100) + '%');
+        },
+        (error) => {
+          console.log('GLTF not available, trying FBX format');
+          
+          // Fallback to FBX loader
+          fbxLoader.load(
+            '/models/office.fbx',
+            (object) => {
+              console.log('FBX loaded successfully');
+              
+              // Basic positioning
+              object.scale.setScalar(0.03);
+              object.position.set(0, -2, 0);
+              object.rotation.y = Math.PI;
+              
+              // Simple material enhancement
+              object.traverse((child) => {
+                if (child instanceof THREE.Mesh) {
+                  child.castShadow = true;
+                  child.receiveShadow = true;
+                  
+                  if (child.material) {
+                    const material = new THREE.MeshStandardMaterial({
+                      color: 0xffffff,
+                      roughness: 0.7,
+                      metalness: 0.1
+                    });
+                    
+                    // Preserve embedded textures
+                    if ((child.material as any).map) {
+                      material.map = (child.material as any).map;
+                    }
+                    
+                    child.material = material;
+                  }
+                }
+              });
+
+              scene.add(object);
+              setIsModelLoaded(true);
+              onLoaded();
+            },
+            (progress) => {
+              console.log('FBX Loading progress:', (progress.loaded / progress.total * 100) + '%');
+            },
+            (error) => {
+              console.error('Both GLTF and FBX loading failed:', error);
+              createFallbackEnvironment(scene);
+              setIsModelLoaded(true);
+              onLoaded();
+            }
+          );
+        }
+      );
 
       // Handle resize
       const handleResizeEvent = () => handleResize(camera, renderer);
