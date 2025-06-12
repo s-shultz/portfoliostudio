@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { RectAreaLightHelper } from "three/addons/helpers/RectAreaLightHelper.js";
 
 export interface SceneSetup {
   scene: THREE.Scene;
@@ -59,29 +60,50 @@ export function createLighting(scene: THREE.Scene): void {
   const ambientLight = new THREE.AmbientLight(0xf0f8ff, 1.2); // Slightly blue-tinted for daylight
   scene.add(ambientLight);
 
-  // Main directional light simulating window light
-  const directionalLight = new THREE.DirectionalLight(0xfff8e1, 0.8); // Warm daylight
-  directionalLight.position.set(8, 12, 6);
-  directionalLight.castShadow = false;
-  scene.add(directionalLight);
+  // Strong window light streaming in from outside
+  const windowLight1 = new THREE.DirectionalLight(0xfff5d6, 1.5); // Bright warm sunlight
+  windowLight1.position.set(10, 8, 0); // Coming from the side window
+  windowLight1.target.position.set(0, 0, 0);
+  scene.add(windowLight1);
+  scene.add(windowLight1.target);
 
-  // Secondary fill light for even illumination
-  const fillLight = new THREE.DirectionalLight(0xe8f4f8, 0.6); // Cool fill light
-  fillLight.position.set(-6, 8, -4);
-  scene.add(fillLight);
+  // Additional window light from another angle
+  const windowLight2 = new THREE.DirectionalLight(0xfff8e1, 1.2); // Warm daylight
+  windowLight2.position.set(6, 10, -8); // Coming from back window
+  windowLight2.target.position.set(0, 0, 0);
+  scene.add(windowLight2);
+  scene.add(windowLight2.target);
 
-  // Overhead office lighting
-  const ceilingLight1 = new THREE.PointLight(0xffffff, 2.0, 20);
+  // Soft bounced light for realistic fill
+  const bouncedLight = new THREE.DirectionalLight(0xe8f4f8, 0.4); // Cool fill light
+  bouncedLight.position.set(-6, 6, 4);
+  scene.add(bouncedLight);
+
+  // Overhead office lighting (reduced to let window light dominate)
+  const ceilingLight1 = new THREE.PointLight(0xffffff, 1.2, 20);
   ceilingLight1.position.set(0, 10, 0);
   scene.add(ceilingLight1);
 
-  const ceilingLight2 = new THREE.PointLight(0xffffff, 1.5, 18);
+  const ceilingLight2 = new THREE.PointLight(0xffffff, 0.8, 18);
   ceilingLight2.position.set(-4, 9, -4);
   scene.add(ceilingLight2);
 
-  const ceilingLight3 = new THREE.PointLight(0xffffff, 1.5, 18);
+  const ceilingLight3 = new THREE.PointLight(0xffffff, 0.8, 18);
   ceilingLight3.position.set(4, 9, 4);
   scene.add(ceilingLight3);
+
+  // Window-adjacent spot lights to simulate focused light spill
+  const windowSpill1 = new THREE.SpotLight(0xfff8e1, 2.5, 15, Math.PI / 4, 0.2);
+  windowSpill1.position.set(8, 6, 0);
+  windowSpill1.target.position.set(0, 0, 0);
+  scene.add(windowSpill1);
+  scene.add(windowSpill1.target);
+
+  const windowSpill2 = new THREE.SpotLight(0xfff5d6, 2.0, 12, Math.PI / 3, 0.3);
+  windowSpill2.position.set(0, 6, -8);
+  windowSpill2.target.position.set(0, 0, 0);
+  scene.add(windowSpill2);
+  scene.add(windowSpill2.target);
 
   // Warm accent lights to simulate desk lamps
   const deskLight = new THREE.PointLight(0xfff4e6, 0.8, 8);
