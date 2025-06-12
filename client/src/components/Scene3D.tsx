@@ -90,10 +90,10 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene) {
     // Third monitor (right) - Computer display model
     const monitor3Data = await modelLoader.loadGLTF("/models/computer_display.glb");
     const monitor3 = monitor3Data.scene.clone();
-    monitor3.position.set(-5, -3, 10); // Positioned to the right
-    monitor3.scale.setScalar(2.5); // Scale up for generated model
+    monitor3.position.set(-5, 0, 5); // Positioned to the right
+    monitor3.scale.setScalar(10); // Scale up for generated model
     monitor3.rotation.x = 0; // Upright position
-    monitor3.rotation.y = Math.PI * 1.25; // Angled toward chair from right
+    monitor3.rotation.y = Math.PI * 0; // Angled toward chair from right
     monitor3.rotation.z = 0;
     scene.add(monitor3);
 
