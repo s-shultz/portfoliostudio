@@ -22,7 +22,7 @@ export function initializeScene(container: HTMLElement): SceneSetup {
     0.1,
     1000
   );
-  camera.position.set(5, 3, 8);
+  camera.position.set(3, 4, 12); // Moved back and slightly higher for better chair view
 
   // Renderer
   const renderer = new THREE.WebGLRenderer({ 
