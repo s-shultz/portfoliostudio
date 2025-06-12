@@ -112,11 +112,11 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene) {
       console.log("Tablet children count:", tablet.children.length);
 
       // Position the tablet on the desk in front of the monitors
-      const tabletScale = 2.5; // Scale up as recommended for generated models
+      const tabletScale = 3.5; // Scale up as recommended for generated models
       
-      tablet.position.set(-2, -1.35, -2.8); // On the desk, in front of the monitors
+      tablet.position.set(-4, -5, 5); // On the desk, in front of the monitors
       tablet.scale.setScalar(tabletScale);
-      tablet.rotation.x = 0; // Lying flat on the desk
+      tablet.rotation.x = Math.PI; // Flip upside down to correct orientation
       tablet.rotation.y = 0; // Facing forward
       tablet.rotation.z = 0;
       
