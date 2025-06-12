@@ -70,27 +70,27 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene) {
     const monitorScale = 0.63; // 3 times larger than 0.21
 
     // First monitor (left)
-    monitor1.position.set(-5, -4, 6); // Moved up by 1 unit
+    monitor1.position.set(-5, -3, 3); // Moved up by 1 unit
     monitor1.scale.setScalar(monitorScale);
     monitor1.rotation.x = Math.PI; // Flip upright
-    monitor1.rotation.y = Math.PI * 0.75; // Angled toward chair
+    monitor1.rotation.y = Math.PI * 0.55; // Angled toward chair
     monitor1.rotation.z = 0;
     scene.add(monitor1);
 
     // Second monitor (center)
     const monitor2Data = await modelLoader.loadGLTF("/models/ultrawide_monitor.glb");
     const monitor2 = monitor2Data.scene.clone();
-    monitor2.position.set(-5, -4, 8); // Moved up by 1 unit
+    monitor2.position.set(-5, -3, 8); // Moved up by 1 unit
     monitor2.scale.setScalar(monitorScale);
     monitor2.rotation.x = Math.PI; // Flip upright
-    monitor2.rotation.y = Math.PI; // Face straight toward chair
+    monitor2.rotation.y = Math.PI * 0.5; // Face straight toward chair
     monitor2.rotation.z = 0;
     scene.add(monitor2);
 
     // Third monitor (right)
     const monitor3Data = await modelLoader.loadGLTF("/models/ultrawide_monitor.glb");
     const monitor3 = monitor3Data.scene.clone();
-    monitor3.position.set(-5, -4, 10); // Moved up by 1 unit
+    monitor3.position.set(-5, -3, 10); // Moved up by 1 unit
     monitor3.scale.setScalar(monitorScale);
     monitor3.rotation.x = Math.PI; // Flip upright
     monitor3.rotation.y = Math.PI * 1.25; // Angled toward chair from right
