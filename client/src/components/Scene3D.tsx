@@ -63,34 +63,18 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene) {
       }
     });
     
-    // Create 3 monitors in a row on the desk
-    const monitorScale = 5.3; // Reduced by a third from 8.0
+    // Single monitor on the desk
+    const monitorScale = 5.3;
     const monitorY = -1.8; // Lower position on desk
     
-    // First monitor (left)
-    monitor1.position.set(-1.5, monitorY, -0.5);
+    // Position single monitor in center of desk
+    monitor1.position.set(-0.8, monitorY, -0.4);
     monitor1.scale.setScalar(monitorScale);
-    monitor1.rotation.y = Math.PI * 0.6; // Angled towards camera
+    monitor1.rotation.y = Math.PI * 0.75; // Face towards camera
     scene.add(monitor1);
     
-    // Load second monitor (center)
-    const monitor2Data = await modelLoader.loadGLTF('/models/monitors.glb');
-    const monitor2 = monitor2Data.scene.clone();
-    monitor2.position.set(-0.8, monitorY, -0.4);
-    monitor2.scale.setScalar(monitorScale);
-    monitor2.rotation.y = Math.PI * 0.75; // Center monitor facing camera
-    scene.add(monitor2);
-    
-    // Load third monitor (right)
-    const monitor3Data = await modelLoader.loadGLTF('/models/monitors.glb');
-    const monitor3 = monitor3Data.scene.clone();
-    monitor3.position.set(-0.1, monitorY, -0.3);
-    monitor3.scale.setScalar(monitorScale);
-    monitor3.rotation.y = Math.PI * 0.9; // Right monitor angled inward
-    scene.add(monitor3);
-    
-    console.log('Monitor 2 positioned at:', monitor2.position);
-    console.log('Monitor 2 scale:', monitor2.scale);
+    console.log('Monitor positioned at:', monitor1.position);
+    console.log('Monitor scale:', monitor1.scale);
     
     console.log('Monitors loaded and positioned successfully');
     
