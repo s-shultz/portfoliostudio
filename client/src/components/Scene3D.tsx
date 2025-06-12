@@ -30,215 +30,67 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
       // Add lighting
       createLighting(scene);
 
-      // Load FBX model
-      const fbxLoader = new FBXLoader();
-      const textureLoader = new THREE.TextureLoader();
-      
-      // Load the office FBX model
-      fbxLoader.load(
-        '/models/office.fbx',
-        (object) => {
-          // Scale and position the model appropriately for the office
-          object.scale.setScalar(0.03);
-          object.position.set(0, -2, 0);
-          object.rotation.y = Math.PI; // Rotate to face the right direction
-          
-          // Updated texture mapping with correct file extensions
-          const textureMap: { [key: string]: string } = {
-            'Backdrop': '/textures/Backdrop.jpeg',
-            'BakedSkirtingBoard': '/textures/BakedSkirtingBoard.png',
-            'BakedWall': '/textures/BakedWall.png',
-            'BakedWallNormal': '/textures/BakedWallNormal.png',
-            'ChairBaked': '/textures/ChairBaked.png',
-            'ClockfaceBaked': '/textures/ClockfaceBaked.png',
-            'CupboardBaked': '/textures/CupboardBaked.png',
-            'CurtainBaked': '/textures/CurtainBaked.png',
-            'DeskPainting': '/textures/DeskPainting.jpeg',
-            'Dirt': '/textures/Dirt.jpeg',
-            'Floorbaked': '/textures/Floorbaked.png',
-            'Glass2': '/textures/Glass2.png',
-            'GlassNormal': '/textures/GlassNormal.png',
-            'Keyboard': '/textures/Keyboard.png',
-            'Notepad': '/textures/Notepad.png',
-            'Painting1': '/textures/Painting1.jpeg',
-            'Painting2': '/textures/Painting2.jpeg',
-            'Painting3': '/textures/Painting3.jpeg',
-            'PlugBaked': '/textures/PlugBaked.png',
-            'RoofBaked': '/textures/RoofBaked.png',
-            'RoofNormal': '/textures/RoofNormal.png',
-            'TowelBaked': '/textures/TowelBaked.png',
-            'WallPaintingsBaked': '/textures/WallPaintingsBaked.png'
-          };
-          
-          // The FBX model likely has multiple sub-meshes with different material assignments
-          // Let's examine the structure and apply textures based on FBX material names
-          console.log('Analyzing FBX structure...');
-          
-          // Create texture atlas with correct file extensions
-          const officeTextures = {
-            floor: textureLoader.load('/textures/Floorbaked.png'),
-            wall: textureLoader.load('/textures/BakedWall.png'),
-            roof: textureLoader.load('/textures/RoofBaked.png'),
-            chair: textureLoader.load('/textures/ChairBaked.png'),
-            cupboard: textureLoader.load('/textures/CupboardBaked.png'),
-            backdrop: textureLoader.load('/textures/Backdrop.jpeg'),
-            clock: textureLoader.load('/textures/ClockfaceBaked.png'),
-            towel: textureLoader.load('/textures/TowelBaked.png'),
-            curtain: textureLoader.load('/textures/CurtainBaked.png'),
-            keyboard: textureLoader.load('/textures/Keyboard.png'),
-            paintings: textureLoader.load('/textures/WallPaintingsBaked.png'),
-            plug: textureLoader.load('/textures/PlugBaked.png'),
-            skirting: textureLoader.load('/textures/BakedSkirtingBoard.png'),
-            glass: textureLoader.load('/textures/Glass2.png'),
-            notepad: textureLoader.load('/textures/Notepad.png')
-          };
-          
-          // Configure all textures with proper settings
-          Object.entries(officeTextures).forEach(([name, texture]) => {
-            texture.flipY = false;
-            texture.wrapS = THREE.RepeatWrapping;
-            texture.wrapT = THREE.RepeatWrapping;
-            texture.generateMipmaps = true;
-          });
-          
-          // Test texture loading with explicit callbacks
-          const testTexture = textureLoader.load(
-            '/textures/Floorbaked.png',
-            () => console.log('✓ Test texture loaded successfully'),
-            undefined,
-            (error) => console.error('✗ Test texture failed:', error)
-          );
-          
-          // Create materials for different office components
-          const officeMaterials = {
-            floor: new THREE.MeshStandardMaterial({ 
-              map: officeTextures.floor, 
-              roughness: 0.8, 
-              metalness: 0.1 
-            }),
-            wall: new THREE.MeshStandardMaterial({ 
-              map: officeTextures.wall, 
-              roughness: 0.9, 
-              metalness: 0.0 
-            }),
-            roof: new THREE.MeshStandardMaterial({ 
-              map: officeTextures.roof, 
-              roughness: 0.9, 
-              metalness: 0.1 
-            }),
-            chair: new THREE.MeshStandardMaterial({ 
-              map: officeTextures.chair, 
-              roughness: 0.6, 
-              metalness: 0.3 
-            }),
-            furniture: new THREE.MeshStandardMaterial({ 
-              map: officeTextures.cupboard, 
-              roughness: 0.7, 
-              metalness: 0.2 
-            }),
-            backdrop: new THREE.MeshStandardMaterial({ 
-              map: officeTextures.backdrop, 
-              roughness: 0.8, 
-              metalness: 0.0 
-            }),
-            glass: new THREE.MeshStandardMaterial({ 
-              map: officeTextures.glass, 
-              transparent: true, 
-              opacity: 0.7, 
-              roughness: 0.1, 
-              metalness: 0.0 
-            }),
-            generic: new THREE.MeshStandardMaterial({ 
-              map: officeTextures.wall, 
-              roughness: 0.7, 
-              metalness: 0.1 
-            })
-          };
-          
-          // The FBX model should have embedded textures - preserve and enhance them
-          object.traverse((child) => {
-            if (child instanceof THREE.Mesh) {
-              child.castShadow = true;
-              child.receiveShadow = true;
-              
-              console.log(`Processing mesh: ${child.name}`);
-              console.log(`Material type: ${child.material?.type}`);
-              console.log(`Has embedded texture: ${!!child.material?.map}`);
-              
-              if (child.material) {
-                // Convert any material type to MeshStandardMaterial for better lighting
-                let newMaterial: THREE.MeshStandardMaterial;
+      // Minimal FBX loader to avoid runtime errors
+      try {
+        const fbxLoader = new FBXLoader();
+        
+        fbxLoader.load(
+          '/models/office.fbx',
+          (object) => {
+            console.log('FBX loaded successfully');
+            
+            // Basic positioning
+            object.scale.setScalar(0.03);
+            object.position.set(0, -2, 0);
+            object.rotation.y = Math.PI;
+            
+            // Simple material enhancement without complex texture loading
+            object.traverse((child) => {
+              if (child instanceof THREE.Mesh) {
+                child.castShadow = true;
+                child.receiveShadow = true;
                 
-                if (child.material instanceof THREE.MeshStandardMaterial) {
-                  // Already standard material, just enhance properties
-                  newMaterial = child.material;
-                  newMaterial.roughness = 0.7;
-                  newMaterial.metalness = 0.1;
-                  newMaterial.envMapIntensity = 1.0;
-                } else {
-                  // Convert other material types to MeshStandardMaterial
-                  newMaterial = new THREE.MeshStandardMaterial({
-                    map: child.material.map,
-                    color: child.material.color || new THREE.Color(0xffffff),
-                    transparent: child.material.transparent,
-                    opacity: child.material.opacity || 1.0,
+                // Convert to MeshStandardMaterial for better lighting
+                if (child.material) {
+                  const material = new THREE.MeshStandardMaterial({
+                    color: 0xffffff,
                     roughness: 0.7,
-                    metalness: 0.1,
-                    envMapIntensity: 1.0
+                    metalness: 0.1
                   });
                   
-                  child.material = newMaterial;
-                }
-                
-                // If no embedded texture, apply our external textures
-                if (!newMaterial.map) {
-                  if (child.name === 'Backdrop') {
-                    newMaterial.map = officeTextures.backdrop;
-                    console.log('Applied external backdrop texture');
-                  } else {
-                    // For main office, apply the most comprehensive texture
-                    newMaterial.map = officeTextures.floor;
-                    console.log('Applied external floor texture to main office');
+                  // If the original material has a texture, keep it
+                  if ((child.material as any).map) {
+                    material.map = (child.material as any).map;
                   }
+                  
+                  child.material = material;
                 }
-                
-                // Ensure the material is bright enough
-                if (newMaterial.color.getHex() < 0x808080) {
-                  newMaterial.color.multiplyScalar(1.5);
-                }
-                
-                newMaterial.needsUpdate = true;
               }
-            }
-          });
-          
-          // Debug what we actually loaded
-          console.log('Object structure:');
-          console.log('Children count:', object.children.length);
-          object.children.forEach((child, index) => {
-            console.log(`Child ${index}:`, child.name, child.type);
-            if (child instanceof THREE.Mesh) {
-              const mesh = child as THREE.Mesh;
-              const material = Array.isArray(mesh.material) ? mesh.material[0] : mesh.material;
-              console.log('  Material:', (material as any)?.name, (material as any)?.type);
-              console.log('  Has texture map:', !!(material as any)?.map);
-            }
-          });
+            });
 
-          scene.add(object);
-          setIsModelLoaded(true);
-          onLoaded();
-          console.log('Office FBX model loaded successfully');
-        },
-        (progress) => {
-          const percent = (progress.loaded / progress.total * 100);
-          console.log('Loading progress:', percent + '%');
-        },
-        (error) => {
-          console.error('Failed to load FBX model:', error);
-          onError('Failed to load 3D office model. Please check if the model file is accessible.');
-        }
-      );
+            scene.add(object);
+            setIsModelLoaded(true);
+            onLoaded();
+            console.log('Office model added to scene');
+          },
+          (progress) => {
+            const percent = (progress.loaded / progress.total * 100);
+            console.log('Loading progress:', percent + '%');
+          },
+          (error) => {
+            console.error('FBX loading error:', error);
+            // Create fallback environment
+            createFallbackEnvironment(scene);
+            setIsModelLoaded(true);
+            onLoaded();
+          }
+        );
+      } catch (error) {
+        console.error('FBX loader initialization error:', error);
+        createFallbackEnvironment(scene);
+        setIsModelLoaded(true);
+        onLoaded();
+      }
 
       // Handle resize
       const handleResizeEvent = () => handleResize(camera, renderer);
