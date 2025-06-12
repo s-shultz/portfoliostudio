@@ -64,9 +64,9 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene) {
     });
     
     // Position first monitor on the desk (in front of plant area)
-    monitor1.position.set(-1.2, -1.2, -0.8); // Higher on desk surface
-    monitor1.scale.setScalar(0.4); // Much larger scale - 5x bigger
-    monitor1.rotation.y = Math.PI + 0.2; // Slight angle for natural positioning
+    monitor1.position.set(-1.2, -1.6, -0.8); // Lower on desk surface
+    monitor1.scale.setScalar(8.0); // 100x larger than original 0.08
+    monitor1.rotation.y = Math.PI * 0.75; // Rotated towards camera
     scene.add(monitor1);
     
     console.log('Monitor 1 positioned at:', monitor1.position);
@@ -77,9 +77,9 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene) {
     const monitor2 = monitor2Data.scene.clone();
     
     // Position second monitor next to the first
-    monitor2.position.set(-0.4, -1.2, -0.6); // Higher and more visible position
-    monitor2.scale.setScalar(0.4); // Same much larger scale
-    monitor2.rotation.y = Math.PI - 0.1; // Slight different angle
+    monitor2.position.set(-0.4, -1.6, -0.6); // Lower and next to first monitor
+    monitor2.scale.setScalar(8.0); // Same massive scale
+    monitor2.rotation.y = Math.PI * 0.8; // Slightly different angle towards camera
     scene.add(monitor2);
     
     console.log('Monitor 2 positioned at:', monitor2.position);
