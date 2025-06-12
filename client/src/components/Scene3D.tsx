@@ -71,75 +71,116 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
             'WallPaintingsBaked': '/textures/WallPaintingsBaked.png'
           };
           
-          // Pre-load all textures with better error handling
-          const loadedTextures: { [key: string]: THREE.Texture } = {};
-          const texturePromises: Promise<void>[] = [];
+          // The FBX model likely has multiple sub-meshes with different material assignments
+          // Let's examine the structure and apply textures based on FBX material names
+          console.log('Analyzing FBX structure...');
           
-          Object.entries(textureMap).forEach(([name, path]) => {
-            const promise = new Promise<void>((resolve, reject) => {
-              const texture = textureLoader.load(
-                path,
-                (loadedTexture) => {
-                  loadedTexture.flipY = false;
-                  loadedTexture.wrapS = THREE.RepeatWrapping;
-                  loadedTexture.wrapT = THREE.RepeatWrapping;
-                  loadedTextures[name] = loadedTexture;
-                  console.log(`Successfully loaded texture: ${name}`);
-                  resolve();
-                },
-                undefined,
-                (error) => {
-                  console.warn(`Failed to load texture ${name}:`, error);
-                  resolve(); // Continue even if texture fails
-                }
-              );
-            });
-            texturePromises.push(promise);
+          // Create texture atlas for different parts of the office
+          const officeTextures = {
+            floor: textureLoader.load('/textures/Floorbaked.png'),
+            wall: textureLoader.load('/textures/BakedWall.png'),
+            roof: textureLoader.load('/textures/RoofBaked.png'),
+            chair: textureLoader.load('/textures/ChairBaked.png'),
+            cupboard: textureLoader.load('/textures/CupboardBaked.png'),
+            backdrop: textureLoader.load('/textures/Backdrop.jpg'),
+            clock: textureLoader.load('/textures/ClockfaceBaked.png'),
+            towel: textureLoader.load('/textures/TowelBaked.png'),
+            curtain: textureLoader.load('/textures/CurtainBaked.png'),
+            keyboard: textureLoader.load('/textures/Keyboard.png'),
+            paintings: textureLoader.load('/textures/WallPaintingsBaked.png'),
+            plug: textureLoader.load('/textures/PlugBaked.png'),
+            skirting: textureLoader.load('/textures/BakedSkirtingBoard.png'),
+            glass: textureLoader.load('/textures/Glass2.png'),
+            notepad: textureLoader.load('/textures/Notepad.png')
+          };
+          
+          // Configure all textures
+          Object.values(officeTextures).forEach(texture => {
+            texture.flipY = false;
+            texture.wrapS = THREE.RepeatWrapping;
+            texture.wrapT = THREE.RepeatWrapping;
+            texture.generateMipmaps = true;
           });
           
-          // Apply materials after texture loading
-          Promise.all(texturePromises).then(() => {
-            console.log(`Loaded ${Object.keys(loadedTextures).length} textures`);
-            
-            // Apply comprehensive material replacement
-            object.traverse((child) => {
-              if (child instanceof THREE.Mesh) {
-                child.castShadow = true;
-                child.receiveShadow = true;
-                
-                console.log(`Processing: ${child.name}, Original material: ${child.material?.name || 'unnamed'}`);
-                
-                // Create new material based on mesh name and apply appropriate texture
-                let newMaterial: THREE.MeshStandardMaterial;
-                
-                if (child.name === 'Backdrop' || child.material?.name === 'Backdrop') {
-                  newMaterial = new THREE.MeshStandardMaterial({
-                    map: loadedTextures['Backdrop'] || null,
-                    color: 0xffffff,
-                    roughness: 0.8,
-                    metalness: 0.0
-                  });
-                  console.log('Applied Backdrop material');
-                } else {
-                  // For the main office geometry, apply the comprehensive baked texture
-                  newMaterial = new THREE.MeshStandardMaterial({
-                    map: loadedTextures['Floorbaked'] || loadedTextures['BakedWall'] || null,
-                    color: 0xffffff,
-                    roughness: 0.7,
-                    metalness: 0.1
-                  });
-                  console.log('Applied main office material');
-                }
-                
-                // Ensure material is bright enough
-                if (!newMaterial.map) {
-                  newMaterial.color = new THREE.Color(0xf0f0f0);
-                  console.log('No texture available, using bright fallback color');
-                }
-                
-                child.material = newMaterial;
+          // Create materials for different office components
+          const officeMaterials = {
+            floor: new THREE.MeshStandardMaterial({ 
+              map: officeTextures.floor, 
+              roughness: 0.8, 
+              metalness: 0.1 
+            }),
+            wall: new THREE.MeshStandardMaterial({ 
+              map: officeTextures.wall, 
+              roughness: 0.9, 
+              metalness: 0.0 
+            }),
+            roof: new THREE.MeshStandardMaterial({ 
+              map: officeTextures.roof, 
+              roughness: 0.9, 
+              metalness: 0.1 
+            }),
+            chair: new THREE.MeshStandardMaterial({ 
+              map: officeTextures.chair, 
+              roughness: 0.6, 
+              metalness: 0.3 
+            }),
+            furniture: new THREE.MeshStandardMaterial({ 
+              map: officeTextures.cupboard, 
+              roughness: 0.7, 
+              metalness: 0.2 
+            }),
+            backdrop: new THREE.MeshStandardMaterial({ 
+              map: officeTextures.backdrop, 
+              roughness: 0.8, 
+              metalness: 0.0 
+            }),
+            glass: new THREE.MeshStandardMaterial({ 
+              map: officeTextures.glass, 
+              transparent: true, 
+              opacity: 0.7, 
+              roughness: 0.1, 
+              metalness: 0.0 
+            }),
+            generic: new THREE.MeshStandardMaterial({ 
+              map: officeTextures.wall, 
+              roughness: 0.7, 
+              metalness: 0.1 
+            })
+          };
+          
+          // Apply materials based on FBX structure and names
+          object.traverse((child) => {
+            if (child instanceof THREE.Mesh) {
+              child.castShadow = true;
+              child.receiveShadow = true;
+              
+              const meshName = child.name.toLowerCase();
+              const materialName = child.material?.name?.toLowerCase() || '';
+              
+              console.log(`Mesh: "${child.name}", Material: "${child.material?.name || 'none'}"`);
+              
+              // Apply appropriate material based on mesh/material names
+              if (meshName.includes('backdrop') || materialName.includes('backdrop')) {
+                child.material = officeMaterials.backdrop.clone();
+              } else if (meshName.includes('floor') || materialName.includes('floor')) {
+                child.material = officeMaterials.floor.clone();
+              } else if (meshName.includes('wall') || materialName.includes('wall')) {
+                child.material = officeMaterials.wall.clone();
+              } else if (meshName.includes('roof') || meshName.includes('ceiling') || materialName.includes('roof')) {
+                child.material = officeMaterials.roof.clone();
+              } else if (meshName.includes('chair') || materialName.includes('chair')) {
+                child.material = officeMaterials.chair.clone();
+              } else if (meshName.includes('glass') || materialName.includes('glass')) {
+                child.material = officeMaterials.glass.clone();
+              } else if (meshName.includes('furniture') || meshName.includes('cupboard') || meshName.includes('desk')) {
+                child.material = officeMaterials.furniture.clone();
+              } else {
+                // For the main office geometry, apply a comprehensive material
+                child.material = officeMaterials.generic.clone();
               }
-            });
+              
+              console.log(`Applied material to ${child.name}`);
+            }
           });
 
           scene.add(object);
