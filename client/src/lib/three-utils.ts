@@ -33,8 +33,8 @@ export function initializeScene(container: HTMLElement): SceneSetup {
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.toneMapping = THREE.ReinhardToneMapping;
-  renderer.toneMappingExposure = 1.0;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.4; // Increased for brighter appearance
 
 
   container.appendChild(renderer.domElement);
@@ -55,33 +55,33 @@ export function initializeScene(container: HTMLElement): SceneSetup {
 }
 
 export function createLighting(scene: THREE.Scene): void {
-  // Bright ambient light for baked textures - reduced intensity
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
+  // Bright ambient light for natural office lighting
+  const ambientLight = new THREE.AmbientLight(0xf0f8ff, 1.2); // Slightly blue-tinted for daylight
   scene.add(ambientLight);
 
-  // Soft directional light to enhance details without overpowering baked lighting
-  const directionalLight = new THREE.DirectionalLight(0xffffff, 0.4);
-  directionalLight.position.set(5, 10, 5);
-  directionalLight.castShadow = false; // Disable shadows for baked lighting
+  // Main directional light simulating window light
+  const directionalLight = new THREE.DirectionalLight(0xfff8e1, 0.8); // Warm daylight
+  directionalLight.position.set(8, 12, 6);
+  directionalLight.castShadow = false;
   scene.add(directionalLight);
 
-  // Fill light from the opposite side
-  const fillLight = new THREE.DirectionalLight(0xffffff, 1.0);
-  fillLight.position.set(-5, 10, -5);
+  // Secondary fill light for even illumination
+  const fillLight = new THREE.DirectionalLight(0xe8f4f8, 0.6); // Cool fill light
+  fillLight.position.set(-6, 8, -4);
   scene.add(fillLight);
 
-  // Additional overhead lighting to simulate office ceiling lights
-  const overheadLight1 = new THREE.PointLight(0xffffff, 1.5, 15);
-  overheadLight1.position.set(0, 8, 0);
-  scene.add(overheadLight1);
+  // Overhead office lighting
+  const ceilingLight1 = new THREE.PointLight(0xffffff, 2.0, 20);
+  ceilingLight1.position.set(0, 10, 0);
+  scene.add(ceilingLight1);
 
-  const overheadLight2 = new THREE.PointLight(0xffffff, 1.2, 12);
-  overheadLight2.position.set(-3, 6, -3);
-  scene.add(overheadLight2);
+  const ceilingLight2 = new THREE.PointLight(0xffffff, 1.5, 18);
+  ceilingLight2.position.set(-4, 9, -4);
+  scene.add(ceilingLight2);
 
-  const overheadLight3 = new THREE.PointLight(0xffffff, 1.2, 12);
-  overheadLight3.position.set(3, 6, 3);
-  scene.add(overheadLight3);
+  const ceilingLight3 = new THREE.PointLight(0xffffff, 1.5, 18);
+  ceilingLight3.position.set(4, 9, 4);
+  scene.add(ceilingLight3);
 
   // Warm accent lights to simulate desk lamps
   const deskLight = new THREE.PointLight(0xfff4e6, 0.8, 8);
