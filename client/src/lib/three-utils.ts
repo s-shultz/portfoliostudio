@@ -21,7 +21,7 @@ export function initializeScene(container: HTMLElement): SceneSetup {
     0.1,
     1000
   );
-  camera.position.set(10, 8, 10);
+  camera.position.set(5, 3, 8);
 
   // Renderer
   const renderer = new THREE.WebGLRenderer({ 
@@ -43,9 +43,10 @@ export function initializeScene(container: HTMLElement): SceneSetup {
   controls.enableDamping = true;
   controls.dampingFactor = 0.05;
   controls.screenSpacePanning = false;
-  controls.minDistance = 5;
-  controls.maxDistance = 50;
-  controls.maxPolarAngle = Math.PI / 2;
+  controls.minDistance = 2;
+  controls.maxDistance = 15;
+  controls.maxPolarAngle = Math.PI / 2.2;
+  controls.target.set(0, 1, 0);
   controls.autoRotate = false;
   controls.autoRotateSpeed = 0.5;
 

@@ -81,44 +81,76 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
               if (child.material instanceof THREE.MeshStandardMaterial) {
                 const materialName = child.material.name;
                 
-                // Try to find matching texture
+                // Enhanced texture mapping based on material names
+                let textureFound = false;
+                
+                // Check material name for texture matches
                 for (const [texName, texPath] of Object.entries(textureMap)) {
                   if (materialName.toLowerCase().includes(texName.toLowerCase()) || 
-                      child.name.toLowerCase().includes(texName.toLowerCase())) {
+                      child.name.toLowerCase().includes(texName.toLowerCase()) ||
+                      child.material.name.toLowerCase().includes(texName.toLowerCase())) {
                     
-                    const texture = textureLoader.load(texPath);
+                    const texture = textureLoader.load(texPath, 
+                      () => console.log(`Loaded texture: ${texPath}`),
+                      undefined,
+                      (error) => console.warn(`Failed to load texture: ${texPath}`, error)
+                    );
                     texture.flipY = false;
                     texture.wrapS = THREE.RepeatWrapping;
                     texture.wrapT = THREE.RepeatWrapping;
                     
                     child.material.map = texture;
                     
-                    // Apply normal maps where available
-                    if (texName === 'BakedWall' && textureMap['BakedWallNormal']) {
-                      const normalTexture = textureLoader.load(textureMap['BakedWallNormal']);
-                      normalTexture.flipY = false;
-                      child.material.normalMap = normalTexture;
-                    }
-                    if (texName === 'RoofBaked' && textureMap['RoofNormal']) {
-                      const normalTexture = textureLoader.load(textureMap['RoofNormal']);
-                      normalTexture.flipY = false;
-                      child.material.normalMap = normalTexture;
-                    }
-                    if (texName === 'Glass2' && textureMap['GlassNormal']) {
-                      const normalTexture = textureLoader.load(textureMap['GlassNormal']);
-                      normalTexture.flipY = false;
-                      child.material.normalMap = normalTexture;
+                    // Apply specific material properties for different surfaces
+                    if (texName.includes('Glass')) {
                       child.material.transparent = true;
-                      child.material.opacity = 0.8;
+                      child.material.opacity = 0.7;
+                      child.material.roughness = 0.1;
+                      child.material.metalness = 0.0;
+                      
+                      if (textureMap['GlassNormal']) {
+                        const normalTexture = textureLoader.load(textureMap['GlassNormal']);
+                        normalTexture.flipY = false;
+                        child.material.normalMap = normalTexture;
+                      }
+                    } else if (texName.includes('Wall')) {
+                      child.material.roughness = 0.8;
+                      child.material.metalness = 0.0;
+                      
+                      if (textureMap['BakedWallNormal']) {
+                        const normalTexture = textureLoader.load(textureMap['BakedWallNormal']);
+                        normalTexture.flipY = false;
+                        child.material.normalMap = normalTexture;
+                      }
+                    } else if (texName.includes('Roof')) {
+                      child.material.roughness = 0.9;
+                      child.material.metalness = 0.1;
+                      
+                      if (textureMap['RoofNormal']) {
+                        const normalTexture = textureLoader.load(textureMap['RoofNormal']);
+                        normalTexture.flipY = false;
+                        child.material.normalMap = normalTexture;
+                      }
+                    } else if (texName.includes('Floor')) {
+                      child.material.roughness = 0.6;
+                      child.material.metalness = 0.2;
+                    } else {
+                      child.material.roughness = 0.7;
+                      child.material.metalness = 0.1;
                     }
                     
+                    textureFound = true;
                     break;
                   }
                 }
                 
-                // Enhance material properties
-                child.material.roughness = 0.7;
-                child.material.metalness = 0.1;
+                // Fallback texture assignment if no specific match found
+                if (!textureFound && child.material instanceof THREE.MeshStandardMaterial) {
+                  // Apply a generic material enhancement
+                  child.material.roughness = 0.7;
+                  child.material.metalness = 0.1;
+                }
+                
                 child.material.needsUpdate = true;
               }
             }
