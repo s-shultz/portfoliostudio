@@ -71,87 +71,61 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
             'WallPaintingsBaked': '/textures/WallPaintingsBaked.png'
           };
           
-          // Traverse and apply proper materials with textures
+          // Apply comprehensive material and lighting solution
           object.traverse((child) => {
             if (child instanceof THREE.Mesh) {
               child.castShadow = true;
               child.receiveShadow = true;
               
-              // Apply appropriate material based on the mesh name or existing material
-              if (child.material instanceof THREE.MeshStandardMaterial) {
-                const materialName = child.material.name;
+              // Replace all materials with properly lit MeshStandardMaterials
+              const materials = Array.isArray(child.material) ? child.material : [child.material];
+              const newMaterials: THREE.MeshStandardMaterial[] = [];
+              
+              materials.forEach((material, index) => {
+                // Create a new bright MeshStandardMaterial
+                const newMaterial = new THREE.MeshStandardMaterial({
+                  color: 0xffffff, // Pure white for maximum brightness
+                  roughness: 0.6,
+                  metalness: 0.1,
+                  envMapIntensity: 1.0
+                });
                 
-                // Enhanced texture mapping based on material names
-                let textureFound = false;
-                
-                // Check material name for texture matches
-                for (const [texName, texPath] of Object.entries(textureMap)) {
-                  if (materialName.toLowerCase().includes(texName.toLowerCase()) || 
-                      child.name.toLowerCase().includes(texName.toLowerCase()) ||
-                      child.material.name.toLowerCase().includes(texName.toLowerCase())) {
-                    
-                    const texture = textureLoader.load(texPath, 
-                      () => console.log(`Loaded texture: ${texPath}`),
-                      undefined,
-                      (error) => console.warn(`Failed to load texture: ${texPath}`, error)
-                    );
-                    texture.flipY = false;
-                    texture.wrapS = THREE.RepeatWrapping;
-                    texture.wrapT = THREE.RepeatWrapping;
-                    
-                    child.material.map = texture;
-                    
-                    // Apply specific material properties for different surfaces
-                    if (texName.includes('Glass')) {
-                      child.material.transparent = true;
-                      child.material.opacity = 0.7;
-                      child.material.roughness = 0.1;
-                      child.material.metalness = 0.0;
-                      
-                      if (textureMap['GlassNormal']) {
-                        const normalTexture = textureLoader.load(textureMap['GlassNormal']);
-                        normalTexture.flipY = false;
-                        child.material.normalMap = normalTexture;
-                      }
-                    } else if (texName.includes('Wall')) {
-                      child.material.roughness = 0.8;
-                      child.material.metalness = 0.0;
-                      
-                      if (textureMap['BakedWallNormal']) {
-                        const normalTexture = textureLoader.load(textureMap['BakedWallNormal']);
-                        normalTexture.flipY = false;
-                        child.material.normalMap = normalTexture;
-                      }
-                    } else if (texName.includes('Roof')) {
-                      child.material.roughness = 0.9;
-                      child.material.metalness = 0.1;
-                      
-                      if (textureMap['RoofNormal']) {
-                        const normalTexture = textureLoader.load(textureMap['RoofNormal']);
-                        normalTexture.flipY = false;
-                        child.material.normalMap = normalTexture;
-                      }
-                    } else if (texName.includes('Floor')) {
-                      child.material.roughness = 0.6;
-                      child.material.metalness = 0.2;
-                    } else {
-                      child.material.roughness = 0.7;
-                      child.material.metalness = 0.1;
+                // Apply the main office texture to the unnamed material (main geometry)
+                if (!material.name || material.name === '' || child.name === 'Small_Office') {
+                  // Load a comprehensive texture for the main office geometry
+                  const mainTexture = textureLoader.load('/textures/Floorbaked.png', 
+                    () => console.log('Applied main office texture'),
+                    undefined,
+                    (error) => {
+                      console.log('Main texture failed, using bright material');
+                      // If texture fails, use a bright colored material
+                      newMaterial.color = new THREE.Color(0xf5f5f5);
                     }
-                    
-                    textureFound = true;
-                    break;
-                  }
+                  );
+                  mainTexture.flipY = false;
+                  newMaterial.map = mainTexture;
+                } else if (material.name === 'Backdrop') {
+                  // Apply backdrop texture
+                  const backdropTexture = textureLoader.load('/textures/Backdrop.jpg',
+                    () => console.log('Applied backdrop texture'),
+                    undefined,
+                    (error) => {
+                      console.log('Backdrop texture failed, using default');
+                      newMaterial.color = new THREE.Color(0xe8e8e8);
+                    }
+                  );
+                  backdropTexture.flipY = false;
+                  newMaterial.map = backdropTexture;
                 }
                 
-                // Fallback texture assignment if no specific match found
-                if (!textureFound && child.material instanceof THREE.MeshStandardMaterial) {
-                  // Apply a generic material enhancement
-                  child.material.roughness = 0.7;
-                  child.material.metalness = 0.1;
-                }
-                
-                child.material.needsUpdate = true;
+                newMaterials.push(newMaterial);
+              });
+              
+              // Apply new materials
+              if (Array.isArray(child.material)) {
+                child.material = newMaterials;
+              } else {
+                child.material = newMaterials[0];
               }
             }
           });

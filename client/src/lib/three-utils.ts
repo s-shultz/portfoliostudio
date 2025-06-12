@@ -34,7 +34,7 @@ export function initializeScene(container: HTMLElement): SceneSetup {
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.5;
+  renderer.toneMappingExposure = 2.2;
 
   container.appendChild(renderer.domElement);
 
@@ -54,48 +54,52 @@ export function initializeScene(container: HTMLElement): SceneSetup {
 }
 
 export function createLighting(scene: THREE.Scene): void {
-  // Ambient light for general illumination
-  const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
+  // Higher ambient light for better overall illumination
+  const ambientLight = new THREE.AmbientLight(0x404040, 1.2);
   scene.add(ambientLight);
 
-  // Main directional light (key light)
-  const directionalLight = new THREE.DirectionalLight(0xffffff, 1.2);
-  directionalLight.position.set(10, 20, 10);
+  // Main directional light (key light) - positioned to light the office interior
+  const directionalLight = new THREE.DirectionalLight(0xffffff, 2.0);
+  directionalLight.position.set(5, 15, 5);
   directionalLight.target.position.set(0, 0, 0);
   directionalLight.castShadow = true;
   
-  // Shadow camera settings
+  // Shadow camera settings optimized for office space
   directionalLight.shadow.camera.near = 0.1;
-  directionalLight.shadow.camera.far = 50;
-  directionalLight.shadow.camera.left = -20;
-  directionalLight.shadow.camera.right = 20;
-  directionalLight.shadow.camera.top = 20;
-  directionalLight.shadow.camera.bottom = -20;
-  directionalLight.shadow.mapSize.width = 2048;
-  directionalLight.shadow.mapSize.height = 2048;
-  directionalLight.shadow.bias = -0.0001;
+  directionalLight.shadow.camera.far = 30;
+  directionalLight.shadow.camera.left = -10;
+  directionalLight.shadow.camera.right = 10;
+  directionalLight.shadow.camera.top = 10;
+  directionalLight.shadow.camera.bottom = -10;
+  directionalLight.shadow.mapSize.width = 1024;
+  directionalLight.shadow.mapSize.height = 1024;
+  directionalLight.shadow.bias = -0.001;
 
   scene.add(directionalLight);
   scene.add(directionalLight.target);
 
-  // Fill light (opposite side)
-  const fillLight = new THREE.DirectionalLight(0x8899ff, 0.4);
-  fillLight.position.set(-10, 15, -5);
+  // Fill light from the opposite side
+  const fillLight = new THREE.DirectionalLight(0xffffff, 1.0);
+  fillLight.position.set(-5, 10, -5);
   scene.add(fillLight);
 
-  // Rim light (from behind)
-  const rimLight = new THREE.DirectionalLight(0xffffff, 0.8);
-  rimLight.position.set(0, 10, -20);
-  scene.add(rimLight);
+  // Additional overhead lighting to simulate office ceiling lights
+  const overheadLight1 = new THREE.PointLight(0xffffff, 1.5, 15);
+  overheadLight1.position.set(0, 8, 0);
+  scene.add(overheadLight1);
 
-  // Point lights for accent lighting
-  const pointLight1 = new THREE.PointLight(0xff9500, 0.8, 20);
-  pointLight1.position.set(-8, 5, 5);
-  scene.add(pointLight1);
+  const overheadLight2 = new THREE.PointLight(0xffffff, 1.2, 12);
+  overheadLight2.position.set(-3, 6, -3);
+  scene.add(overheadLight2);
 
-  const pointLight2 = new THREE.PointLight(0x0099ff, 0.6, 15);
-  pointLight2.position.set(8, 3, -5);
-  scene.add(pointLight2);
+  const overheadLight3 = new THREE.PointLight(0xffffff, 1.2, 12);
+  overheadLight3.position.set(3, 6, 3);
+  scene.add(overheadLight3);
+
+  // Warm accent lights to simulate desk lamps
+  const deskLight = new THREE.PointLight(0xfff4e6, 0.8, 8);
+  deskLight.position.set(1, 3, -2);
+  scene.add(deskLight);
 }
 
 export function handleResize(
