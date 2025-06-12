@@ -152,7 +152,7 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene, monito
     
     const activeScreen = new THREE.Mesh(screenGeometry, screenMaterial);
     activeScreen.position.set(-9.0, 1.3, 4.6);
-    activeScreen.rotation.set(0.2, Math.PI * 0.55, 0);
+    activeScreen.rotation.set(0.05, Math.PI * 0.55, 0);
     
     // Add subtle glow effect that matches the new screen size
     const glowGeometry = new THREE.PlaneGeometry(5.0, 3.0);
