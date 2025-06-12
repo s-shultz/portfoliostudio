@@ -18,13 +18,22 @@ export class ModelLoader {
     this.renderer = renderer;
     this.loadingManager = new THREE.LoadingManager();
     
-    // Set up path resolution for FBX embedded textures
+    // Set up path resolution for FBX embedded textures and fbm folders
     this.loadingManager.setURLModifier((url) => {
+      console.log('Loading URL:', url);
+      
+      // Handle FBX material folder (.fbm) structure
+      if (url.includes('/models/Small Office.fbm/')) {
+        // Keep the .fbm folder structure intact
+        return url;
+      }
+      
       // If it's a texture file being loaded from models directory, redirect to textures
       if (url.includes('/models/') && (url.endsWith('.jpg') || url.endsWith('.jpeg') || url.endsWith('.png'))) {
         const filename = url.split('/').pop();
         return `/textures/${filename}`;
       }
+      
       return url;
     });
     
@@ -111,13 +120,58 @@ export class ModelLoader {
     return new Promise((resolve, reject) => {
       this.fbxLoader.load(
         path,
-        (object) => resolve(object),
+        (object) => {
+          // Process and clean up materials to reduce warnings
+          this.cleanupFBXMaterials(object);
+          resolve(object);
+        },
         (progress) => {
           const percent = (progress.loaded / progress.total) * 100;
           console.log(`FBX loading: ${percent.toFixed(1)}%`);
         },
-        (error) => reject(error)
+        (error) => {
+          console.error('FBX loading error details:', error);
+          reject(error);
+        }
       );
+    });
+  }
+
+  cleanupFBXMaterials(object: THREE.Object3D) {
+    object.traverse((child) => {
+      if ((child as THREE.Mesh).isMesh) {
+        const mesh = child as THREE.Mesh;
+        if (mesh.material) {
+          // Handle both single materials and material arrays
+          const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+          
+          materials.forEach((material) => {
+            // Convert old material types to MeshStandardMaterial to reduce warnings
+            if (!(material instanceof THREE.MeshStandardMaterial)) {
+              const standardMaterial = new THREE.MeshStandardMaterial();
+              
+              // Copy common properties safely
+              if ((material as any).color) standardMaterial.color = (material as any).color;
+              if ((material as any).map) standardMaterial.map = (material as any).map;
+              if ((material as any).normalMap) standardMaterial.normalMap = (material as any).normalMap;
+              if (material.transparent !== undefined) standardMaterial.transparent = material.transparent;
+              if (material.opacity !== undefined) standardMaterial.opacity = material.opacity;
+              
+              // Set reasonable defaults for PBR properties
+              standardMaterial.roughness = 0.8;
+              standardMaterial.metalness = 0.1;
+              
+              // Replace the material
+              if (Array.isArray(mesh.material)) {
+                const materialIndex = mesh.material.indexOf(material);
+                mesh.material[materialIndex] = standardMaterial;
+              } else {
+                mesh.material = standardMaterial;
+              }
+            }
+          });
+        }
+      }
     });
   }
 
