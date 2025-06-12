@@ -22,7 +22,14 @@ export class ModelLoader {
     this.loadingManager.setURLModifier((url) => {
       console.log('Loading URL:', url);
       
-      // Handle FBX material folder (.fbm) structure
+      // Handle FBX material folder (.fbm) structure - fix space mismatch
+      if (url.includes('/models/Small Office.fbm/')) {
+        // Convert spaced path to non-spaced path
+        const fixedUrl = url.replace('/models/Small Office.fbm/', '/models/SmallOffice.fbm/');
+        console.log(`Fixed .fbm path: ${url} -> ${fixedUrl}`);
+        return fixedUrl;
+      }
+      
       if (url.includes('/models/SmallOffice.fbm/')) {
         // Keep the .fbm folder structure intact
         return url;
@@ -158,29 +165,53 @@ export class ModelLoader {
           // Handle both single materials and material arrays
           const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
           
-          materials.forEach((material) => {
-            // Convert old material types to MeshStandardMaterial to reduce warnings
-            if (!(material instanceof THREE.MeshStandardMaterial)) {
-              const standardMaterial = new THREE.MeshStandardMaterial();
-              
-              // Copy common properties safely
-              if ((material as any).color) standardMaterial.color = (material as any).color;
-              if ((material as any).map) standardMaterial.map = (material as any).map;
-              if ((material as any).normalMap) standardMaterial.normalMap = (material as any).normalMap;
-              if (material.transparent !== undefined) standardMaterial.transparent = material.transparent;
-              if (material.opacity !== undefined) standardMaterial.opacity = material.opacity;
-              
-              // Set reasonable defaults for PBR properties
-              standardMaterial.roughness = 0.8;
-              standardMaterial.metalness = 0.1;
-              
-              // Replace the material
-              if (Array.isArray(mesh.material)) {
-                const materialIndex = mesh.material.indexOf(material);
-                mesh.material[materialIndex] = standardMaterial;
-              } else {
-                mesh.material = standardMaterial;
-              }
+          materials.forEach((material, index) => {
+            // Create a new MeshStandardMaterial to avoid FBX loader warnings
+            const standardMaterial = new THREE.MeshStandardMaterial();
+            
+            // Copy properties from the original material safely
+            if ((material as any).color) {
+              standardMaterial.color.copy((material as any).color);
+            }
+            
+            // Copy textures if they exist
+            if ((material as any).map) {
+              standardMaterial.map = (material as any).map;
+            }
+            
+            if ((material as any).normalMap) {
+              standardMaterial.normalMap = (material as any).normalMap;
+            }
+            
+            if ((material as any).emissiveMap) {
+              standardMaterial.emissiveMap = (material as any).emissiveMap;
+            }
+            
+            if ((material as any).aoMap) {
+              standardMaterial.aoMap = (material as any).aoMap;
+            }
+            
+            // Copy transparency settings
+            if (material.transparent !== undefined) {
+              standardMaterial.transparent = material.transparent;
+            }
+            
+            if (material.opacity !== undefined) {
+              standardMaterial.opacity = material.opacity;
+            }
+            
+            // Set PBR properties for realistic rendering
+            standardMaterial.roughness = 0.7;
+            standardMaterial.metalness = 0.1;
+            
+            // Copy material name for debugging
+            standardMaterial.name = material.name || `Material_${index}`;
+            
+            // Replace the material
+            if (Array.isArray(mesh.material)) {
+              mesh.material[index] = standardMaterial;
+            } else {
+              mesh.material = standardMaterial;
             }
           });
         }
