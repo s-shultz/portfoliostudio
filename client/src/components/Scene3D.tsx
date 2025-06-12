@@ -66,15 +66,33 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene) {
       }
     });
 
-    // Single hanging monitor
+    // Three hanging monitors side by side
     const monitorScale = 10.6; // Double the size from 5.3
 
-    // Position hanging monitor
-    monitor1.position.set(-5, -5, 8); // Positioned as requested
+    // First monitor (left)
+    monitor1.position.set(-6, -5, 8);
     monitor1.scale.setScalar(monitorScale);
-    monitor1.rotation.y = Math.PI * 0.6; // Rotated back 15 degrees
-    monitor1.rotation.z = Math.PI * 0.5; // Rotate 90 degrees to make it vertical
+    monitor1.rotation.y = Math.PI * 0.6;
+    monitor1.rotation.z = Math.PI * 0.5; // Vertical orientation
     scene.add(monitor1);
+
+    // Second monitor (center)
+    const monitor2Data = await modelLoader.loadGLTF("/models/hanging_monitor.glb");
+    const monitor2 = monitor2Data.scene.clone();
+    monitor2.position.set(-4, -5, 8);
+    monitor2.scale.setScalar(monitorScale);
+    monitor2.rotation.y = Math.PI * 0.6;
+    monitor2.rotation.z = Math.PI * 0.5; // Vertical orientation
+    scene.add(monitor2);
+
+    // Third monitor (right)
+    const monitor3Data = await modelLoader.loadGLTF("/models/hanging_monitor.glb");
+    const monitor3 = monitor3Data.scene.clone();
+    monitor3.position.set(-2, -5, 8);
+    monitor3.scale.setScalar(monitorScale);
+    monitor3.rotation.y = Math.PI * 0.6;
+    monitor3.rotation.z = Math.PI * 0.5; // Vertical orientation
+    scene.add(monitor3);
 
     console.log("Monitor positioned at:", monitor1.position);
     console.log("Monitor scale:", monitor1.scale);
