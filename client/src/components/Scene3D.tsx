@@ -72,8 +72,8 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene) {
     // First monitor (left)
     monitor1.position.set(-5, -5, 6);
     monitor1.scale.setScalar(monitorScale);
-    monitor1.rotation.x = 0; // No rotation - stands properly on desk
-    monitor1.rotation.y = 0;
+    monitor1.rotation.x = Math.PI; // Flip upright
+    monitor1.rotation.y = Math.PI; // Face towards chair
     monitor1.rotation.z = 0;
     scene.add(monitor1);
 
@@ -82,8 +82,8 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene) {
     const monitor2 = monitor2Data.scene.clone();
     monitor2.position.set(-5, -5, 8);
     monitor2.scale.setScalar(monitorScale);
-    monitor2.rotation.x = 0; // No rotation - stands properly on desk
-    monitor2.rotation.y = 0;
+    monitor2.rotation.x = Math.PI; // Flip upright
+    monitor2.rotation.y = Math.PI; // Face towards chair
     monitor2.rotation.z = 0;
     scene.add(monitor2);
 
@@ -92,8 +92,8 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene) {
     const monitor3 = monitor3Data.scene.clone();
     monitor3.position.set(-5, -5, 10);
     monitor3.scale.setScalar(monitorScale);
-    monitor3.rotation.x = 0; // No rotation - stands properly on desk
-    monitor3.rotation.y = 0;
+    monitor3.rotation.x = Math.PI; // Flip upright
+    monitor3.rotation.y = Math.PI; // Face towards chair
     monitor3.rotation.z = 0;
     scene.add(monitor3);
 
