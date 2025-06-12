@@ -121,13 +121,34 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene, monito
     
     // Load the UI/UX design image for the screen
     const textureLoader = new THREE.TextureLoader();
-    const uiuxTexture = textureLoader.load('/attached_assets/uiuxdesign_1749748940133.png');
+    const uiuxTexture = textureLoader.load(
+      '/uiuxdesign.png',
+      (texture) => {
+        console.log('UI/UX texture loaded successfully:', texture);
+        texture.needsUpdate = true;
+      },
+      (progress) => {
+        console.log('UI/UX texture loading progress:', progress);
+      },
+      (error) => {
+        console.error('Failed to load UI/UX texture:', error);
+      }
+    );
     
+    // Create a bright temporary screen while texture loads
     const screenMaterial = new THREE.MeshBasicMaterial({ 
-      map: uiuxTexture,
+      color: 0x4a90e2,
       transparent: false,
       side: THREE.DoubleSide
     });
+    
+    // Update material when texture loads successfully
+    uiuxTexture.onLoad = () => {
+      screenMaterial.map = uiuxTexture;
+      screenMaterial.color.setHex(0xffffff);
+      screenMaterial.needsUpdate = true;
+      console.log('UI/UX texture applied to screen material');
+    };
     
     const activeScreen = new THREE.Mesh(screenGeometry, screenMaterial);
     activeScreen.position.set(-10.2, -1.3, 5.1);
