@@ -116,8 +116,20 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene, monito
     monitor3.rotation.z = 0;
     scene.add(monitor3);
 
-    // Create screen surface properly sized for the scaled hanging monitor
-    const screenGeometry = new THREE.PlaneGeometry(2.2, 1.2);
+    // Find the exact screen dimensions by examining the hanging monitor model
+    let screenBounds = { width: 0.657, height: 0.323 };
+    monitor3.traverse((child: any) => {
+      if (child.isMesh && child.name.toLowerCase().includes('screen')) {
+        const box = new THREE.Box3().setFromObject(child);
+        const size = box.getSize(new THREE.Vector3());
+        screenBounds.width = size.x;
+        screenBounds.height = size.y;
+        console.log('Found screen mesh:', child.name, 'Size:', size);
+      }
+    });
+
+    // Create screen surface that exactly matches the hanging monitor's screen dimensions
+    const screenGeometry = new THREE.PlaneGeometry(screenBounds.width, screenBounds.height);
     
     // Load the UI/UX design image for the screen
     const textureLoader = new THREE.TextureLoader();
@@ -151,11 +163,22 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene, monito
     });
     
     const activeScreen = new THREE.Mesh(screenGeometry, screenMaterial);
-    activeScreen.position.set(-9.5, -1.2, 5.4);
-    activeScreen.rotation.set(0, Math.PI * 0.55, 0);
     
-    // Add subtle glow effect that matches the screen size
-    const glowGeometry = new THREE.PlaneGeometry(2.5, 1.5);
+    // Position screen exactly at the monitor's screen surface
+    // Monitor is at (-10, -1.5, 5) with rotation Y: 0.55π and scale 15
+    const monitorPos = new THREE.Vector3(-10, -1.5, 5);
+    const monitorRotation = Math.PI * 0.55;
+    
+    // Calculate the screen position with exact offset to be at the surface
+    const surfaceOffset = 0.021; // Half the screen depth (0.042/2) to be at surface
+    const screenX = monitorPos.x + Math.sin(monitorRotation) * surfaceOffset;
+    const screenZ = monitorPos.z + Math.cos(monitorRotation) * surfaceOffset;
+    
+    activeScreen.position.set(screenX, monitorPos.y, screenZ);
+    activeScreen.rotation.set(0, monitorRotation, 0);
+    
+    // Add subtle glow effect that matches the exact screen dimensions
+    const glowGeometry = new THREE.PlaneGeometry(screenBounds.width * 1.1, screenBounds.height * 1.1);
     const glowMaterial = new THREE.MeshBasicMaterial({
       color: 0x4a90e2,
       transparent: true,
