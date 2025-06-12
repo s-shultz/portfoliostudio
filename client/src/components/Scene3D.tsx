@@ -66,14 +66,14 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene) {
       }
     });
 
-    // Single monitor on the desk
-    const monitorScale = 5.3;
-    const monitorY = -1.8; // Lower position on desk
+    // Single hanging monitor
+    const monitorScale = 10.6; // Double the size from 5.3
 
-    // Position single monitor on left side of desk
+    // Position hanging monitor
     monitor1.position.set(-5, -5, 8); // Positioned as requested
     monitor1.scale.setScalar(monitorScale);
     monitor1.rotation.y = Math.PI * 0.6; // Rotated back 15 degrees
+    monitor1.rotation.z = Math.PI * 0.5; // Rotate 90 degrees to make it vertical
     scene.add(monitor1);
 
     console.log("Monitor positioned at:", monitor1.position);
