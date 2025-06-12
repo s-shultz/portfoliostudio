@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
 
 export class ModelLoader {
   scene: THREE.Scene;
@@ -7,6 +8,7 @@ export class ModelLoader {
   loadingManager: THREE.LoadingManager;
   textureLoader: THREE.TextureLoader;
   gltfLoader: GLTFLoader;
+  fbxLoader: FBXLoader;
   onLoadComplete?: () => void;
   onLoadProgress?: (progress: number, url: string) => void;
   onLoadError?: (url: string) => void;
@@ -17,6 +19,7 @@ export class ModelLoader {
     this.loadingManager = new THREE.LoadingManager();
     this.textureLoader = new THREE.TextureLoader(this.loadingManager);
     this.gltfLoader = new GLTFLoader(this.loadingManager);
+    this.fbxLoader = new FBXLoader(this.loadingManager);
     
     this.setupLoadingManager();
   }
@@ -41,8 +44,23 @@ export class ModelLoader {
 
   async loadSmallOfficeModel(modelPath: string, texturesConfig: Record<string, any> = {}) {
     try {
-      const gltf = await this.loadGLTF(modelPath);
-      const model = gltf.scene;
+      let model: THREE.Object3D;
+      let animations: THREE.AnimationClip[] = [];
+      let cameras: THREE.Camera[] = [];
+      let scenes: THREE.Group[] = [];
+
+      // Determine file type and load accordingly
+      if (modelPath.endsWith('.glb') || modelPath.endsWith('.gltf')) {
+        const gltf = await this.loadGLTF(modelPath);
+        model = gltf.scene;
+        animations = gltf.animations;
+        cameras = gltf.cameras;
+        scenes = gltf.scenes;
+      } else if (modelPath.endsWith('.fbx')) {
+        model = await this.loadFBX(modelPath);
+      } else {
+        throw new Error('Unsupported model format');
+      }
 
       if (Object.keys(texturesConfig).length > 0) {
         await this.applyTextures(model, texturesConfig);
@@ -53,9 +71,9 @@ export class ModelLoader {
 
       return {
         model: model,
-        animations: gltf.animations,
-        cameras: gltf.cameras,
-        scenes: gltf.scenes
+        animations: animations,
+        cameras: cameras,
+        scenes: scenes
       };
 
     } catch (error) {
