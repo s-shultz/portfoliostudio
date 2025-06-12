@@ -155,52 +155,74 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
             })
           };
           
-          // Detailed analysis and material application
-          let meshCount = 0;
-          let materialCount = 0;
-          
+          // The FBX model should have embedded textures - preserve and enhance them
           object.traverse((child) => {
             if (child instanceof THREE.Mesh) {
-              meshCount++;
               child.castShadow = true;
               child.receiveShadow = true;
               
-              const meshName = child.name.toLowerCase();
-              const materialName = child.material?.name?.toLowerCase() || '';
+              console.log(`Processing mesh: ${child.name}`);
+              console.log(`Material type: ${child.material?.type}`);
+              console.log(`Has embedded texture: ${!!child.material?.map}`);
               
-              console.log(`[${meshCount}] Mesh: "${child.name}"`);
-              console.log(`     Material: "${child.material?.name || 'none'}"`);
-              console.log(`     Geometry: ${child.geometry.type}, Vertices: ${child.geometry.attributes.position?.count || 0}`);
-              
-              // The FBX appears to have a simple structure - let's apply comprehensive texturing
-              // For the main office mesh, apply multiple textures or a comprehensive one
-              if (meshName.includes('backdrop') || materialName.includes('backdrop')) {
-                child.material = officeMaterials.backdrop.clone();
-                console.log(`     → Applied backdrop material`);
-              } else {
-                // For the main office geometry, let's try the floor texture which seems comprehensive
-                const mainMaterial = new THREE.MeshStandardMaterial({
-                  map: officeTextures.floor,
-                  color: 0xffffff,
-                  roughness: 0.7,
-                  metalness: 0.1
-                });
-                child.material = mainMaterial;
-                console.log(`     → Applied main office material with floor texture`);
-                materialCount++;
+              if (child.material) {
+                // Convert any material type to MeshStandardMaterial for better lighting
+                let newMaterial: THREE.MeshStandardMaterial;
+                
+                if (child.material instanceof THREE.MeshStandardMaterial) {
+                  // Already standard material, just enhance properties
+                  newMaterial = child.material;
+                  newMaterial.roughness = 0.7;
+                  newMaterial.metalness = 0.1;
+                  newMaterial.envMapIntensity = 1.0;
+                } else {
+                  // Convert other material types to MeshStandardMaterial
+                  newMaterial = new THREE.MeshStandardMaterial({
+                    map: child.material.map,
+                    color: child.material.color || new THREE.Color(0xffffff),
+                    transparent: child.material.transparent,
+                    opacity: child.material.opacity || 1.0,
+                    roughness: 0.7,
+                    metalness: 0.1,
+                    envMapIntensity: 1.0
+                  });
+                  
+                  child.material = newMaterial;
+                }
+                
+                // If no embedded texture, apply our external textures
+                if (!newMaterial.map) {
+                  if (child.name === 'Backdrop') {
+                    newMaterial.map = officeTextures.backdrop;
+                    console.log('Applied external backdrop texture');
+                  } else {
+                    // For main office, apply the most comprehensive texture
+                    newMaterial.map = officeTextures.floor;
+                    console.log('Applied external floor texture to main office');
+                  }
+                }
+                
+                // Ensure the material is bright enough
+                if (newMaterial.color.getHex() < 0x808080) {
+                  newMaterial.color.multiplyScalar(1.5);
+                }
+                
+                newMaterial.needsUpdate = true;
               }
             }
           });
           
-          console.log(`Total meshes processed: ${meshCount}, Materials applied: ${materialCount}`);
-          
-          // Also check if textures are actually loaded by testing one
-          setTimeout(() => {
-            console.log('Texture loading status after 2 seconds:');
-            console.log('Floor texture loaded:', officeTextures.floor.image?.complete || false);
-            console.log('Backdrop texture loaded:', officeTextures.backdrop.image?.complete || false);
-            console.log('Wall texture loaded:', officeTextures.wall.image?.complete || false);
-          }, 2000);
+          // Debug what we actually loaded
+          console.log('Object structure:');
+          console.log('Children count:', object.children.length);
+          object.children.forEach((child, index) => {
+            console.log(`Child ${index}:`, child.name, child.type);
+            if (child instanceof THREE.Mesh) {
+              const mesh = child as THREE.Mesh;
+              console.log('  Material:', mesh.material?.name, mesh.material?.type);
+              console.log('  Has texture map:', !!(mesh.material as any)?.map);
+            }
+          });
 
           scene.add(object);
           setIsModelLoaded(true);
