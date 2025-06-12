@@ -63,24 +63,34 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene) {
       }
     });
     
-    // Position first monitor on the desk (in front of plant area)
-    monitor1.position.set(-1.2, -1.6, -0.8); // Lower on desk surface
-    monitor1.scale.setScalar(8.0); // 100x larger than original 0.08
-    monitor1.rotation.y = Math.PI * 0.75; // Rotated towards camera
+    // Create 3 monitors in a row on the desk
+    const monitorScale = 5.3; // Reduced by a third from 8.0
+    const monitorY = -1.8; // Lower position on desk
+    
+    // First monitor (left)
+    monitor1.position.set(-1.5, monitorY, -0.5);
+    monitor1.scale.setScalar(monitorScale);
+    monitor1.rotation.z = -Math.PI * 0.1; // Tilt screens to face camera
+    monitor1.rotation.y = Math.PI * 0.7; // Face towards camera
     scene.add(monitor1);
     
-    console.log('Monitor 1 positioned at:', monitor1.position);
-    console.log('Monitor 1 scale:', monitor1.scale);
-    
-    // Load the second monitor  
+    // Load second monitor (center)
     const monitor2Data = await modelLoader.loadGLTF('/models/monitors.glb');
     const monitor2 = monitor2Data.scene.clone();
-    
-    // Position second monitor next to the first
-    monitor2.position.set(-0.4, -1.6, -0.6); // Lower and next to first monitor
-    monitor2.scale.setScalar(8.0); // Same massive scale
-    monitor2.rotation.y = Math.PI * 0.8; // Slightly different angle towards camera
+    monitor2.position.set(-0.8, monitorY, -0.4);
+    monitor2.scale.setScalar(monitorScale);
+    monitor2.rotation.z = -Math.PI * 0.05; // Slight tilt to face camera
+    monitor2.rotation.y = Math.PI * 0.75; // Face towards camera
     scene.add(monitor2);
+    
+    // Load third monitor (right)
+    const monitor3Data = await modelLoader.loadGLTF('/models/monitors.glb');
+    const monitor3 = monitor3Data.scene.clone();
+    monitor3.position.set(-0.1, monitorY, -0.3);
+    monitor3.scale.setScalar(monitorScale);
+    monitor3.rotation.z = 0; // No tilt for rightmost monitor
+    monitor3.rotation.y = Math.PI * 0.8; // Face towards camera
+    scene.add(monitor3);
     
     console.log('Monitor 2 positioned at:', monitor2.position);
     console.log('Monitor 2 scale:', monitor2.scale);
