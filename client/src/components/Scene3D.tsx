@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
+import { FBXLoader } from "three/addons/loaders/FBXLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { initializeScene, createLighting, handleResize } from "../lib/three-utils";
 
@@ -188,10 +189,75 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
       // Add lighting
       createLighting(scene);
 
-      // Create a professional office environment without external model loading
-      createOfficeEnvironment(scene);
-      setIsModelLoaded(true);
-      onLoaded();
+      // Load your specific FBX office model
+      const fbxLoader = new FBXLoader();
+      
+      fbxLoader.load(
+        '/models/office.fbx',
+        (object) => {
+          console.log('FBX office model loaded successfully');
+          
+          // Scale and position the model appropriately
+          object.scale.setScalar(0.03);
+          object.position.set(0, -2, 0);
+          object.rotation.y = Math.PI;
+          
+          // Enhance materials and enable shadows
+          object.traverse((child) => {
+            if (child instanceof THREE.Mesh) {
+              child.castShadow = true;
+              child.receiveShadow = true;
+              
+              // Preserve original materials but enhance them
+              if (child.material) {
+                if (Array.isArray(child.material)) {
+                  child.material.forEach((mat) => {
+                    if (mat instanceof THREE.MeshStandardMaterial) {
+                      mat.roughness = 0.7;
+                      mat.metalness = 0.1;
+                      mat.needsUpdate = true;
+                    }
+                  });
+                } else if (child.material instanceof THREE.MeshStandardMaterial) {
+                  child.material.roughness = 0.7;
+                  child.material.metalness = 0.1;
+                  child.material.needsUpdate = true;
+                } else {
+                  // Convert other material types to StandardMaterial
+                  const newMaterial = new THREE.MeshStandardMaterial({
+                    color: child.material.color || 0xffffff,
+                    roughness: 0.7,
+                    metalness: 0.1
+                  });
+                  
+                  // Preserve texture if available
+                  if ((child.material as any).map) {
+                    newMaterial.map = (child.material as any).map;
+                  }
+                  
+                  child.material = newMaterial;
+                }
+              }
+            }
+          });
+
+          scene.add(object);
+          setIsModelLoaded(true);
+          onLoaded();
+          console.log('Office model added to scene with enhanced materials');
+        },
+        (progress) => {
+          const percent = (progress.loaded / progress.total * 100);
+          console.log('Loading progress:', percent.toFixed(1) + '%');
+        },
+        (error) => {
+          console.error('FBX loading error:', error);
+          // Fallback to built-in environment if model fails to load
+          createOfficeEnvironment(scene);
+          setIsModelLoaded(true);
+          onLoaded();
+        }
+      );
 
       // Handle resize
       const handleResizeEvent = () => handleResize(camera, renderer);
