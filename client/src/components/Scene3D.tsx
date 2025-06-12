@@ -78,10 +78,10 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene, monito
     monitor1.rotation.z = 0;
     scene.add(monitor1);
 
-    // Create clickable area for monitor 1
+    // Create clickable area for monitor 1 (flush with screen)
     const screen1 = monitorInteraction.createClickableArea(
-      new THREE.Vector3(-7, -2.5, 1.2),
-      new THREE.Vector2(1.5, 0.8),
+      new THREE.Vector3(-7, -2.8, 0.8),
+      new THREE.Vector2(2.2, 1.3),
       new THREE.Euler(Math.PI, Math.PI * 0.55, 0)
     );
     scene.add(screen1);
@@ -97,10 +97,10 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene, monito
     monitor2.rotation.z = 0;
     scene.add(monitor2);
 
-    // Create clickable area for monitor 2
+    // Create clickable area for monitor 2 (flush with screen)
     const screen2 = monitorInteraction.createClickableArea(
-      new THREE.Vector3(-7, -2.5, 8.2),
-      new THREE.Vector2(1.5, 0.8),
+      new THREE.Vector3(-7, -2.8, 8.0),
+      new THREE.Vector2(2.2, 1.3),
       new THREE.Euler(Math.PI, Math.PI * 0.45, 0)
     );
     scene.add(screen2);
@@ -116,10 +116,10 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene, monito
     monitor3.rotation.z = 0;
     scene.add(monitor3);
 
-    // Create clickable area for monitor 3 (hanging)
+    // Create clickable area for monitor 3 (hanging - flush with screen)
     const screen3 = monitorInteraction.createClickableArea(
-      new THREE.Vector3(-9, -1, 6),
-      new THREE.Vector2(2, 1.2),
+      new THREE.Vector3(-10, -1.5, 5.1),
+      new THREE.Vector2(3.5, 2.0),
       new THREE.Euler(0, Math.PI * 0.55, 0)
     );
     scene.add(screen3);

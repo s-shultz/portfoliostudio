@@ -71,7 +71,7 @@ export class MonitorInteraction {
     const geometry = new THREE.PlaneGeometry(size.x, size.y);
     const material = new THREE.MeshBasicMaterial({ 
       transparent: true, 
-      opacity: 0.3,
+      opacity: 0.15,
       color: 0x4444ff,
       side: THREE.DoubleSide
     });
@@ -81,11 +81,11 @@ export class MonitorInteraction {
     mesh.rotation.copy(rotation);
     
     // Add pulsing animation
-    const originalOpacity = 0.3;
+    const originalOpacity = 0.15;
     let time = 0;
     const animate = () => {
       time += 0.02;
-      material.opacity = originalOpacity + Math.sin(time) * 0.2;
+      material.opacity = originalOpacity + Math.sin(time) * 0.1;
       requestAnimationFrame(animate);
     };
     animate();
