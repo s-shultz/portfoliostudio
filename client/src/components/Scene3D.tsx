@@ -117,7 +117,7 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene, monito
     scene.add(monitor3);
 
     // Create an active screen surface that matches the hanging monitor dimensions
-    const screenGeometry = new THREE.PlaneGeometry(8.7, 4.2);
+    const screenGeometry = new THREE.PlaneGeometry(9, 4.5);
     
     // Load the UI/UX design image for the screen
     const textureLoader = new THREE.TextureLoader();
@@ -151,8 +151,8 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene, monito
     };
     
     const activeScreen = new THREE.Mesh(screenGeometry, screenMaterial);
-    activeScreen.position.set(-9.0, 1.3, 4.6);
-    activeScreen.rotation.set(0.05, Math.PI * 0.55, 0);
+    activeScreen.position.set(-9.0, 1.0, 5);
+    activeScreen.rotation.set(0.0, Math.PI * 0.55, 0);
     
     // Add subtle glow effect that matches the new screen size
     const glowGeometry = new THREE.PlaneGeometry(5.0, 3.0);
