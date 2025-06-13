@@ -44,9 +44,9 @@ interface PortfolioState {
 }
 
 const defaultPortfolioData: PortfolioData = {
-  name: "Shaina Schultz",
+  name: "Shaina Shultz",
   title: "Design Technologist",
-  bio: "Creative professional specializing in 3D modeling, animation, and interactive experiences. I blend artistic vision with technical expertise to create immersive digital environments and compelling visual narratives. With a passion for bringing ideas to life through cutting-edge technology and design.",
+  bio: "Creative professional specializing in interactive experiences and mixed reality. I blend artistic vision with technical expertise to create immersive digital environments and compelling visual narratives. With a passion for bringing ideas to life through cutting-edge technology and design.",
   skills: [
     "3D Modeling", "Animation", "Blender", "Maya", "Three.js", "WebGL",
     "React", "TypeScript", "Creative Coding", "GLSL", "Substance Painter",
@@ -97,9 +97,9 @@ const defaultPortfolioData: PortfolioData = {
     }
   ],
   contact: {
-    email: "hello@shainaschultz.com",
-    linkedin: "https://www.linkedin.com/in/shaina-schultz/",
-    github: "github.com/shainaschultz"
+    email: "hello@shainashultz.com",
+    linkedin: "https://www.linkedin.com/in/shaina-shultz/",
+    github: "github.com/shainashultz"
   }
 };
 

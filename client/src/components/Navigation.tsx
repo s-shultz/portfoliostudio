@@ -21,7 +21,7 @@ export default function Navigation() {
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <h1 className="text-xl font-bold text-white">Shaina Schultz</h1>
+              <h1 className="text-xl font-bold text-white">Shaina Shultz</h1>
               <span className="text-gray-400">Portfolio</span>
             </div>
 
