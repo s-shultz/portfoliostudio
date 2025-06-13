@@ -37,8 +37,8 @@ export default function LoadingScreen() {
       <div className="text-center text-white">
         {/* Main loading content */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Shaina Schultz</h1>
-          <p className="text-xl text-blue-200">Full Stack Developer & Designer</p>
+          <h1 className="text-4xl font-bold mb-2">Shaina Shultz</h1>
+          <p className="text-xl text-blue-200">Design Technologist</p>
         </div>
 
         {/* Loading spinner */}
