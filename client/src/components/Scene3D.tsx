@@ -63,10 +63,10 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene, monito
     const screenScale = 0.5;
 
     // First monitor (left) - Creative Coding Screen
-    creativeCodingScreen.position.set(-7, -3, 1);
-    creativeCodingScreen.scale.setScalar(screenScale);
-    creativeCodingScreen.rotation.x = Math.PI;
-    creativeCodingScreen.rotation.y = Math.PI * 0.55;
+    creativeCodingScreen.position.set(-6.5, -5.5, 1);
+    creativeCodingScreen.scale.setScalar(0.65);
+    // creativeCodingScreen.rotation.x = Math.PI;
+    creativeCodingScreen.rotation.y = Math.PI * 1.48;
     creativeCodingScreen.rotation.z = 0;
     scene.add(creativeCodingScreen);
 
@@ -82,10 +82,11 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene, monito
     // Second monitor (center) - XR Screen
     const xrScreenData = await modelLoader.loadGLTF("/models/xrscreen.glb");
     const xrScreen = xrScreenData.scene.clone();
-    xrScreen.position.set(-7, -3, 8);
-    xrScreen.scale.setScalar(screenScale);
-    xrScreen.rotation.x = Math.PI;
-    xrScreen.rotation.y = Math.PI * 0.45;
+    xrScreen.position.set(-5.0, -5.5, 8);
+    xrScreen.scale.setScalar(0.65);
+    // xrScreen.scale.setScalar(screenScale);
+    // xrScreen.rotation.x = Math.PI;
+    xrScreen.rotation.y = Math.PI * 1.7;
     xrScreen.rotation.z = 0;
     scene.add(xrScreen);
 

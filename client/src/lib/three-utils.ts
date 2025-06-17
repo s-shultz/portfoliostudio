@@ -56,36 +56,37 @@ export function initializeScene(container: HTMLElement): SceneSetup {
 }
 
 export function createLighting(scene: THREE.Scene): void {
-  // Balanced ambient light for natural office lighting
-  const ambientLight = new THREE.AmbientLight(0xf0f8ff, 1.4); // Reduced from 2.0
+  // Reduced ambient light to prevent screen washout
+  const ambientLight = new THREE.AmbientLight(0xf0f8ff, 0.8);
   scene.add(ambientLight);
 
-  // Window light streaming in from outside - balanced intensity
-  const windowLight1 = new THREE.DirectionalLight(0xfff5d6, 1.8); // Reduced from 2.5
-  windowLight1.position.set(10, 4, 0); // Lower position, coming from the side window
-  windowLight1.target.position.set(0, 0, 0);
+  // Repositioned window lights to avoid hitting screens directly
+  const windowLight1 = new THREE.DirectionalLight(0xfff5d6, 1.2);
+  windowLight1.position.set(15, 6, -5); // Moved further right and back
+  windowLight1.target.position.set(0, 0, -5); // Target away from screens
   scene.add(windowLight1);
   scene.add(windowLight1.target);
 
-  // Additional window light from another angle - balanced intensity
-  const windowLight2 = new THREE.DirectionalLight(0xfff8e1, 1.5); // Reduced from 2.0
-  windowLight2.position.set(6, 5, -8); // Lower position, coming from back window
-  windowLight2.target.position.set(0, 0, 0);
+  // Back lighting for general illumination
+  const windowLight2 = new THREE.DirectionalLight(0xfff8e1, 1.0);
+  windowLight2.position.set(2, 8, -12); // Positioned behind and above
+  windowLight2.target.position.set(0, 0, -8); // Target away from screen area
   scene.add(windowLight2);
   scene.add(windowLight2.target);
 
-  // Soft bounced light for realistic fill
-  const bouncedLight = new THREE.DirectionalLight(0xe8f4f8, 0.4); // Cool fill light
-  bouncedLight.position.set(-6, 6, 4);
+  // Gentle fill light from opposite side
+  const bouncedLight = new THREE.DirectionalLight(0xe8f4f8, 0.3);
+  bouncedLight.position.set(-12, 6, 6); // Moved further left
+  bouncedLight.target.position.set(-2, 0, 0);
   scene.add(bouncedLight);
 
-  // Overhead office lighting (reduced to let window light dominate)
-  const ceilingLight1 = new THREE.PointLight(0xffffff, 1.2, 20);
-  ceilingLight1.position.set(0, 10, 0);
+  // Reduced overhead lighting
+  const ceilingLight1 = new THREE.PointLight(0xffffff, 0.8, 15);
+  ceilingLight1.position.set(2, 10, -2); // Moved away from screen area
   scene.add(ceilingLight1);
 
-  const ceilingLight2 = new THREE.PointLight(0xffffff, 0.8, 18);
-  ceilingLight2.position.set(-4, 9, -4);
+  const ceilingLight2 = new THREE.PointLight(0xffffff, 0.6, 12);
+  ceilingLight2.position.set(-2, 9, -6); // Positioned behind screens
   scene.add(ceilingLight2);
 
   const ceilingLight3 = new THREE.PointLight(0xffffff, 0.8, 18);
