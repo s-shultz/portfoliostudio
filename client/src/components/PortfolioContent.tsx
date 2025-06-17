@@ -10,8 +10,8 @@ export default function PortfolioContent() {
   if (!currentSection) return null;
 
   const renderAbout = () => (
-    <Card className="bg-black/80 backdrop-blur-md border-gray-600 text-white max-w-2xl">
-      <CardContent className="p-8">
+    <Card className="bg-black/80 backdrop-blur-md border-gray-600 text-white max-w-xl">
+      <CardContent className="p-6">
         <div className="flex items-center mb-6">
           <img
             src="/images/profile.jpg"
@@ -58,7 +58,7 @@ export default function PortfolioContent() {
   );
 
   const renderProjects = () => (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl">
       {portfolioData.projects.map((project, index) => (
         <Card key={index} className="bg-black/80 backdrop-blur-md border-gray-600 text-white">
           <CardContent className="p-6">
@@ -94,7 +94,7 @@ export default function PortfolioContent() {
   );
 
   const renderExperience = () => (
-    <Card className="bg-black/80 backdrop-blur-md border-gray-600 text-white max-w-4xl">
+    <Card className="bg-black/80 backdrop-blur-md border-gray-600 text-white max-w-3xl">
       <CardContent className="p-6">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold">Professional Experience</h2>
@@ -152,8 +152,8 @@ export default function PortfolioContent() {
   );
 
   const renderContact = () => (
-    <Card className="bg-black/80 backdrop-blur-md border-gray-600 text-white max-w-2xl">
-      <CardContent className="p-8">
+    <Card className="bg-black/80 backdrop-blur-md border-gray-600 text-white max-w-xl">
+      <CardContent className="p-6">
         <h2 className="text-2xl font-bold mb-6">Get In Touch</h2>
         <p className="text-gray-300 mb-6">
           I'm always interested in new opportunities and interesting projects. 
