@@ -4,7 +4,7 @@ import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { ExternalLink, X, Code, Palette, Box } from "lucide-react";
 
-export type ScreenType = "uiux" | "coding" | "3d";
+export type ScreenType = "coding" | "3d";
 
 interface InteractiveScreensProps {
   activeScreen: ScreenType | null;
@@ -12,28 +12,6 @@ interface InteractiveScreensProps {
 }
 
 const portfolioSections = {
-  uiux: {
-    title: "UI/UX Design",
-    icon: <Palette className="w-6 h-6" />,
-    description: "Creating intuitive and beautiful user experiences through thoughtful design.",
-    projects: [
-      {
-        title: "E-commerce Mobile App",
-        description: "Complete redesign of shopping experience with focus on conversion optimization",
-        tools: ["Figma", "Principle", "User Research", "Prototyping"]
-      },
-      {
-        title: "SaaS Dashboard Design",
-        description: "Complex data visualization dashboard with customizable widgets",
-        tools: ["Sketch", "InVision", "Usability Testing", "Design Systems"]
-      },
-      {
-        title: "Brand Identity & Web Design",
-        description: "Full brand identity and responsive website for tech startup",
-        tools: ["Adobe Creative Suite", "Webflow", "Brand Strategy"]
-      }
-    ]
-  },
   coding: {
     title: "Creative Coding",
     icon: <Code className="w-6 h-6" />,
