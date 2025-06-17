@@ -60,15 +60,15 @@ export function createLighting(scene: THREE.Scene): void {
   const ambientLight = new THREE.AmbientLight(0xf8fbff, 1.2);
   scene.add(ambientLight);
 
-  // Repositioned window lights to avoid hitting screens directly
-  const windowLight1 = new THREE.DirectionalLight(0xfff5d6, 1.2);
+  // Brighter window lights for better natural illumination
+  const windowLight1 = new THREE.DirectionalLight(0xfff5d6, 1.8);
   windowLight1.position.set(15, 6, -5); // Moved further right and back
   windowLight1.target.position.set(0, 0, -5); // Target away from screens
   scene.add(windowLight1);
   scene.add(windowLight1.target);
 
-  // Back lighting for general illumination
-  const windowLight2 = new THREE.DirectionalLight(0xfff8e1, 1.0);
+  // Enhanced back lighting for general illumination
+  const windowLight2 = new THREE.DirectionalLight(0xfff8e1, 1.5);
   windowLight2.position.set(2, 8, -12); // Positioned behind and above
   windowLight2.target.position.set(0, 0, -8); // Target away from screen area
   scene.add(windowLight2);
@@ -81,22 +81,22 @@ export function createLighting(scene: THREE.Scene): void {
   scene.add(bouncedLight);
 
   // Overhead point lights aligned with office model ceiling fixtures
-  const ceilingLight1 = new THREE.PointLight(0xffffff, 2.0, 20);
+  const ceilingLight1 = new THREE.PointLight(0xffffff, 1.6, 20);
   ceilingLight1.position.set(-3, 3.5, 0); // Aligned with first office ceiling light
   ceilingLight1.castShadow = true;
   scene.add(ceilingLight1);
 
-  const ceilingLight2 = new THREE.PointLight(0xffffff, 2.0, 20);
+  const ceilingLight2 = new THREE.PointLight(0xffffff, 1.4, 20);
   ceilingLight2.position.set(-6, 3.5, 3); // Aligned with second office ceiling light
   ceilingLight2.castShadow = true;
   scene.add(ceilingLight2);
 
-  const ceilingLight3 = new THREE.PointLight(0xffffff, 1.8, 18);
+  const ceilingLight3 = new THREE.PointLight(0xffffff, 1.3, 18);
   ceilingLight3.position.set(-9, 3.5, 6); // Aligned with third office ceiling light
   ceilingLight3.castShadow = true;
   scene.add(ceilingLight3);
 
-  const ceilingLight4 = new THREE.PointLight(0xffffff, 1.5, 16);
+  const ceilingLight4 = new THREE.PointLight(0xffffff, 1.1, 16);
   ceilingLight4.position.set(0, 3.5, -3); // Additional light for desk area
   ceilingLight4.castShadow = true;
   scene.add(ceilingLight4);
