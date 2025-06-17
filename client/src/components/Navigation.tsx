@@ -9,7 +9,6 @@ export default function Navigation() {
 
   const navItems = [
     { id: 'about', label: 'About', icon: User },
-    { id: 'projects', label: 'Projects', icon: Code },
     { id: 'experience', label: 'Experience', icon: Briefcase },
     { id: 'contact', label: 'Contact', icon: Mail },
   ] as const;
