@@ -94,10 +94,10 @@ export default function PortfolioContent() {
   );
 
   const renderExperience = () => (
-    <Card className="bg-black/80 backdrop-blur-md border-gray-600 text-white max-w-4xl max-h-[80vh] overflow-y-auto">
-      <CardContent className="p-8">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold">Professional Experience</h2>
+    <Card className="bg-black/80 backdrop-blur-md border-gray-600 text-white max-w-4xl">
+      <CardContent className="p-6">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-bold">Professional Experience</h2>
           <Button 
             className="bg-blue-600 hover:bg-blue-700"
             onClick={() => {
@@ -113,9 +113,9 @@ export default function PortfolioContent() {
           </Button>
         </div>
         
-        <div className="mb-8 p-4 bg-blue-900/20 rounded-lg border border-blue-600/30">
-          <h3 className="text-lg font-semibold mb-2">Education</h3>
-          <div className="space-y-2 text-sm">
+        <div className="mb-6 p-3 bg-blue-900/20 rounded-lg border border-blue-600/30">
+          <h3 className="text-base font-semibold mb-2">Education</h3>
+          <div className="space-y-1 text-xs">
             <div>
               <span className="font-medium">Master of Arts in Creative Technology</span>
               <span className="text-blue-300 ml-2">- Southern Methodist University (May 2025)</span>
@@ -135,15 +135,15 @@ export default function PortfolioContent() {
           </div>
         </div>
 
-        <div className="space-y-8">
+        <div className="space-y-5">
           {portfolioData.experience.map((exp, index) => (
-            <div key={index} className="border-l-2 border-blue-400 pl-6">
-              <div className="flex justify-between items-start mb-2">
-                <h3 className="text-xl font-semibold">{exp.title}</h3>
-                <span className="text-blue-300 text-sm">{exp.period}</span>
+            <div key={index} className="border-l-2 border-blue-400 pl-4">
+              <div className="flex justify-between items-start mb-1">
+                <h3 className="text-lg font-semibold">{exp.title}</h3>
+                <span className="text-blue-300 text-xs">{exp.period}</span>
               </div>
-              <p className="text-blue-300 mb-3">{exp.company}</p>
-              <p className="text-gray-300">{exp.description}</p>
+              <p className="text-blue-300 mb-2 text-sm">{exp.company}</p>
+              <p className="text-gray-300 text-sm">{exp.description}</p>
             </div>
           ))}
         </div>
