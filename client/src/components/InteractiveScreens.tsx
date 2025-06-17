@@ -15,66 +15,86 @@ const portfolioSections = {
   uiux: {
     title: "UI/UX Design",
     icon: <Palette className="w-6 h-6" />,
-    description: "Creating intuitive and beautiful user experiences through thoughtful design.",
+    description: "Designing user interfaces for mixed reality, healthcare, and digital experiences for Fortune 500 clients.",
     projects: [
       {
-        title: "E-commerce Mobile App",
-        description: "Complete redesign of shopping experience with focus on conversion optimization",
-        tools: ["Figma", "Principle", "User Research", "Prototyping"]
+        title: "RadiusXR - Mixed Reality Vision Care",
+        description: "Designed comprehensive VR interface screens for patient onboarding and procedural guidance scripts for visual field testing at CitrusBits",
+        tools: ["Figma", "VR Design", "Design Systems", "Accessibility"]
       },
       {
-        title: "SaaS Dashboard Design",
-        description: "Complex data visualization dashboard with customizable widgets",
-        tools: ["Sketch", "InVision", "Usability Testing", "Design Systems"]
+        title: "IrisVision - Vision Care Application", 
+        description: "Developed user interfaces for mixed reality vision care applications, focusing on accessibility and user experience",
+        tools: ["Mixed Reality", "UI Design", "User Research", "Visual QA"]
       },
       {
-        title: "Brand Identity & Web Design",
-        description: "Full brand identity and responsive website for tech startup",
-        tools: ["Adobe Creative Suite", "Webflow", "Brand Strategy"]
+        title: "Fortune 500 Digital Experiences",
+        description: "Designed digital experiences for Amazon, American Express, Anthem Insurance, Bank of America, and NYU Langone at Deloitte Digital",
+        tools: ["Figma", "Sketch", "InVision", "Responsive Design"]
+      },
+      {
+        title: "Alchemy Vision Product Design",
+        description: "Founding Product Designer developing user flows, wireframes, and interactive prototypes, streamlining design-to-development handoff by 40%",
+        tools: ["Product Design", "Prototyping", "Design Systems", "Competitive Analysis"]
       }
     ]
   },
   coding: {
     title: "Creative Coding",
     icon: <Code className="w-6 h-6" />,
-    description: "Bringing ideas to life through interactive web experiences and generative art.",
+    description: "Interactive web experiences combining art, technology, and creative coding with Three.js, P5.js, and generative algorithms.",
     projects: [
       {
-        title: "WebGL Particle Systems",
-        description: "Interactive particle simulations with custom GLSL shaders",
-        tools: ["Three.js", "GLSL", "WebGL", "TypeScript"]
+        title: "Three.js Interactive Installations",
+        description: "Creating immersive web-based 3D experiences using WebGL and custom shaders for artistic expression",
+        tools: ["Three.js", "WebGL", "GLSL", "TypeScript"]
       },
       {
-        title: "Generative Art Collection",
-        description: "Algorithmic art pieces exploring color, form, and motion",
-        tools: ["p5.js", "Canvas API", "Mathematical Algorithms"]
+        title: "P5.js Generative Art",
+        description: "Algorithmic art pieces exploring mathematical patterns, color theory, and interactive motion graphics",
+        tools: ["P5.js", "JavaScript", "Generative Algorithms", "Canvas API"]
       },
       {
-        title: "Interactive Data Visualizations",
-        description: "Real-time data representations with smooth animations",
-        tools: ["D3.js", "React", "SVG", "Animation Libraries"]
+        title: "TouchDesigner Visual Systems",
+        description: "Real-time visual programming for interactive installations and live performance environments",
+        tools: ["TouchDesigner", "Real-time Graphics", "Interactive Media", "Visual Programming"]
+      },
+      {
+        title: "Processing Creative Applications",
+        description: "Data-driven visualizations and interactive art pieces using computational design principles",
+        tools: ["Processing", "Java", "Data Visualization", "Interactive Design"]
       }
     ]
   },
   "3d": {
-    title: "3D Modeling & Animation",
+    title: "Extended Reality & 3D",
     icon: <Box className="w-6 h-6" />,
-    description: "Creating immersive 3D environments and bringing characters to life through animation.",
+    description: "3D modeling, animation, and extended reality experiences using industry-standard tools for immersive digital environments.",
     projects: [
       {
-        title: "Architectural Visualization",
-        description: "Photorealistic renders of residential and commercial spaces",
-        tools: ["Blender", "Substance Painter", "V-Ray", "Photoshop"]
+        title: "Unity XR Applications",
+        description: "Developing immersive virtual and augmented reality experiences for education and healthcare applications",
+        tools: ["Unity", "C#", "XR Toolkit", "VR/AR Development"]
       },
       {
-        title: "Character Animation Reel",
-        description: "Character rigging and animation for games and film",
-        tools: ["Maya", "ZBrush", "Motion Capture", "After Effects"]
+        title: "Unreal Engine Environments",
+        description: "Creating photorealistic 3D environments and interactive experiences for architectural visualization and gaming",
+        tools: ["Unreal Engine", "Blueprint Visual Scripting", "Lighting", "Materials"]
       },
       {
-        title: "Product Visualization",
-        description: "High-quality product renders for marketing and e-commerce",
-        tools: ["Cinema 4D", "Octane Render", "Illustrator"]
+        title: "3Ds Max Architectural Visualization",
+        description: "High-quality 3D modeling and rendering for architectural and product visualization projects",
+        tools: ["3Ds Max", "V-Ray", "Architectural Modeling", "Photorealistic Rendering"]
+      },
+      {
+        title: "Adobe Substance 3D Pipeline",
+        description: "Advanced material creation and texturing workflows for 3D assets and environments",
+        tools: ["Substance 3D", "Material Design", "Texturing", "PBR Workflows"]
+      },
+      {
+        title: "Adobe Aero AR Experiences",
+        description: "Creating augmented reality experiences for mobile platforms with interactive 3D content",
+        tools: ["Adobe Aero", "AR Design", "Mobile AR", "Interactive 3D"]
       }
     ]
   }

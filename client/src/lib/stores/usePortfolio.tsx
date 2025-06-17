@@ -46,60 +46,65 @@ interface PortfolioState {
 const defaultPortfolioData: PortfolioData = {
   name: "Shaina Shultz",
   title: "Design Technologist",
-  bio: "Creative professional specializing in interactive experiences and mixed reality. I blend artistic vision with technical expertise to create immersive digital environments and compelling visual narratives. With a passion for bringing ideas to life through cutting-edge technology and design.",
+  bio: "Design Technologist pursuing a Master's in Creative Technology at SMU, specializing in mixed reality, AI design, and creative coding. With professional experience at CitrusBits, Deloitte Digital, and as Founding Product Designer at Alchemy Vision, I create innovative digital experiences that bridge art and technology.",
   skills: [
-    "3D Modeling", "Animation", "Blender", "Maya", "Three.js", "WebGL",
-    "React", "TypeScript", "Creative Coding", "GLSL", "Substance Painter",
-    "UI/UX Design", "Motion Graphics", "Visual Effects", "Game Development", "AR/VR"
+    "Mixed Reality", "AR/VR Design", "AI Design", "Product Design", "Prototyping", 
+    "Information Architecture", "UI/UX Design", "3D Modeling and Animation", 
+    "Creative Coding", "Three.js", "Unity", "Unreal Engine", "Adobe Substance 3D",
+    "Figma", "Adobe Creative Cloud", "Processing", "TouchDesigner", "JavaScript", 
+    "TypeScript", "P5.js", "HTML/CSS", "React"
   ],
   projects: [
     {
-      title: "Interactive 3D Office Environment",
-      description: "Immersive portfolio experience featuring a detailed 3D office space with interactive elements and smooth navigation. Built using Three.js with custom lighting and material systems.",
-      technologies: ["Three.js", "React", "TypeScript", "GLSL", "Blender"],
-      liveUrl: "https://shainashultz.com"
+      title: "RadiusXR - Mixed Reality Vision Care",
+      description: "Comprehensive VR interface design for patient onboarding and visual field testing procedures. Developed design system optimizing Figma workflows for team efficiency.",
+      technologies: ["Figma", "VR Design", "Design Systems", "Mixed Reality", "Healthcare UX"],
+      liveUrl: "https://www.shainashultz.com/projects/radiusxr"
     },
     {
-      title: "3D Modeling & Animation Portfolio",
-      description: "Comprehensive showcase of 3D modeling work including architectural visualizations, character design, and product renders. Features real-time rendering and interactive viewers.",
-      technologies: ["Blender", "Substance Painter", "Three.js", "WebGL"],
-      liveUrl: "https://shainashultz.com/3d-design"
+      title: "Fortune 500 Digital Experiences",
+      description: "Designed responsive digital experiences for Amazon, American Express, Anthem Insurance, Bank of America, and NYU Langone at Deloitte Digital.",
+      technologies: ["Figma", "Sketch", "InVision", "Responsive Design", "Enterprise UX"],
+      liveUrl: "https://www.shainashultz.com/projects/deloitte"
     },
     {
-      title: "WebGL Interactive Experiences",
-      description: "Collection of interactive web experiences featuring custom shaders, particle systems, and immersive animations optimized for web performance.",
-      technologies: ["WebGL", "GLSL", "Three.js", "React", "Creative Coding"]
+      title: "Alchemy Vision Product Design",
+      description: "Founding Product Designer streamlining design-to-development handoff by 40%. Created comprehensive style guides and interactive prototypes.",
+      technologies: ["Product Design", "Prototyping", "Design Systems", "User Research"],
+      liveUrl: "https://www.shainashultz.com/projects/alchemy"
     },
     {
-      title: "AR Product Visualization",
-      description: "Augmented reality application for product visualization enabling customers to view 3D models in their real environment using mobile devices.",
-      technologies: ["AR.js", "Three.js", "WebXR", "React", "3D Modeling"]
+      title: "Creative Coding Installations",
+      description: "Interactive web experiences using Three.js, P5.js, and TouchDesigner for artistic expression and data visualization.",
+      technologies: ["Three.js", "P5.js", "TouchDesigner", "WebGL", "Creative Coding"],
+      liveUrl: "https://www.shainashultz.com/creative-coding"
     }
   ],
   experience: [
     {
-      title: "3D Designer & Developer",
-      company: "Freelance",
-      period: "2021 - Present",
-      description: "Creating custom 3D visualizations, interactive web experiences, and immersive environments for clients across various industries including architecture, gaming, and e-commerce."
+      title: "Contract Product Designer",
+      company: "CitrusBits",
+      period: "June 2024 - August 2024",
+      description: "Designed user interfaces for mixed reality vision care applications including RadiusXR and IrisVision. Developed comprehensive design systems and conducted visual QA testing for accessibility and brand consistency."
     },
     {
-      title: "Creative Developer",
-      company: "Digital Agency",
-      period: "2020 - 2021",
-      description: "Developed interactive websites and digital experiences combining 3D graphics with modern web technologies. Collaborated with design teams to bring creative visions to life."
+      title: "UX/Visual Designer",
+      company: "Deloitte Digital",
+      period: "September 2021 - May 2023",
+      description: "Designed digital experiences for Fortune 500 clients including Amazon, American Express, Anthem Insurance, Bank of America, and NYU Langone. Built cloud and web applications using modern design tools and methodologies."
     },
     {
-      title: "3D Artist",
-      company: "Animation Studio",
-      period: "2019 - 2020",
-      description: "Specialized in 3D modeling, texturing, and animation for various projects including commercials, games, and architectural visualizations."
+      title: "Founding Product Designer",
+      company: "Alchemy Vision",
+      period: "October 2020 - October 2023",
+      description: "Collaborated with CEO and creative teams to develop user flows, wireframes, and interactive prototypes. Streamlined design-to-development handoff by 40% through systematic design thinking and scalable solutions."
     }
   ],
   contact: {
-    email: "hello@shainashultz.com",
+    email: "sshultz@smu.edu",
+    phone: "818-219-9693",
     linkedin: "https://www.linkedin.com/in/shaina-shultz/",
-    github: "github.com/shainashultz"
+    github: "https://www.shainashultz.com"
   }
 };
 

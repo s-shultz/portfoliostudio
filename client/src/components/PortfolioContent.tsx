@@ -96,7 +96,45 @@ export default function PortfolioContent() {
   const renderExperience = () => (
     <Card className="bg-black/80 backdrop-blur-md border-gray-600 text-white max-w-4xl">
       <CardContent className="p-8">
-        <h2 className="text-2xl font-bold mb-6">Professional Experience</h2>
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold">Professional Experience</h2>
+          <Button 
+            className="bg-blue-600 hover:bg-blue-700"
+            onClick={() => {
+              const link = document.createElement('a');
+              link.href = '/Shultz_Shaina_Resume2025.pdf';
+              link.download = 'Shultz_Shaina_Resume2025.pdf';
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+            }}
+          >
+            Download Resume
+          </Button>
+        </div>
+        
+        <div className="mb-8 p-4 bg-blue-900/20 rounded-lg border border-blue-600/30">
+          <h3 className="text-lg font-semibold mb-2">Education</h3>
+          <div className="space-y-2 text-sm">
+            <div>
+              <span className="font-medium">Master of Arts in Creative Technology</span>
+              <span className="text-blue-300 ml-2">- Southern Methodist University (May 2025)</span>
+            </div>
+            <div>
+              <span className="font-medium">Bachelor of Science, Business Administration</span>
+              <span className="text-blue-300 ml-2">- Washington University in St. Louis</span>
+            </div>
+            <div>
+              <span className="font-medium">Certificate in User Experience Design</span>
+              <span className="text-blue-300 ml-2">- UCLA</span>
+            </div>
+            <div>
+              <span className="font-medium">Certificate in AI Products and Services</span>
+              <span className="text-blue-300 ml-2">- MIT</span>
+            </div>
+          </div>
+        </div>
+
         <div className="space-y-8">
           {portfolioData.experience.map((exp, index) => (
             <div key={index} className="border-l-2 border-blue-400 pl-6">
@@ -125,15 +163,17 @@ export default function PortfolioContent() {
         <div className="space-y-4">
           <div className="flex items-center">
             <Mail className="w-5 h-5 mr-3 text-blue-400" />
-            <span>hello@shainashultz.com</span>
+            <span>{portfolioData.contact.email}</span>
           </div>
           <div className="flex items-center">
             <Phone className="w-5 h-5 mr-3 text-blue-400" />
-            <span>Available upon request</span>
+            <span>{portfolioData.contact.phone}</span>
           </div>
           <div className="flex items-center">
             <Linkedin className="w-5 h-5 mr-3 text-blue-400" />
-            <span>linkedin.com/in/shainashultz</span>
+            <a href={portfolioData.contact.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-blue-300">
+              linkedin.com/in/shaina-shultz
+            </a>
           </div>
         </div>
 
