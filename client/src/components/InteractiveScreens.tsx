@@ -106,20 +106,24 @@ export default function InteractiveScreens({ activeScreen, onClose }: Interactiv
   const section = portfolioSections[activeScreen];
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4 pt-20 animate-in fade-in duration-300">
-      <Card className="w-full max-w-4xl max-h-[85vh] overflow-y-auto bg-gray-900 border-gray-700 text-white animate-in slide-in-from-bottom-4 duration-500">
-        <CardHeader className="flex flex-row items-center justify-between">
+    <div className="fixed inset-0 bg-black/90 backdrop-blur-md z-[100] flex items-center justify-center p-4 pt-20 animate-in fade-in duration-500">
+      <Card className="w-full max-w-4xl max-h-[85vh] overflow-y-auto bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-blue-500/50 text-white animate-in slide-in-from-bottom-8 zoom-in-95 duration-700 shadow-2xl shadow-blue-500/20">
+        <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-blue-900/30 to-purple-900/30 border-b border-blue-500/30">
           <div className="flex items-center gap-3">
-            {section.icon}
-            <CardTitle className="text-2xl">{section.title}</CardTitle>
+            <div className="p-2 bg-blue-500/20 rounded-lg">
+              {section.icon}
+            </div>
+            <CardTitle className="text-2xl bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+              {section.title}
+            </CardTitle>
           </div>
           <Button
             variant="ghost"
             size="icon"
             onClick={onClose}
-            className="text-gray-400 hover:text-white transition-colors duration-200 hover:bg-gray-700/50"
+            className="text-red-400 hover:text-white transition-all duration-300 hover:bg-red-600/20 hover:scale-110 border-2 border-red-400/50 hover:border-red-400 rounded-full"
           >
-            <X className="w-5 h-5" />
+            <X className="w-6 h-6 font-bold" />
           </Button>
         </CardHeader>
         
@@ -128,17 +132,17 @@ export default function InteractiveScreens({ activeScreen, onClose }: Interactiv
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {section.projects.map((project, index) => (
-              <Card key={index} className="bg-gray-800 border-gray-600">
-                <CardContent className="p-4">
-                  <h3 className="text-lg font-semibold mb-2 text-white">{project.title}</h3>
-                  <p className="text-gray-300 text-sm mb-4">{project.description}</p>
+              <Card key={index} className="bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-blue-500/30 hover:border-blue-400/60 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/20">
+                <CardContent className="p-5">
+                  <h3 className="text-lg font-bold mb-3 text-blue-300">{project.title}</h3>
+                  <p className="text-gray-200 text-sm mb-4 leading-relaxed">{project.description}</p>
                   
-                  <div className="flex flex-wrap gap-1">
+                  <div className="flex flex-wrap gap-2">
                     {project.tools.map((tool, toolIndex) => (
                       <Badge 
                         key={toolIndex} 
                         variant="secondary" 
-                        className="text-xs bg-blue-600/20 text-blue-300"
+                        className="text-xs bg-gradient-to-r from-blue-600/80 to-purple-600/80 text-white border border-blue-400/30 hover:scale-110 transition-transform duration-200"
                       >
                         {tool}
                       </Badge>

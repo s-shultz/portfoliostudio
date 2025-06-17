@@ -20,30 +20,30 @@ export default function InteractionHints({ isVisible }: InteractionHintsProps) {
   if (!isVisible || !showHints) return null;
 
   return (
-    <div className="fixed top-24 right-6 z-30 animate-in slide-in-from-right-4 duration-500">
-      <div className="bg-black/80 backdrop-blur-md rounded-lg border border-gray-600 p-4 max-w-xs">
-        <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
-          <MousePointer className="w-4 h-4 text-blue-400" />
-          Interaction Guide
+    <div className="fixed top-24 right-6 z-30 animate-pulse">
+      <div className="bg-gradient-to-br from-blue-900/90 to-purple-900/90 backdrop-blur-md rounded-xl border-2 border-blue-400 p-6 max-w-sm shadow-2xl shadow-blue-500/20">
+        <h3 className="text-white font-bold mb-4 flex items-center gap-2 text-lg">
+          <MousePointer className="w-5 h-5 text-yellow-400 animate-bounce" />
+          🎯 Interactive Portfolio
         </h3>
         
-        <div className="space-y-3 text-sm text-gray-300">
-          <div className="flex items-start gap-3">
-            <Monitor className="w-4 h-4 text-blue-400 mt-0.5 flex-shrink-0" />
-            <p>Click monitors to explore different portfolio sections</p>
+        <div className="space-y-4 text-sm text-gray-100">
+          <div className="flex items-start gap-3 p-2 bg-white/10 rounded-lg">
+            <Monitor className="w-5 h-5 text-yellow-400 mt-0.5 flex-shrink-0 animate-pulse" />
+            <p className="font-medium">Click the glowing monitors to explore my work!</p>
           </div>
           
-          <div className="flex items-start gap-3">
-            <Hand className="w-4 h-4 text-blue-400 mt-0.5 flex-shrink-0" />
-            <p>Drag to rotate view • Scroll to zoom in/out</p>
+          <div className="flex items-start gap-3 p-2 bg-white/10 rounded-lg">
+            <Hand className="w-5 h-5 text-yellow-400 mt-0.5 flex-shrink-0" />
+            <p>Drag to rotate • Scroll to zoom</p>
           </div>
         </div>
         
         <button 
           onClick={() => setShowHints(false)}
-          className="mt-3 text-xs text-gray-400 hover:text-white transition-colors"
+          className="mt-4 w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 hover:scale-105"
         >
-          Dismiss
+          Got it! 👍
         </button>
       </div>
     </div>
