@@ -109,80 +109,17 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene, monito
     monitor3.rotation.z = 0;
     scene.add(monitor3);
 
-    // Create an active screen surface that matches the hanging monitor dimensions
-    const screenGeometry = new THREE.PlaneGeometry(9, 4.5);
-    
-    // Load the UI/UX design image for the screen
-    const textureLoader = new THREE.TextureLoader();
-    
-    // Create material with texture
-    const screenMaterial = new THREE.MeshBasicMaterial({ 
-      color: 0xffffff,
-      transparent: false,
-      side: THREE.DoubleSide
-    });
-    
-    // Load texture and apply it
-    textureLoader.load(
-      '/uiuxdesign.png',
-      (texture) => {
-        console.log('UI/UX texture loaded successfully');
-        texture.flipY = true; // Fix vertical flipping
-        texture.wrapS = THREE.RepeatWrapping;
-        texture.wrapT = THREE.RepeatWrapping;
-        texture.repeat.set(-1, 1); // Flip horizontally
-        screenMaterial.map = texture;
-        screenMaterial.needsUpdate = true;
-        console.log('UI/UX texture applied to screen material');
-      },
-      (progress) => {
-        console.log('UI/UX texture loading progress:', progress);
-      },
-      (error) => {
-        console.error('Failed to load UI/UX texture:', error);
-        // Fallback to a subtle color if texture fails
-        screenMaterial.color.setHex(0x8a2be2);
-      }
+    // Create clickable area for the hanging monitor (using the 3D model itself)
+    const clickableArea = monitorInteraction.createClickableArea(
+      new THREE.Vector3(-9.0, 1.3, 4.6),
+      new THREE.Vector2(4.0, 2.0),
+      new THREE.Euler(0.05, Math.PI * 0.55, 0)
     );
-    
-    const activeScreen = new THREE.Mesh(screenGeometry, screenMaterial);
-    activeScreen.position.set(-9.0, 1.3, 4.6);
-    activeScreen.rotation.set(0.05, Math.PI * 0.55, 0);
-    
-    // Add subtle glow effect that matches the new screen size
-    const glowGeometry = new THREE.PlaneGeometry(5.0, 3.0);
-    const glowMaterial = new THREE.MeshBasicMaterial({
-      color: 0x4a90e2,
-      transparent: true,
-      opacity: 0.2,
-      side: THREE.DoubleSide
-    });
-    
-    const screenGlow = new THREE.Mesh(glowGeometry, glowMaterial);
-    screenGlow.position.copy(activeScreen.position);
-    screenGlow.rotation.copy(activeScreen.rotation);
-    screenGlow.position.z -= 0.02; // Slightly behind the screen
-    
-    scene.add(screenGlow);
-    scene.add(activeScreen);
-    
-    // Add subtle glow animation for the screen
-    let time = 0;
-    const animateScreen = () => {
-      time += 0.01;
-      
-      // Pulsing glow effect around the screen
-      glowMaterial.opacity = 0.15 + Math.sin(time) * 0.05;
-      
-      requestAnimationFrame(animateScreen);
-    };
-    animateScreen();
-
-    // Make the active screen clickable
-    monitorInteraction.addMonitor(activeScreen, "uiux", "monitor3");
+    scene.add(clickableArea);
+    monitorInteraction.addMonitor(clickableArea, "uiux", "monitor3");
 
     console.log("Interactive monitors setup complete");
-    return [screen1, screen2, activeScreen];
+    return [screen1, screen2, clickableArea];
   } catch (error) {
     console.error("Failed to load monitor models:", error);
     return [];
