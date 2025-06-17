@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-export type MonitorType = "coding" | "3d";
+export type MonitorType = "uiux" | "coding" | "3d";
 
 interface ClickableMonitor {
   mesh: THREE.Object3D;
