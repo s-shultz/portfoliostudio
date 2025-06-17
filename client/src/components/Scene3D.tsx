@@ -14,6 +14,7 @@ import InteractionHints from "./InteractionHints";
 interface Scene3DProps {
   onLoaded: () => void;
   onError: (error: string) => void;
+  onMonitorClick?: (type: "uiux" | "coding" | "3d") => void;
 }
 
 // Load office model with robust ModelLoader system
@@ -565,7 +566,7 @@ function createOfficeEnvironment(scene: THREE.Scene) {
   scene.add(notepad);
 }
 
-export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
+export default function Scene3D({ onLoaded, onError, onMonitorClick }: Scene3DProps) {
   const mountRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<{
     scene: THREE.Scene;
@@ -601,6 +602,10 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
       // Set up monitor click handler
       monitorInteraction.setClickHandler((type: MonitorType) => {
         setActiveScreen(type as ScreenType);
+        // Trigger notification callback
+        if (onMonitorClick) {
+          onMonitorClick(type as "uiux" | "coding" | "3d");
+        }
       });
 
       // Set up ModelLoader callbacks
