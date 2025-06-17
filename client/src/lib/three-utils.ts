@@ -56,39 +56,23 @@ export function initializeScene(container: HTMLElement): SceneSetup {
 }
 
 export function createLighting(scene: THREE.Scene): void {
-  // Brighter ambient light for base illumination
-  const ambientLight = new THREE.AmbientLight(0xf0f8ff, 1.2);
+  // Reduced ambient light to prevent screen washout
+  const ambientLight = new THREE.AmbientLight(0xf0f8ff, 0.8);
   scene.add(ambientLight);
 
-  // Overhead ceiling lights positioned to match office model
-  const officeLight1 = new THREE.PointLight(0xffffff, 3.0, 25);
-  officeLight1.position.set(-3, 4, 0); // First overhead light
-  officeLight1.castShadow = true;
-  officeLight1.shadow.mapSize.width = 1024;
-  officeLight1.shadow.mapSize.height = 1024;
-  scene.add(officeLight1);
+  // Repositioned window lights to avoid hitting screens directly
+  const windowLight1 = new THREE.DirectionalLight(0xfff5d6, 1.2);
+  windowLight1.position.set(15, 6, -5); // Moved further right and back
+  windowLight1.target.position.set(0, 0, -5); // Target away from screens
+  scene.add(windowLight1);
+  scene.add(windowLight1.target);
 
-  const officeLight2 = new THREE.PointLight(0xffffff, 3.0, 25);
-  officeLight2.position.set(-6, 4, 3); // Second overhead light near desk
-  officeLight2.castShadow = true;
-  officeLight2.shadow.mapSize.width = 1024;
-  officeLight2.shadow.mapSize.height = 1024;
-  scene.add(officeLight2);
-
-  const officeLight3 = new THREE.PointLight(0xffffff, 2.5, 22);
-  officeLight3.position.set(-9, 4, 6); // Third overhead light
-  officeLight3.castShadow = true;
-  scene.add(officeLight3);
-
-  // Brighter window light for natural illumination
-  const windowLight = new THREE.DirectionalLight(0xfff8e1, 2.0);
-  windowLight.position.set(-15, 8, 10); // Coming from window direction
-  windowLight.target.position.set(-5, 0, 5); // Target desk area
-  windowLight.castShadow = true;
-  windowLight.shadow.mapSize.width = 2048;
-  windowLight.shadow.mapSize.height = 2048;
-  scene.add(windowLight);
-  scene.add(windowLight.target);
+  // Back lighting for general illumination
+  const windowLight2 = new THREE.DirectionalLight(0xfff8e1, 1.0);
+  windowLight2.position.set(2, 8, -12); // Positioned behind and above
+  windowLight2.target.position.set(0, 0, -8); // Target away from screen area
+  scene.add(windowLight2);
+  scene.add(windowLight2.target);
 
   // Gentle fill light from opposite side
   const bouncedLight = new THREE.DirectionalLight(0xe8f4f8, 0.3);
