@@ -89,7 +89,7 @@ export default function PortfolioContent() {
                 <Button 
                   variant="outline" 
                   size="sm" 
-                  className="border-gray-500 text-white hover:bg-gray-700"
+                  className="border-gray-500 text-white hover:bg-gray-700 transition-all duration-200 hover:scale-105 hover:border-blue-400"
                   onClick={() => window.open(project.githubUrl, '_blank')}
                 >
                   <Github className="w-4 h-4 mr-2" />
