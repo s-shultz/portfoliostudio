@@ -97,17 +97,11 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene, monito
     monitor3.rotation.z = 0;
     scene.add(monitor3);
 
-    // Create clickable area for the hanging monitor (larger and better aligned)
-    const clickableArea = monitorInteraction.createClickableArea(
-      new THREE.Vector3(-8.8, 1.8, 4.8),
-      new THREE.Vector2(5.0, 3.0),
-      new THREE.Euler(0.08, Math.PI * 0.55, 0)
-    );
-    scene.add(clickableArea);
-    monitorInteraction.addMonitor(clickableArea, "uiux", "monitor3");
+    // Register the actual hanging monitor model as clickable
+    monitorInteraction.addMonitor(monitor3, "uiux", "monitor3");
 
     console.log("Interactive monitors setup complete");
-    return [screen1, screen2, clickableArea];
+    return [creativeCodingScreen, xrScreen, monitor3];
   } catch (error) {
     console.error("Failed to load monitor models:", error);
     return [];
@@ -634,48 +628,10 @@ export default function Scene3D({ onLoaded, onError, onMonitorClick }: Scene3DPr
       // Store clickable screens reference
       let clickableScreens: THREE.Mesh[] = [];
       
-      // Handle mouse movement for hover effects
+      // Handle mouse movement for hover effects using the new monitor interaction system
       const handleMouseMove = (event: MouseEvent) => {
-        if (mountRef.current && clickableScreens.length > 0) {
-          const rect = mountRef.current.getBoundingClientRect();
-          const mouse = new THREE.Vector2();
-          mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-          mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-          
-          const raycaster = new THREE.Raycaster();
-          raycaster.setFromCamera(mouse, camera);
-          
-          // Check for intersections with clickable screens
-          const intersects = raycaster.intersectObjects(clickableScreens);
-          
-          if (intersects.length > 0) {
-            // Change cursor to pointer and add visual feedback
-            mountRef.current.style.cursor = 'pointer';
-            
-            // Add subtle glow effect to hovered monitor
-            const hoveredMesh = intersects[0].object as THREE.Mesh;
-            if (hoveredMesh.material instanceof THREE.MeshStandardMaterial) {
-              hoveredMesh.material.emissive.setHex(0x003366);
-              hoveredMesh.material.emissiveIntensity = 0.3;
-            }
-            
-            // Reset other monitors
-            clickableScreens.forEach(screen => {
-              if (screen !== hoveredMesh && screen.material instanceof THREE.MeshStandardMaterial) {
-                screen.material.emissive.setHex(0x000000);
-                screen.material.emissiveIntensity = 0;
-              }
-            });
-          } else {
-            // Reset cursor and remove all hover effects
-            mountRef.current.style.cursor = 'grab';
-            clickableScreens.forEach(screen => {
-              if (screen.material instanceof THREE.MeshStandardMaterial) {
-                screen.material.emissive.setHex(0x000000);
-                screen.material.emissiveIntensity = 0;
-              }
-            });
-          }
+        if (monitorInteractionRef.current && mountRef.current) {
+          monitorInteractionRef.current.handleHover(event, mountRef.current);
         }
       };
       
