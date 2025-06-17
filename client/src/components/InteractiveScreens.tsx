@@ -107,7 +107,7 @@ export default function InteractiveScreens({ activeScreen, onClose }: Interactiv
 
   return (
     <div className="fixed inset-0 bg-black/90 backdrop-blur-md z-[100] flex items-center justify-center p-4 pt-20 animate-in fade-in duration-500">
-      <Card className="w-full max-w-4xl max-h-[85vh] overflow-y-auto bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-blue-500/50 text-white animate-in slide-in-from-bottom-8 zoom-in-95 duration-700 shadow-2xl shadow-blue-500/20">
+      <Card className="w-full max-w-4xl max-h-[85vh] overflow-hidden bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-blue-500/50 text-white animate-in slide-in-from-bottom-8 zoom-in-95 duration-700 shadow-2xl shadow-blue-500/20">
         <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-blue-900/30 to-purple-900/30 border-b border-blue-500/30">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-blue-500/20 rounded-lg">
