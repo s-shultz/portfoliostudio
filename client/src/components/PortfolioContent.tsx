@@ -203,7 +203,7 @@ export default function PortfolioContent() {
   };
 
   return (
-    <div className="fixed inset-0 pointer-events-none flex items-center justify-center p-4 pt-24 z-10">
+    <div className="fixed inset-0 pointer-events-none flex items-center justify-center p-4 z-30">
       <div className="pointer-events-auto">
         {renderContent()}
       </div>

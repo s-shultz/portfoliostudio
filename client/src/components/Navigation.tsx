@@ -40,7 +40,7 @@ export default function Navigation() {
       </nav>
 
       {/* Side Navigation */}
-      <nav className="fixed left-6 top-1/2 transform -translate-y-1/2 z-20">
+      <nav className="fixed left-6 top-1/2 transform -translate-y-1/2 z-10">
         <div className="bg-black/40 backdrop-blur-md rounded-lg border border-gray-600 p-2">
           <div className="flex flex-col space-y-2">
             <Button
