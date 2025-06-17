@@ -40,15 +40,15 @@ export default function PortfolioContent() {
         </div>
 
         <div className="flex gap-4">
-          <Button variant="outline" size="sm" className="border-gray-500 text-white hover:bg-gray-700">
+          <Button variant="outline" size="sm" className="border-gray-500 text-white hover:bg-gray-700 transition-all duration-200 hover:scale-105">
             <Mail className="w-4 h-4 mr-2" />
             Contact
           </Button>
-          <Button variant="outline" size="sm" className="border-gray-500 text-white hover:bg-gray-700">
+          <Button variant="outline" size="sm" className="border-gray-500 text-white hover:bg-gray-700 transition-all duration-200 hover:scale-105">
             <Linkedin className="w-4 h-4 mr-2" />
             LinkedIn
           </Button>
-          <Button variant="outline" size="sm" className="border-gray-500 text-white hover:bg-gray-700">
+          <Button variant="outline" size="sm" className="border-gray-500 text-white hover:bg-gray-700 transition-all duration-200 hover:scale-105">
             <Github className="w-4 h-4 mr-2" />
             GitHub
           </Button>
@@ -78,7 +78,7 @@ export default function PortfolioContent() {
                 <Button 
                   variant="outline" 
                   size="sm" 
-                  className="border-gray-500 text-white hover:bg-gray-700"
+                  className="border-gray-500 text-white hover:bg-gray-700 transition-all duration-200 hover:scale-105 hover:border-blue-400"
                   onClick={() => window.open(project.liveUrl, '_blank')}
                 >
                   <ExternalLink className="w-4 h-4 mr-2" />

@@ -9,6 +9,7 @@ import {
 import { ModelLoader } from "../lib/ModelLoader";
 import { MonitorInteraction, MonitorType } from "../lib/MonitorInteraction";
 import InteractiveScreens, { ScreenType } from "./InteractiveScreens";
+import InteractionHints from "./InteractionHints";
 
 interface Scene3DProps {
   onLoaded: () => void;
@@ -574,6 +575,7 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
   } | null>(null);
   const [isModelLoaded, setIsModelLoaded] = useState(false);
   const [activeScreen, setActiveScreen] = useState<ScreenType | null>(null);
+  const [showHints, setShowHints] = useState(false);
   const monitorInteractionRef = useRef<MonitorInteraction | null>(null);
 
   useEffect(() => {
@@ -609,6 +611,7 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
       modelLoader.onLoadComplete = () => {
         console.log("All assets loaded successfully");
         setIsModelLoaded(true);
+        setShowHints(true); // Show interaction hints when scene is ready
         onLoaded();
       };
 
@@ -720,6 +723,7 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
         className="absolute inset-0 w-full h-full"
         style={{ cursor: "grab" }}
       />
+      <InteractionHints isVisible={showHints && !activeScreen} />
       <InteractiveScreens 
         activeScreen={activeScreen} 
         onClose={() => setActiveScreen(null)} 
