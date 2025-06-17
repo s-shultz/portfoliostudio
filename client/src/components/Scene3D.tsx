@@ -52,33 +52,25 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene, monito
   try {
     console.log("Loading monitor models...");
 
-    // Load the ultrawide monitor
-    const monitor1Data = await modelLoader.loadGLTF("/models/ultrawide_monitor.glb");
-    console.log("Monitor GLB data loaded:", monitor1Data);
+    // Load the new 3D screen assets
+    const creativeCodingData = await modelLoader.loadGLTF("/models/creativecoding.glb");
+    console.log("Creative Coding GLB data loaded:", creativeCodingData);
 
-    const monitor1 = monitor1Data.scene.clone();
-    console.log("Monitor 1 children count:", monitor1.children.length);
+    const creativeCodingScreen = creativeCodingData.scene.clone();
+    console.log("Creative Coding screen children count:", creativeCodingScreen.children.length);
 
-    // Traverse the monitor to see its structure
-    monitor1.traverse((child: any) => {
-      console.log("Monitor child:", child.type, child.name);
-      if ((child as THREE.Mesh).isMesh) {
-        console.log("  - Mesh found:", child.name);
-      }
-    });
+    // Scale for the new 3D screens
+    const screenScale = 0.5;
 
-    // Three ultrawide monitors side by side
-    const monitorScale = 0.65; // 3 times larger than 0.21
+    // First monitor (left) - Creative Coding Screen
+    creativeCodingScreen.position.set(-7, -3, 1);
+    creativeCodingScreen.scale.setScalar(screenScale);
+    creativeCodingScreen.rotation.x = Math.PI;
+    creativeCodingScreen.rotation.y = Math.PI * 0.55;
+    creativeCodingScreen.rotation.z = 0;
+    scene.add(creativeCodingScreen);
 
-    // First monitor (left) - Creative Coding
-    monitor1.position.set(-7, -3, 1);
-    monitor1.scale.setScalar(monitorScale);
-    monitor1.rotation.x = Math.PI;
-    monitor1.rotation.y = Math.PI * 0.55;
-    monitor1.rotation.z = 0;
-    scene.add(monitor1);
-
-    // Create clickable area for monitor 1 (directly on screen surface)
+    // Create clickable area for creative coding screen
     const screen1 = monitorInteraction.createClickableArea(
       new THREE.Vector3(-6.8, -2.7, 1.05),
       new THREE.Vector2(2.0, 1.1),
@@ -87,17 +79,17 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene, monito
     scene.add(screen1);
     monitorInteraction.addMonitor(screen1, "coding", "monitor1");
 
-    // Second monitor (center) - 3D Modeling
-    const monitor2Data = await modelLoader.loadGLTF("/models/ultrawide_monitor.glb");
-    const monitor2 = monitor2Data.scene.clone();
-    monitor2.position.set(-7, -3, 8);
-    monitor2.scale.setScalar(monitorScale);
-    monitor2.rotation.x = Math.PI;
-    monitor2.rotation.y = Math.PI * 0.45;
-    monitor2.rotation.z = 0;
-    scene.add(monitor2);
+    // Second monitor (center) - XR Screen
+    const xrScreenData = await modelLoader.loadGLTF("/models/xrscreen.glb");
+    const xrScreen = xrScreenData.scene.clone();
+    xrScreen.position.set(-7, -3, 8);
+    xrScreen.scale.setScalar(screenScale);
+    xrScreen.rotation.x = Math.PI;
+    xrScreen.rotation.y = Math.PI * 0.45;
+    xrScreen.rotation.z = 0;
+    scene.add(xrScreen);
 
-    // Create clickable area for monitor 2 (directly on screen surface)
+    // Create clickable area for XR screen
     const screen2 = monitorInteraction.createClickableArea(
       new THREE.Vector3(-6.85, -2.7, 7.95),
       new THREE.Vector2(2.0, 1.1),
