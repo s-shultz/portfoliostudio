@@ -72,14 +72,8 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene, monito
     creativeCodingScreen.rotation.z = 0;
     scene.add(creativeCodingScreen);
 
-    // Create clickable area for creative coding screen (larger and better aligned)
-    const screen1 = monitorInteraction.createClickableArea(
-      new THREE.Vector3(-6.5, -2.0, 1.2),
-      new THREE.Vector2(3.5, 2.0),
-      new THREE.Euler(0, Math.PI * 0.52, 0)
-    );
-    scene.add(screen1);
-    monitorInteraction.addMonitor(screen1, "coding", "monitor1");
+    // Register the actual creative coding screen model as clickable
+    monitorInteraction.addMonitor(creativeCodingScreen, "coding", "monitor1");
 
     // Second monitor (center) - XR Screen
     const xrScreenData = await modelLoader.loadGLTF("/models/xrscreen.glb");
@@ -90,14 +84,8 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene, monito
     xrScreen.rotation.z = 0;
     scene.add(xrScreen);
 
-    // Create clickable area for XR screen (larger and better aligned)
-    const screen2 = monitorInteraction.createClickableArea(
-      new THREE.Vector3(-6.2, -2.0, 8.2),
-      new THREE.Vector2(3.5, 2.0),
-      new THREE.Euler(0, Math.PI * 0.42, 0)
-    );
-    scene.add(screen2);
-    monitorInteraction.addMonitor(screen2, "3d", "monitor2");
+    // Register the actual XR screen model as clickable
+    monitorInteraction.addMonitor(xrScreen, "3d", "monitor2");
 
     // Third monitor (right) - UI/UX Design (Hanging monitor)
     const monitor3Data = await modelLoader.loadGLTF("/models/hanging_monitor.glb");

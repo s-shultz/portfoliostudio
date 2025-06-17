@@ -8,19 +8,12 @@ interface InteractionHintsProps {
 export default function InteractionHints({ isVisible }: InteractionHintsProps) {
   const [showHints, setShowHints] = useState(true);
 
-  useEffect(() => {
-    // Auto-hide hints after 8 seconds
-    const timer = setTimeout(() => {
-      setShowHints(false);
-    }, 8000);
-
-    return () => clearTimeout(timer);
-  }, []);
+  // Remove auto-hide functionality - hints stay until button is clicked
 
   if (!isVisible || !showHints) return null;
 
   return (
-    <div className="fixed top-24 right-6 z-30 animate-pulse">
+    <div className="fixed top-24 right-6 z-30">
       <div className="bg-gradient-to-br from-blue-900/90 to-purple-900/90 backdrop-blur-md rounded-xl border-2 border-blue-400 p-6 max-w-sm shadow-2xl shadow-blue-500/20">
         <h3 className="text-white font-bold mb-4 flex items-center gap-2 text-lg">
           <MousePointer className="w-5 h-5 text-yellow-400 animate-bounce" />

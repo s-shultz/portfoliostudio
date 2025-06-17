@@ -14,6 +14,7 @@ export class MonitorInteraction {
   private camera: THREE.Camera;
   private monitors: ClickableMonitor[] = [];
   private onMonitorClick?: (type: MonitorType) => void;
+  private hoveredMonitor: ClickableMonitor | null = null;
 
   constructor(camera: THREE.Camera) {
     this.raycaster = new THREE.Raycaster();
@@ -26,6 +27,8 @@ export class MonitorInteraction {
   }
 
   addMonitor(mesh: THREE.Object3D, type: MonitorType, id: string) {
+    // Store original scale for hover effects
+    (mesh as any).originalScale = mesh.scale.clone();
     this.monitors.push({ mesh, type, id });
   }
 
@@ -66,43 +69,52 @@ export class MonitorInteraction {
     return false;
   }
 
-  // Create visible clickable areas for monitor screens
-  createClickableArea(position: THREE.Vector3, size: THREE.Vector2, rotation: THREE.Euler): THREE.Mesh {
-    const geometry = new THREE.PlaneGeometry(size.x, size.y);
-    const material = new THREE.MeshBasicMaterial({ 
-      transparent: true, 
-      opacity: 0.15,
-      color: 0x4444ff,
-      side: THREE.DoubleSide
-    });
+  // Handle mouse hover for monitor scaling effects
+  handleHover(event: MouseEvent, container: HTMLElement) {
+    const rect = container.getBoundingClientRect();
     
-    const mesh = new THREE.Mesh(geometry, material);
-    mesh.position.copy(position);
-    mesh.rotation.copy(rotation);
-    
-    // Add pulsing animation
-    const originalOpacity = 0.15;
-    let time = 0;
-    const animate = () => {
-      time += 0.02;
-      material.opacity = originalOpacity + Math.sin(time) * 0.1;
-      requestAnimationFrame(animate);
-    };
-    animate();
-    
-    // Add bright border for visibility
-    const wireframeGeometry = new THREE.EdgesGeometry(geometry);
-    const wireframeMaterial = new THREE.LineBasicMaterial({ 
-      color: 0x00ffff,
-      transparent: true,
-      opacity: 0.8,
-      linewidth: 3
-    });
-    const wireframe = new THREE.LineSegments(wireframeGeometry, wireframeMaterial);
-    wireframe.position.copy(position);
-    wireframe.rotation.copy(rotation);
-    mesh.add(wireframe);
-    
-    return mesh;
+    // Calculate mouse position in normalized device coordinates
+    this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+    // Update raycaster
+    this.raycaster.setFromCamera(this.mouse, this.camera);
+
+    // Find intersections with monitor meshes
+    const meshes = this.monitors.map(m => m.mesh);
+    const intersects = this.raycaster.intersectObjects(meshes, true);
+
+    let hoveredMonitor: ClickableMonitor | null = null;
+
+    if (intersects.length > 0) {
+      const hoveredObject = intersects[0].object;
+      
+      // Find which monitor is being hovered
+      for (const monitor of this.monitors) {
+        if (this.isDescendantOf(hoveredObject, monitor.mesh)) {
+          hoveredMonitor = monitor;
+          break;
+        }
+      }
+    }
+
+    // Handle hover state changes
+    if (this.hoveredMonitor !== hoveredMonitor) {
+      // Reset previous hovered monitor
+      if (this.hoveredMonitor) {
+        const originalScale = (this.hoveredMonitor.mesh as any).originalScale;
+        this.hoveredMonitor.mesh.scale.copy(originalScale);
+        container.style.cursor = 'grab';
+      }
+
+      // Set new hovered monitor
+      this.hoveredMonitor = hoveredMonitor;
+      
+      if (this.hoveredMonitor) {
+        const originalScale = (this.hoveredMonitor.mesh as any).originalScale;
+        this.hoveredMonitor.mesh.scale.copy(originalScale.clone().multiplyScalar(1.1));
+        container.style.cursor = 'pointer';
+      }
+    }
   }
 }
