@@ -57,14 +57,6 @@ export default function Portfolio() {
       <Scene3D 
         onLoaded={handleSceneLoaded}
         onError={handleSceneError}
-        onMonitorClick={(type) => {
-          const messages = {
-            uiux: "Opening UI/UX Design Portfolio - Fortune 500 Projects & Design Systems!",
-            coding: "Launching Creative Coding Gallery - Three.js & Interactive Installations!",
-            "3d": "Accessing Extended Reality Portfolio - VR/AR & 3D Modeling Projects!"
-          };
-          addNotification(messages[type] || "Portfolio section activated!");
-        }}
       />
 
       {/* Navigation */}
@@ -73,11 +65,7 @@ export default function Portfolio() {
       {/* Portfolio Content Overlay */}
       <PortfolioContent />
 
-      {/* Notification System */}
-      <NotificationSystem 
-        notifications={notifications}
-        onRemoveNotification={removeNotification}
-      />
+
     </div>
   );
 }
