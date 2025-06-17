@@ -70,11 +70,11 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene, monito
     creativeCodingScreen.rotation.z = 0;
     scene.add(creativeCodingScreen);
 
-    // Create clickable area for creative coding screen
+    // Create clickable area for creative coding screen (larger and better aligned)
     const screen1 = monitorInteraction.createClickableArea(
-      new THREE.Vector3(-6.8, -2.7, 1.05),
-      new THREE.Vector2(2.0, 1.1),
-      new THREE.Euler(0, Math.PI * 0.55, 0)
+      new THREE.Vector3(-6.5, -2.0, 1.2),
+      new THREE.Vector2(3.5, 2.0),
+      new THREE.Euler(0, Math.PI * 0.52, 0)
     );
     scene.add(screen1);
     monitorInteraction.addMonitor(screen1, "coding", "monitor1");
@@ -84,17 +84,15 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene, monito
     const xrScreen = xrScreenData.scene.clone();
     xrScreen.position.set(-5.0, -5.5, 8);
     xrScreen.scale.setScalar(0.65);
-    // xrScreen.scale.setScalar(screenScale);
-    // xrScreen.rotation.x = Math.PI;
     xrScreen.rotation.y = Math.PI * 1.7;
     xrScreen.rotation.z = 0;
     scene.add(xrScreen);
 
-    // Create clickable area for XR screen
+    // Create clickable area for XR screen (larger and better aligned)
     const screen2 = monitorInteraction.createClickableArea(
-      new THREE.Vector3(-6.85, -2.7, 7.95),
-      new THREE.Vector2(2.0, 1.1),
-      new THREE.Euler(0, Math.PI * 0.45, 0)
+      new THREE.Vector3(-6.2, -2.0, 8.2),
+      new THREE.Vector2(3.5, 2.0),
+      new THREE.Euler(0, Math.PI * 0.42, 0)
     );
     scene.add(screen2);
     monitorInteraction.addMonitor(screen2, "3d", "monitor2");
@@ -109,11 +107,11 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene, monito
     monitor3.rotation.z = 0;
     scene.add(monitor3);
 
-    // Create clickable area for the hanging monitor (using the 3D model itself)
+    // Create clickable area for the hanging monitor (larger and better aligned)
     const clickableArea = monitorInteraction.createClickableArea(
-      new THREE.Vector3(-9.0, 1.3, 4.6),
-      new THREE.Vector2(4.0, 2.0),
-      new THREE.Euler(0.05, Math.PI * 0.55, 0)
+      new THREE.Vector3(-8.8, 1.8, 4.8),
+      new THREE.Vector2(5.0, 3.0),
+      new THREE.Euler(0.08, Math.PI * 0.55, 0)
     );
     scene.add(clickableArea);
     monitorInteraction.addMonitor(clickableArea, "uiux", "monitor3");
