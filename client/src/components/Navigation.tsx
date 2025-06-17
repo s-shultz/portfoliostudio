@@ -40,7 +40,7 @@ export default function Navigation() {
       </nav>
 
       {/* Side Navigation */}
-      <nav className="fixed left-6 top-1/2 transform -translate-y-1/2 z-10">
+      <nav className="fixed left-6 top-1/2 transform -translate-y-1/2 z-40">
         <div className="bg-black/40 backdrop-blur-md rounded-lg border border-gray-600 p-2">
           <div className="flex flex-col space-y-2">
             <Button
@@ -78,7 +78,7 @@ export default function Navigation() {
       </nav>
 
       {/* Bottom Instructions */}
-      <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-20">
+      <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-40">
         <div className="bg-black/40 backdrop-blur-md rounded-lg border border-gray-600 px-4 py-2">
           <p className="text-sm text-gray-300 text-center">
             Click navigation • Drag to rotate • Scroll to zoom
