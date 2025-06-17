@@ -134,7 +134,10 @@ async function loadMonitors(modelLoader: ModelLoader, scene: THREE.Scene, monito
       '/uiuxdesign.png',
       (texture) => {
         console.log('UI/UX texture loaded successfully');
-        texture.flipY = false; // Prevent texture flipping
+        texture.flipY = true; // Fix vertical flipping
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set(-1, 1); // Flip horizontally
         screenMaterial.map = texture;
         screenMaterial.needsUpdate = true;
         console.log('UI/UX texture applied to screen material');
