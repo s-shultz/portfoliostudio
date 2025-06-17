@@ -22,7 +22,7 @@ export function initializeScene(container: HTMLElement): SceneSetup {
     0.1,
     1000
   );
-  camera.position.set(2, 4, 12); // Moved back and more to the right for better view
+  camera.position.set(10, 0, 9); // Moved back and more to the right for better view
 
   // Renderer
   const renderer = new THREE.WebGLRenderer({ 
