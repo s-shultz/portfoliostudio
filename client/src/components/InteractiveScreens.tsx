@@ -127,18 +127,18 @@ export default function InteractiveScreens({ activeScreen, onClose }: Interactiv
           </Button>
         </CardHeader>
         
-        <CardContent className="space-y-6">
-          <p className="text-lg text-gray-300">{section.description}</p>
+        <CardContent className="space-y-4 p-6 h-full overflow-hidden">
+          <p className="text-base text-gray-300">{section.description}</p>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {section.projects.map((project, index) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-full">
+            {section.projects.slice(0, 4).map((project, index) => (
               <Card key={index} className="bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-blue-500/30 hover:border-blue-400/60 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/20">
-                <CardContent className="p-5">
-                  <h3 className="text-lg font-bold mb-3 text-blue-300">{project.title}</h3>
-                  <p className="text-gray-200 text-sm mb-4 leading-relaxed">{project.description}</p>
+                <CardContent className="p-4">
+                  <h3 className="text-base font-bold mb-2 text-blue-300">{project.title}</h3>
+                  <p className="text-gray-200 text-xs mb-3 leading-relaxed line-clamp-3">{project.description}</p>
                   
-                  <div className="flex flex-wrap gap-2">
-                    {project.tools.map((tool, toolIndex) => (
+                  <div className="flex flex-wrap gap-1">
+                    {project.tools.slice(0, 4).map((tool, toolIndex) => (
                       <Badge 
                         key={toolIndex} 
                         variant="secondary" 
