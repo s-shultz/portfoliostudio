@@ -22,7 +22,7 @@ export function initializeScene(container: HTMLElement): SceneSetup {
     0.1,
     1000
   );
-  camera.position.set(3, 4, 12); // Moved back and slightly higher for better chair view
+  camera.position.set(-8, 2, 3); // Positioned to look at the desk/window area
 
   // Renderer
   const renderer = new THREE.WebGLRenderer({ 
@@ -48,7 +48,7 @@ export function initializeScene(container: HTMLElement): SceneSetup {
   controls.minDistance = 2;
   controls.maxDistance = 15;
   controls.maxPolarAngle = Math.PI / 2.2;
-  controls.target.set(0, 1, 0);
+  controls.target.set(-2, 0, 2); // Focus on desk/window area
   controls.autoRotate = false;
   controls.autoRotateSpeed = 0.5;
 
@@ -56,23 +56,39 @@ export function initializeScene(container: HTMLElement): SceneSetup {
 }
 
 export function createLighting(scene: THREE.Scene): void {
-  // Reduced ambient light to prevent screen washout
-  const ambientLight = new THREE.AmbientLight(0xf0f8ff, 0.8);
+  // Soft ambient light for base illumination
+  const ambientLight = new THREE.AmbientLight(0xf0f8ff, 0.6);
   scene.add(ambientLight);
 
-  // Repositioned window lights to avoid hitting screens directly
-  const windowLight1 = new THREE.DirectionalLight(0xfff5d6, 1.2);
-  windowLight1.position.set(15, 6, -5); // Moved further right and back
-  windowLight1.target.position.set(0, 0, -5); // Target away from screens
-  scene.add(windowLight1);
-  scene.add(windowLight1.target);
+  // Overhead ceiling lights positioned to match office model
+  const officeLight1 = new THREE.PointLight(0xffffff, 1.8, 20);
+  officeLight1.position.set(-3, 3, 0); // First overhead light
+  officeLight1.castShadow = true;
+  officeLight1.shadow.mapSize.width = 1024;
+  officeLight1.shadow.mapSize.height = 1024;
+  scene.add(officeLight1);
 
-  // Back lighting for general illumination
-  const windowLight2 = new THREE.DirectionalLight(0xfff8e1, 1.0);
-  windowLight2.position.set(2, 8, -12); // Positioned behind and above
-  windowLight2.target.position.set(0, 0, -8); // Target away from screen area
-  scene.add(windowLight2);
-  scene.add(windowLight2.target);
+  const officeLight2 = new THREE.PointLight(0xffffff, 1.8, 20);
+  officeLight2.position.set(-6, 3, 3); // Second overhead light near desk
+  officeLight2.castShadow = true;
+  officeLight2.shadow.mapSize.width = 1024;
+  officeLight2.shadow.mapSize.height = 1024;
+  scene.add(officeLight2);
+
+  const officeLight3 = new THREE.PointLight(0xffffff, 1.5, 18);
+  officeLight3.position.set(-9, 3, 6); // Third overhead light
+  officeLight3.castShadow = true;
+  scene.add(officeLight3);
+
+  // Window light for natural illumination
+  const windowLight = new THREE.DirectionalLight(0xfff8e1, 1.2);
+  windowLight.position.set(-15, 5, 10); // Coming from window direction
+  windowLight.target.position.set(-5, 0, 5); // Target desk area
+  windowLight.castShadow = true;
+  windowLight.shadow.mapSize.width = 2048;
+  windowLight.shadow.mapSize.height = 2048;
+  scene.add(windowLight);
+  scene.add(windowLight.target);
 
   // Gentle fill light from opposite side
   const bouncedLight = new THREE.DirectionalLight(0xe8f4f8, 0.3);
