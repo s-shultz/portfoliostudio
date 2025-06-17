@@ -649,18 +649,44 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
           const raycaster = new THREE.Raycaster();
           raycaster.setFromCamera(mouse, camera);
           
-          const intersects = raycaster.intersectObjects(clickableScreens, true);
+          // Check for intersections with clickable screens
+          const intersects = raycaster.intersectObjects(clickableScreens);
           
           if (intersects.length > 0) {
-            mountRef.current.style.cursor = "pointer";
+            // Change cursor to pointer and add visual feedback
+            mountRef.current.style.cursor = 'pointer';
+            
+            // Add subtle glow effect to hovered monitor
+            const hoveredMesh = intersects[0].object as THREE.Mesh;
+            if (hoveredMesh.material instanceof THREE.MeshStandardMaterial) {
+              hoveredMesh.material.emissive.setHex(0x003366);
+              hoveredMesh.material.emissiveIntensity = 0.3;
+            }
+            
+            // Reset other monitors
+            clickableScreens.forEach(screen => {
+              if (screen !== hoveredMesh && screen.material instanceof THREE.MeshStandardMaterial) {
+                screen.material.emissive.setHex(0x000000);
+                screen.material.emissiveIntensity = 0;
+              }
+            });
           } else {
-            mountRef.current.style.cursor = "grab";
+            // Reset cursor and remove all hover effects
+            mountRef.current.style.cursor = 'grab';
+            clickableScreens.forEach(screen => {
+              if (screen.material instanceof THREE.MeshStandardMaterial) {
+                screen.material.emissive.setHex(0x000000);
+                screen.material.emissiveIntensity = 0;
+              }
+            });
           }
         }
       };
       
-      mountRef.current.addEventListener("click", handleClick);
-      mountRef.current.addEventListener("mousemove", handleMouseMove);
+      if (mountRef.current) {
+        mountRef.current.addEventListener("click", handleClick);
+        mountRef.current.addEventListener("mousemove", handleMouseMove);
+      }
 
       // Animation loop
       const animate = () => {
@@ -672,7 +698,10 @@ export default function Scene3D({ onLoaded, onError }: Scene3DProps) {
 
       return () => {
         window.removeEventListener("resize", handleResizeEvent);
-        mountRef.current?.removeEventListener("click", handleClick);
+        if (mountRef.current) {
+          mountRef.current.removeEventListener("click", handleClick);
+          mountRef.current.removeEventListener("mousemove", handleMouseMove);
+        }
         if (sceneRef.current) {
           sceneRef.current.renderer.dispose();
           mountRef.current?.removeChild(sceneRef.current.renderer.domElement);

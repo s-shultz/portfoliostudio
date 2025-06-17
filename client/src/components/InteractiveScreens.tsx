@@ -106,8 +106,8 @@ export default function InteractiveScreens({ activeScreen, onClose }: Interactiv
   const section = portfolioSections[activeScreen];
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4 pt-20">
-      <Card className="w-full max-w-4xl max-h-[85vh] overflow-y-auto bg-gray-900 border-gray-700 text-white">
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4 pt-20 animate-in fade-in duration-300">
+      <Card className="w-full max-w-4xl max-h-[85vh] overflow-y-auto bg-gray-900 border-gray-700 text-white animate-in slide-in-from-bottom-4 duration-500">
         <CardHeader className="flex flex-row items-center justify-between">
           <div className="flex items-center gap-3">
             {section.icon}
@@ -117,7 +117,7 @@ export default function InteractiveScreens({ activeScreen, onClose }: Interactiv
             variant="ghost"
             size="icon"
             onClick={onClose}
-            className="text-gray-400 hover:text-white"
+            className="text-gray-400 hover:text-white transition-colors duration-200 hover:bg-gray-700/50"
           >
             <X className="w-5 h-5" />
           </Button>
