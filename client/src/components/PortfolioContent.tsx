@@ -75,13 +75,23 @@ export default function PortfolioContent() {
 
             <div className="flex gap-3">
               {project.liveUrl && (
-                <Button variant="outline" size="sm" className="border-gray-500 text-white hover:bg-gray-700">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="border-gray-500 text-white hover:bg-gray-700"
+                  onClick={() => window.open(project.liveUrl, '_blank')}
+                >
                   <ExternalLink className="w-4 h-4 mr-2" />
-                  Live Demo
+                  View Project
                 </Button>
               )}
               {project.githubUrl && (
-                <Button variant="outline" size="sm" className="border-gray-500 text-white hover:bg-gray-700">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="border-gray-500 text-white hover:bg-gray-700"
+                  onClick={() => window.open(project.githubUrl, '_blank')}
+                >
                   <Github className="w-4 h-4 mr-2" />
                   Code
                 </Button>
