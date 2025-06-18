@@ -159,7 +159,14 @@ export default function InteractiveScreens({ activeScreen, onClose }: Interactiv
           <div className="flex justify-center pt-4 space-x-4">
             <Button 
               className="bg-blue-600 hover:bg-blue-700"
-              onClick={() => window.open(section.portfolioUrl, '_blank')}
+              onClick={() => {
+                console.log('Portfolio button clicked:', section.portfolioUrl);
+                if (section.portfolioUrl) {
+                  window.open(section.portfolioUrl, '_blank');
+                } else {
+                  console.error('No portfolio URL found for section:', activeScreen);
+                }
+              }}
             >
               <ExternalLink className="w-4 h-4 mr-2" />
               View Full Portfolio
@@ -167,14 +174,20 @@ export default function InteractiveScreens({ activeScreen, onClose }: Interactiv
             <Button 
               variant="outline" 
               className="border-purple-500 text-purple-400 hover:bg-purple-500/20"
-              onClick={() => window.open('https://www.linkedin.com/in/shaina-shultz/', '_blank')}
+              onClick={() => {
+                console.log('LinkedIn button clicked');
+                window.open('https://www.linkedin.com/in/shaina-shultz/', '_blank');
+              }}
             >
               LinkedIn
             </Button>
             <Button 
               variant="outline" 
               className="border-green-500 text-green-400 hover:bg-green-500/20"
-              onClick={() => window.open('https://github.com/s-shultz', '_blank')}
+              onClick={() => {
+                console.log('GitHub button clicked');
+                window.open('https://github.com/s-shultz', '_blank');
+              }}
             >
               GitHub
             </Button>
