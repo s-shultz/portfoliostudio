@@ -109,8 +109,8 @@ export default function InteractiveScreens({ activeScreen, onClose }: Interactiv
   const section = portfolioSections[activeScreen];
 
   return (
-    <div className="fixed inset-0 bg-black/90 backdrop-blur-md z-[100] flex items-center justify-center p-4 pt-20 animate-in fade-in duration-500">
-      <Card className="w-full max-w-4xl h-[90vh] overflow-hidden bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-blue-500/50 text-white animate-in slide-in-from-bottom-8 zoom-in-95 duration-700 shadow-2xl shadow-blue-500/20">
+    <div className="fixed inset-0 bg-black/90 backdrop-blur-md z-[100] flex items-center justify-center py-8 px-4 animate-in fade-in duration-500">
+      <Card className="w-full max-w-4xl h-full overflow-hidden bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-blue-500/50 text-white animate-in slide-in-from-bottom-8 zoom-in-95 duration-700 shadow-2xl shadow-blue-500/20 flex flex-col">
         <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-blue-900/30 to-purple-900/30 border-b border-blue-500/30">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-blue-500/20 rounded-lg">
@@ -130,18 +130,18 @@ export default function InteractiveScreens({ activeScreen, onClose }: Interactiv
           </Button>
         </CardHeader>
         
-        <CardContent className="space-y-3 p-6 flex flex-col">
-          <p className="text-base text-gray-300">{section.description}</p>
+        <CardContent className="p-8 flex flex-col h-full">
+          <p className="text-lg text-gray-300 mb-6">{section.description}</p>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 flex-1">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1 mb-6">
             {section.projects.slice(0, 4).map((project, index) => (
               <Card key={index} className="bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-blue-500/30 hover:border-blue-400/60 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/20">
-                <CardContent className="p-3">
-                  <h3 className="text-sm font-bold mb-1 text-blue-300">{project.title}</h3>
-                  <p className="text-gray-200 text-xs mb-2 leading-relaxed line-clamp-2">{project.description}</p>
+                <CardContent className="p-5">
+                  <h3 className="text-base font-bold mb-3 text-blue-300">{project.title}</h3>
+                  <p className="text-gray-200 text-sm mb-4 leading-relaxed line-clamp-3">{project.description}</p>
                   
-                  <div className="flex flex-wrap gap-1">
-                    {project.tools.slice(0, 3).map((tool, toolIndex) => (
+                  <div className="flex flex-wrap gap-2">
+                    {project.tools.slice(0, 4).map((tool, toolIndex) => (
                       <Badge 
                         key={toolIndex} 
                         variant="secondary" 
@@ -156,7 +156,7 @@ export default function InteractiveScreens({ activeScreen, onClose }: Interactiv
             ))}
           </div>
           
-          <div className="flex justify-center pt-2 mt-auto">
+          <div className="flex justify-center">
             <Button 
               className="bg-blue-600 hover:bg-blue-700"
               onClick={() => {
