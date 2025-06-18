@@ -14,9 +14,14 @@ export default function PortfolioContent() {
       <CardContent className="p-6">
         <div className="flex items-center mb-6">
           <img
-            src="/images/profile.jpg"
+            src="/profile.jpg"
             alt="Shaina Shultz"
             className="w-24 h-24 rounded-full mr-6 object-cover border-2 border-blue-400/30"
+            onError={(e) => {
+              console.log('Profile image failed to load');
+              (e.target as HTMLImageElement).style.display = 'none';
+            }}
+            onLoad={() => console.log('Profile image loaded successfully')}
           />
           <div>
             <h2 className="text-3xl font-bold mb-2">{portfolioData.name}</h2>
