@@ -130,22 +130,22 @@ export default function InteractiveScreens({ activeScreen, onClose }: Interactiv
           </Button>
         </CardHeader>
         
-        <CardContent className="space-y-4 p-6 h-full overflow-hidden">
+        <CardContent className="space-y-3 p-6 flex flex-col">
           <p className="text-base text-gray-300">{section.description}</p>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-full">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 flex-1">
             {section.projects.slice(0, 4).map((project, index) => (
               <Card key={index} className="bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-blue-500/30 hover:border-blue-400/60 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/20">
-                <CardContent className="p-4">
-                  <h3 className="text-base font-bold mb-2 text-blue-300">{project.title}</h3>
-                  <p className="text-gray-200 text-xs mb-3 leading-relaxed line-clamp-3">{project.description}</p>
+                <CardContent className="p-3">
+                  <h3 className="text-sm font-bold mb-1 text-blue-300">{project.title}</h3>
+                  <p className="text-gray-200 text-xs mb-2 leading-relaxed line-clamp-2">{project.description}</p>
                   
                   <div className="flex flex-wrap gap-1">
-                    {project.tools.slice(0, 4).map((tool, toolIndex) => (
+                    {project.tools.slice(0, 3).map((tool, toolIndex) => (
                       <Badge 
                         key={toolIndex} 
                         variant="secondary" 
-                        className="text-xs bg-gradient-to-r from-blue-600/80 to-purple-600/80 text-white border border-blue-400/30 hover:scale-110 transition-transform duration-200"
+                        className="text-xs bg-gradient-to-r from-blue-600/80 to-purple-600/80 text-white border border-blue-400/30"
                       >
                         {tool}
                       </Badge>
@@ -156,7 +156,7 @@ export default function InteractiveScreens({ activeScreen, onClose }: Interactiv
             ))}
           </div>
           
-          <div className="flex justify-center pt-4 space-x-4">
+          <div className="flex justify-center pt-2 space-x-3 mt-auto">
             <Button 
               className="bg-blue-600 hover:bg-blue-700"
               onClick={() => {
