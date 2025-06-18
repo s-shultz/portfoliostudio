@@ -16,10 +16,7 @@ export default function PortfolioContent() {
           <img
             src="/images/profile.jpg"
             alt="Shaina Shultz"
-            className="w-24 h-24 rounded-full mr-6 object-cover"
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjNjY2NzZhIi8+CjxjaXJjbGUgY3g9IjUwIiBjeT0iMzUiIHI9IjE1IiBmaWxsPSIjZmZmIi8+CjxwYXRoIGQ9Im0yNSA3NWMwLTEzLjgwNyAxMS4xOTMtMjUgMjUtMjVzMjUgMTEuMTkzIDI1IDI1IiBmaWxsPSIjZmZmIi8+Cjwvc3ZnPgo=";
-            }}
+            className="w-24 h-24 rounded-full mr-6 object-cover border-2 border-blue-400/30"
           />
           <div>
             <h2 className="text-3xl font-bold mb-2">{portfolioData.name}</h2>
