@@ -16,6 +16,7 @@ const portfolioSections = {
     title: "UI/UX Design",
     icon: <Palette className="w-6 h-6" />,
     description: "Designing user interfaces for mixed reality, healthcare, and digital experiences for Fortune 500 clients.",
+    portfolioUrl: "https://www.shainashultz.com/uiuxdesign",
     projects: [
       {
         title: "RadiusXR - Mixed Reality Vision Care",
@@ -43,6 +44,7 @@ const portfolioSections = {
     title: "Creative Coding",
     icon: <Code className="w-6 h-6" />,
     description: "Interactive web experiences combining art, technology, and creative coding with Three.js, P5.js, and generative algorithms.",
+    portfolioUrl: "https://www.shainashultz.com/creative-coding",
     projects: [
       {
         title: "Three.js Interactive Installations",
@@ -70,6 +72,7 @@ const portfolioSections = {
     title: "Extended Reality & 3D",
     icon: <Box className="w-6 h-6" />,
     description: "3D modeling, animation, and extended reality experiences using industry-standard tools for immersive digital environments.",
+    portfolioUrl: "https://www.shainashultz.com/3d-design",
     projects: [
       {
         title: "Unity XR Applications",
@@ -153,10 +156,27 @@ export default function InteractiveScreens({ activeScreen, onClose }: Interactiv
             ))}
           </div>
           
-          <div className="flex justify-center pt-4">
-            <Button className="bg-blue-600 hover:bg-blue-700">
+          <div className="flex justify-center pt-4 space-x-4">
+            <Button 
+              className="bg-blue-600 hover:bg-blue-700"
+              onClick={() => window.open(section.portfolioUrl, '_blank')}
+            >
               <ExternalLink className="w-4 h-4 mr-2" />
               View Full Portfolio
+            </Button>
+            <Button 
+              variant="outline" 
+              className="border-purple-500 text-purple-400 hover:bg-purple-500/20"
+              onClick={() => window.open('https://www.linkedin.com/in/shaina-shultz/', '_blank')}
+            >
+              LinkedIn
+            </Button>
+            <Button 
+              variant="outline" 
+              className="border-green-500 text-green-400 hover:bg-green-500/20"
+              onClick={() => window.open('https://github.com/s-shultz', '_blank')}
+            >
+              GitHub
             </Button>
           </div>
         </CardContent>
