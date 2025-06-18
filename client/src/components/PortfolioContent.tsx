@@ -178,41 +178,7 @@ export default function PortfolioContent() {
     </Card>
   );
 
-  const renderContact = () => (
-    <Card className="bg-black/80 backdrop-blur-md border-gray-600 text-white max-w-xl">
-      <CardContent className="p-6">
-        <h2 className="text-2xl font-bold mb-6">Get In Touch</h2>
-        <p className="text-gray-300 mb-6">
-          I'm always interested in new opportunities and interesting projects. 
-          Feel free to reach out if you'd like to work together!
-        </p>
 
-        <div className="space-y-4">
-          <div className="flex items-center">
-            <Mail className="w-5 h-5 mr-3 text-blue-400" />
-            <span>{portfolioData.contact.email}</span>
-          </div>
-          <div className="flex items-center">
-            <Phone className="w-5 h-5 mr-3 text-blue-400" />
-            <span>{portfolioData.contact.phone}</span>
-          </div>
-          <div className="flex items-center">
-            <Linkedin className="w-5 h-5 mr-3 text-blue-400" />
-            <a href={portfolioData.contact.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-blue-300">
-              linkedin.com/in/shaina-shultz
-            </a>
-          </div>
-        </div>
-
-        <div className="mt-8">
-          <Button className="w-full bg-blue-600 hover:bg-blue-700">
-            <Mail className="w-4 h-4 mr-2" />
-            Send Message
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
-  );
 
   const renderContent = () => {
     switch (currentSection) {
@@ -222,8 +188,6 @@ export default function PortfolioContent() {
         return renderProjects();
       case 'experience':
         return renderExperience();
-      case 'contact':
-        return renderContact();
       default:
         return null;
     }
