@@ -156,7 +156,7 @@ export default function InteractiveScreens({ activeScreen, onClose }: Interactiv
             ))}
           </div>
           
-          <div className="flex justify-center pt-2 space-x-3 mt-auto">
+          <div className="flex justify-center pt-2 mt-auto">
             <Button 
               className="bg-blue-600 hover:bg-blue-700"
               onClick={() => {
@@ -170,26 +170,6 @@ export default function InteractiveScreens({ activeScreen, onClose }: Interactiv
             >
               <ExternalLink className="w-4 h-4 mr-2" />
               View Full Portfolio
-            </Button>
-            <Button 
-              variant="outline" 
-              className="border-purple-500 text-purple-400 hover:bg-purple-500/20"
-              onClick={() => {
-                console.log('LinkedIn button clicked');
-                window.open('https://www.linkedin.com/in/shaina-shultz/', '_blank');
-              }}
-            >
-              LinkedIn
-            </Button>
-            <Button 
-              variant="outline" 
-              className="border-green-500 text-green-400 hover:bg-green-500/20"
-              onClick={() => {
-                console.log('GitHub button clicked');
-                window.open('https://github.com/s-shultz', '_blank');
-              }}
-            >
-              GitHub
             </Button>
           </div>
         </CardContent>
