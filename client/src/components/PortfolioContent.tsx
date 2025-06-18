@@ -40,15 +40,30 @@ export default function PortfolioContent() {
         </div>
 
         <div className="flex gap-4">
-          <Button variant="outline" size="sm" className="border-gray-500 text-white hover:bg-gray-700 transition-all duration-200 hover:scale-105">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="border-gray-500 text-white hover:bg-gray-700 transition-all duration-200 hover:scale-105"
+            onClick={() => window.location.href = `mailto:${portfolioData.contact.email}`}
+          >
             <Mail className="w-4 h-4 mr-2" />
             Contact
           </Button>
-          <Button variant="outline" size="sm" className="border-gray-500 text-white hover:bg-gray-700 transition-all duration-200 hover:scale-105">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="border-gray-500 text-white hover:bg-gray-700 transition-all duration-200 hover:scale-105"
+            onClick={() => window.open('https://www.linkedin.com/in/shaina-shultz/', '_blank')}
+          >
             <Linkedin className="w-4 h-4 mr-2" />
             LinkedIn
           </Button>
-          <Button variant="outline" size="sm" className="border-gray-500 text-white hover:bg-gray-700 transition-all duration-200 hover:scale-105">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="border-gray-500 text-white hover:bg-gray-700 transition-all duration-200 hover:scale-105"
+            onClick={() => window.open('https://github.com/s-shultz', '_blank')}
+          >
             <Github className="w-4 h-4 mr-2" />
             GitHub
           </Button>
