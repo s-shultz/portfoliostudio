@@ -131,25 +131,32 @@ const defaultPortfolioData: PortfolioData = {
   ],
   experience: [
     {
+      title: "Founder",
+      company: "Shaina Shultz Studios",
+      period: "June 2023 - Present",
+      description:
+        "Provide specialized technology consulting in UI/UX strategy, mixed reality development, and emerging technology advisory for high-growth startups and established companies.",
+    },
+    {
       title: "Contract Product Designer",
       company: "CitrusBits",
       period: "June 2024 - August 2024",
       description:
-        "Designed user interfaces for mixed reality vision care applications including RadiusXR and IrisVision. Developed comprehensive design systems and conducted visual QA testing for accessibility and brand consistency.",
+        "Designed user interfaces for mixed reality vision care applications including RadiusXR and IrisVision. Developed comprehensive design systems optimizing Figma workflows.",
     },
     {
       title: "UX/Visual Designer",
       company: "Deloitte Digital",
-      period: "September 2021 - May 2023",
+      period: "Sep 2021 - May 2023",
       description:
-        "Designed digital experiences for Fortune 500 clients including Amazon, American Express, Anthem Insurance, Bank of America, and NYU Langone. Built cloud and web applications using modern design tools and methodologies.",
+        "Designed digital experiences for Fortune 500 clients including Amazon, American Express, Anthem Insurance, Bank of America, and NYU Langone.",
     },
     {
       title: "Founding Product Designer",
       company: "Alchemy Vision",
-      period: "October 2020 - October 2023",
+      period: "Oct 2020 - Oct 2023",
       description:
-        "Collaborated with CEO and creative teams to develop user flows, wireframes, and interactive prototypes. Streamlined design-to-development handoff by 40% through systematic design thinking and scalable solutions.",
+        "Collaborated with CEO and creative teams to develop user flows, wireframes, and interactive prototypes. Streamlined design-to-development handoff by 40%.",
     },
   ],
   contact: {

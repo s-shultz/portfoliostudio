@@ -122,11 +122,11 @@ export default function PortfolioContent() {
 
   const renderExperience = () => (
     <Card className="bg-black/80 backdrop-blur-md border-gray-600 text-white max-w-3xl">
-      <CardContent className="p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">Professional Experience</h2>
+      <CardContent className="p-5">
+        <div className="flex justify-between items-center mb-3">
+          <h2 className="text-lg font-bold">Professional Experience</h2>
           <Button 
-            className="bg-blue-600 hover:bg-blue-700"
+            className="bg-blue-600 hover:bg-blue-700 text-sm px-3 py-1"
             onClick={() => {
               const link = document.createElement('a');
               link.href = '/Shultz_Shaina_Resume2025.pdf';
@@ -140,8 +140,8 @@ export default function PortfolioContent() {
           </Button>
         </div>
         
-        <div className="mb-6 p-3 bg-blue-900/20 rounded-lg border border-blue-600/30">
-          <h3 className="text-base font-semibold mb-2">Education</h3>
+        <div className="mb-4 p-3 bg-blue-900/20 rounded-lg border border-blue-600/30">
+          <h3 className="text-sm font-semibold mb-2">Education</h3>
           <div className="space-y-1 text-xs">
             <div>
               <span className="font-medium">Master of Arts in Creative Technology</span>
@@ -162,15 +162,15 @@ export default function PortfolioContent() {
           </div>
         </div>
 
-        <div className="space-y-5">
+        <div className="space-y-3">
           {portfolioData.experience.map((exp, index) => (
-            <div key={index} className="border-l-2 border-blue-400 pl-4">
+            <div key={index} className="border-l-2 border-blue-400 pl-3">
               <div className="flex justify-between items-start mb-1">
-                <h3 className="text-lg font-semibold">{exp.title}</h3>
+                <h3 className="text-sm font-semibold">{exp.title}</h3>
                 <span className="text-blue-300 text-xs">{exp.period}</span>
               </div>
-              <p className="text-blue-300 mb-2 text-sm">{exp.company}</p>
-              <p className="text-gray-300 text-sm">{exp.description}</p>
+              <p className="text-blue-300 mb-1 text-xs">{exp.company}</p>
+              <p className="text-gray-300 text-xs leading-relaxed">{exp.description}</p>
             </div>
           ))}
         </div>
