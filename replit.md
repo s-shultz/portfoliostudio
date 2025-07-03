@@ -97,7 +97,21 @@ This project is an interactive 3D portfolio application for Shaina Shultz, a Des
 
 ## Changelog
 
-- July 03, 2025. Initial setup
+- July 03, 2025: File structure cleanup and optimization
+  - Removed over 200MB of unused duplicate files and assets
+  - Cleaned up unused 3D models, keeping only essential ones (SmallOffice.fbx, creativecoding.glb, xrscreen.glb, hanging_monitor.glb)
+  - Removed unused sound files, fonts, and geometry assets
+  - Consolidated resume into client/public directory
+  - Eliminated duplicate public directories and build artifacts
+  - Removed temporary development files (convert-fbx.js, generated-icon.png)
+  - Streamlined project structure while preserving all functionality
+
+- July 03, 2025: Experience section updates
+  - Updated Professional Experience with current role as Founder at Shaina Shultz Studios
+  - Optimized font sizes and spacing to prevent scrolling in modal windows
+  - Added current position and responsibilities
+
+- July 03, 2025: Initial setup
 
 ## User Preferences
 
