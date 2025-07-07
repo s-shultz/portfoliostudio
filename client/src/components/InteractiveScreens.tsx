@@ -16,7 +16,7 @@ const portfolioSections = {
     title: "UI/UX Design",
     icon: <Palette className="w-6 h-6" />,
     description: "Designing user interfaces for mixed reality, healthcare, and digital experiences for Fortune 500 clients.",
-    portfolioUrl: "https://www.shainashultz.com/uiuxdesign",
+    portfolioUrl: "https://decagon-ellipse-5gen.squarespace.com/uiuxdesign",
     projects: [
       {
         title: "RadiusXR - Mixed Reality Vision Care",
@@ -44,7 +44,7 @@ const portfolioSections = {
     title: "Creative Coding",
     icon: <Code className="w-6 h-6" />,
     description: "Interactive web experiences combining art, technology, and creative coding with Three.js, P5.js, and generative algorithms.",
-    portfolioUrl: "https://www.shainashultz.com/creative-coding",
+    portfolioUrl: "https://decagon-ellipse-5gen.squarespace.com/creative-coding",
     projects: [
       {
         title: "Three.js Interactive Installations",
@@ -72,7 +72,7 @@ const portfolioSections = {
     title: "Extended Reality & 3D",
     icon: <Box className="w-6 h-6" />,
     description: "3D modeling, animation, and extended reality experiences using industry-standard tools for immersive digital environments.",
-    portfolioUrl: "https://www.shainashultz.com/3d-design",
+    portfolioUrl: "https://decagon-ellipse-5gen.squarespace.com/3d-design",
     projects: [
       {
         title: "Unity XR Applications",
@@ -109,14 +109,14 @@ export default function InteractiveScreens({ activeScreen, onClose }: Interactiv
   const section = portfolioSections[activeScreen];
 
   return (
-    <div className="fixed inset-0 bg-black/90 backdrop-blur-md z-[100] flex items-center justify-center py-8 px-4 animate-in fade-in duration-500">
-      <Card className="w-full max-w-4xl h-full overflow-hidden bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-blue-500/50 text-white animate-in slide-in-from-bottom-8 zoom-in-95 duration-700 shadow-2xl shadow-blue-500/20 flex flex-col">
-        <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-blue-900/30 to-purple-900/30 border-b border-blue-500/30">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-blue-500/20 rounded-lg">
+    <div className="fixed inset-0 bg-black/90 backdrop-blur-md z-[100] flex items-center justify-center p-2 sm:p-4 md:py-8 md:px-4 animate-in fade-in duration-500">
+      <Card className="w-full max-w-4xl h-full max-h-full overflow-y-auto md:h-auto md:max-h-none md:overflow-visible bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-blue-500/50 text-white animate-in slide-in-from-bottom-8 zoom-in-95 duration-700 shadow-2xl shadow-blue-500/20 flex flex-col">
+        <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-blue-900/30 to-purple-900/30 border-b border-blue-500/30 p-3 sm:p-4 md:p-5 flex-shrink-0">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            <div className="p-1.5 sm:p-2 bg-blue-500/20 rounded-lg flex-shrink-0">
               {section.icon}
             </div>
-            <CardTitle className="text-2xl bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+            <CardTitle className="text-lg sm:text-xl md:text-2xl bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent truncate">
               {section.title}
             </CardTitle>
           </div>
@@ -124,21 +124,21 @@ export default function InteractiveScreens({ activeScreen, onClose }: Interactiv
             variant="ghost"
             size="icon"
             onClick={onClose}
-            className="text-red-400 hover:text-white transition-all duration-300 hover:bg-red-600/20 hover:scale-110 border-2 border-red-400/50 hover:border-red-400 rounded-full"
+            className="text-red-400 hover:text-white transition-all duration-300 hover:bg-red-600/20 hover:scale-110 border-2 border-red-400/50 hover:border-red-400 rounded-full flex-shrink-0 h-8 w-8 sm:h-10 sm:w-10"
           >
-            <X className="w-6 h-6 font-bold" />
+            <X className="w-4 h-4 sm:w-6 sm:h-6 font-bold" />
           </Button>
         </CardHeader>
         
-        <CardContent className="p-6 flex flex-col h-full">
-          <p className="text-base text-gray-300 mb-4">{section.description}</p>
+        <CardContent className="p-3 sm:p-4 md:p-5 flex flex-col flex-1 min-h-0">
+          <p className="text-sm sm:text-base text-gray-300 mb-3 sm:mb-4 leading-relaxed">{section.description}</p>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1 min-h-0">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-6 md:mb-5">
             {section.projects.slice(0, 4).map((project, index) => (
-              <Card key={index} className="bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-blue-500/30 hover:border-blue-400/60 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/20 flex flex-col">
-                <CardContent className="p-4 flex flex-col h-full">
-                  <h3 className="text-sm font-bold mb-2 text-blue-300">{project.title}</h3>
-                  <p className="text-gray-200 text-xs mb-3 leading-relaxed line-clamp-2 flex-1">{project.description}</p>
+              <Card key={index} className="bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-blue-500/30 hover:border-blue-400/60 transition-all duration-300 sm:hover:scale-105 hover:shadow-xl hover:shadow-blue-500/20 flex flex-col">
+                <CardContent className="p-3 sm:p-4 flex flex-col h-full">
+                  <h3 className="text-xs sm:text-sm font-bold mb-2 text-blue-300 leading-tight">{project.title}</h3>
+                  <p className="text-gray-200 text-xs leading-relaxed line-clamp-3 sm:line-clamp-2 flex-1 mb-3">{project.description}</p>
                   
                   <div className="flex flex-wrap gap-1 mt-auto">
                     {project.tools.slice(0, 3).map((tool, toolIndex) => (
@@ -156,9 +156,9 @@ export default function InteractiveScreens({ activeScreen, onClose }: Interactiv
             ))}
           </div>
           
-          <div className="flex justify-center pt-4">
+          <div className="sticky bottom-0 bg-gradient-to-t from-gray-900 via-gray-900/95 to-transparent pt-3 pb-3 md:pt-4 md:pb-4 flex justify-center">
             <Button 
-              className="bg-blue-600 hover:bg-blue-700"
+              className="bg-blue-600 hover:bg-blue-700 text-sm sm:text-base px-4 py-2 sm:px-6 sm:py-3 shadow-lg shadow-blue-500/20"
               onClick={() => {
                 console.log('Portfolio button clicked:', section.portfolioUrl);
                 if (section.portfolioUrl) {
@@ -168,7 +168,7 @@ export default function InteractiveScreens({ activeScreen, onClose }: Interactiv
                 }
               }}
             >
-              <ExternalLink className="w-4 h-4 mr-2" />
+              <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
               View Full Portfolio
             </Button>
           </div>

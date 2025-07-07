@@ -10,63 +10,63 @@ export default function PortfolioContent() {
   if (!currentSection) return null;
 
   const renderAbout = () => (
-    <Card className="bg-black/80 backdrop-blur-md border-gray-600 text-white max-w-xl">
-      <CardContent className="p-6">
-        <div className="flex items-center mb-6">
+    <Card className="bg-black/80 backdrop-blur-md border-gray-600 text-white max-w-xl w-full max-h-[90vh] overflow-y-auto md:max-h-none md:overflow-visible">
+      <CardContent className="p-3 sm:p-4 md:p-5">
+        <div className="flex flex-col sm:flex-row items-center sm:items-start mb-4 sm:mb-6">
           <img
             src="/profile.jpg"
             alt="Shaina Shultz"
-            className="w-24 h-24 rounded-full mr-6 object-cover border-2 border-blue-400/30"
+            className="w-20 h-20 sm:w-24 sm:h-24 rounded-full mb-4 sm:mb-0 sm:mr-6 object-cover border-2 border-blue-400/30 flex-shrink-0"
             onError={(e) => {
               console.log('Profile image failed to load');
               (e.target as HTMLImageElement).style.display = 'none';
             }}
             onLoad={() => console.log('Profile image loaded successfully')}
           />
-          <div>
-            <h2 className="text-3xl font-bold mb-2">{portfolioData.name}</h2>
-            <p className="text-xl text-blue-300">{portfolioData.title}</p>
+          <div className="text-center sm:text-left">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-1 sm:mb-2">{portfolioData.name}</h2>
+            <p className="text-lg sm:text-xl text-blue-300">{portfolioData.title}</p>
           </div>
         </div>
         
-        <p className="text-gray-300 mb-6 leading-relaxed">
+        <p className="text-gray-300 mb-4 sm:mb-6 leading-relaxed text-sm sm:text-base">
           {portfolioData.bio}
         </p>
 
-        <div className="flex flex-wrap gap-2 mb-6">
+        <div className="flex flex-wrap gap-1 sm:gap-2 mb-4 sm:mb-6">
           {portfolioData.skills.map((skill, index) => (
-            <Badge key={index} variant="secondary" className="bg-blue-600/20 text-blue-300 border-blue-400">
+            <Badge key={index} variant="secondary" className="bg-blue-600/20 text-blue-300 border-blue-400 text-xs sm:text-sm">
               {skill}
             </Badge>
           ))}
         </div>
 
-        <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
           <Button 
             variant="outline" 
             size="sm" 
-            className="border-gray-500 text-white hover:bg-gray-700 transition-all duration-200 hover:scale-105"
+            className="border-gray-500 text-white hover:bg-gray-700 transition-all duration-200 sm:hover:scale-105 text-xs sm:text-sm"
             onClick={() => window.location.href = `mailto:${portfolioData.contact.email}`}
           >
-            <Mail className="w-4 h-4 mr-2" />
+            <Mail className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
             Contact
           </Button>
           <Button 
             variant="outline" 
             size="sm" 
-            className="border-gray-500 text-white hover:bg-gray-700 transition-all duration-200 hover:scale-105"
+            className="border-gray-500 text-white hover:bg-gray-700 transition-all duration-200 sm:hover:scale-105 text-xs sm:text-sm"
             onClick={() => window.open('https://www.linkedin.com/in/shaina-shultz/', '_blank')}
           >
-            <Linkedin className="w-4 h-4 mr-2" />
+            <Linkedin className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
             LinkedIn
           </Button>
           <Button 
             variant="outline" 
             size="sm" 
-            className="border-gray-500 text-white hover:bg-gray-700 transition-all duration-200 hover:scale-105"
+            className="border-gray-500 text-white hover:bg-gray-700 transition-all duration-200 sm:hover:scale-105 text-xs sm:text-sm"
             onClick={() => window.open('https://github.com/s-shultz', '_blank')}
           >
-            <Github className="w-4 h-4 mr-2" />
+            <Github className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
             GitHub
           </Button>
         </div>
@@ -121,12 +121,12 @@ export default function PortfolioContent() {
   );
 
   const renderExperience = () => (
-    <Card className="bg-black/80 backdrop-blur-md border-gray-600 text-white max-w-3xl">
-      <CardContent className="p-5">
-        <div className="flex justify-between items-center mb-3">
-          <h2 className="text-lg font-bold">Professional Experience</h2>
+    <Card className="bg-black/80 backdrop-blur-md border-gray-600 text-white max-w-3xl w-full max-h-[90vh] overflow-y-auto md:max-h-none md:overflow-visible">
+      <CardContent className="p-3 sm:p-4 md:p-5">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-3 gap-2">
+          <h2 className="text-base sm:text-lg font-bold">Professional Experience</h2>
           <Button 
-            className="bg-blue-600 hover:bg-blue-700 text-sm px-3 py-1"
+            className="bg-blue-600 hover:bg-blue-700 text-xs sm:text-sm px-2 py-1 sm:px-3 sm:py-1 w-full sm:w-auto"
             onClick={() => {
               const link = document.createElement('a');
               link.href = '/Shultz_Shaina_Resume2025.pdf';
@@ -140,34 +140,34 @@ export default function PortfolioContent() {
           </Button>
         </div>
         
-        <div className="mb-4 p-3 bg-blue-900/20 rounded-lg border border-blue-600/30">
-          <h3 className="text-sm font-semibold mb-2">Education</h3>
+        <div className="mb-4 p-2 sm:p-3 bg-blue-900/20 rounded-lg border border-blue-600/30">
+          <h3 className="text-xs sm:text-sm font-semibold mb-2">Education</h3>
           <div className="space-y-1 text-xs">
-            <div>
+            <div className="flex flex-col sm:flex-row sm:items-center">
               <span className="font-medium">Master of Arts in Creative Technology</span>
-              <span className="text-blue-300 ml-2">- Southern Methodist University (May 2025)</span>
+              <span className="text-blue-300 sm:ml-2">- Southern Methodist University (May 2025)</span>
             </div>
-            <div>
+            <div className="flex flex-col sm:flex-row sm:items-center">
               <span className="font-medium">Bachelor of Science, Business Administration</span>
-              <span className="text-blue-300 ml-2">- Washington University in St. Louis</span>
+              <span className="text-blue-300 sm:ml-2">- Washington University in St. Louis</span>
             </div>
-            <div>
+            <div className="flex flex-col sm:flex-row sm:items-center">
               <span className="font-medium">Certificate in User Experience Design</span>
-              <span className="text-blue-300 ml-2">- UCLA</span>
+              <span className="text-blue-300 sm:ml-2">- UCLA</span>
             </div>
-            <div>
+            <div className="flex flex-col sm:flex-row sm:items-center">
               <span className="font-medium">Certificate in AI Products and Services</span>
-              <span className="text-blue-300 ml-2">- MIT</span>
+              <span className="text-blue-300 sm:ml-2">- MIT</span>
             </div>
           </div>
         </div>
 
         <div className="space-y-3">
           {portfolioData.experience.map((exp, index) => (
-            <div key={index} className="border-l-2 border-blue-400 pl-3">
-              <div className="flex justify-between items-start mb-1">
-                <h3 className="text-sm font-semibold">{exp.title}</h3>
-                <span className="text-blue-300 text-xs">{exp.period}</span>
+            <div key={index} className="border-l-2 border-blue-400 pl-2 sm:pl-3">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-1 gap-1">
+                <h3 className="text-xs sm:text-sm font-semibold">{exp.title}</h3>
+                <span className="text-blue-300 text-xs flex-shrink-0">{exp.period}</span>
               </div>
               <p className="text-blue-300 mb-1 text-xs">{exp.company}</p>
               <p className="text-gray-300 text-xs leading-relaxed">{exp.description}</p>
@@ -194,8 +194,8 @@ export default function PortfolioContent() {
   };
 
   return (
-    <div className="fixed inset-0 pointer-events-none flex items-center justify-center pl-24 pr-4 py-4 z-30">
-      <div className="pointer-events-auto">
+    <div className="fixed inset-0 pointer-events-none flex items-center justify-center p-2 sm:p-4 sm:pl-24 sm:pr-4 z-30">
+      <div className="pointer-events-auto w-full flex justify-center">
         {renderContent()}
       </div>
     </div>
