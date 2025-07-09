@@ -72,7 +72,7 @@ const portfolioSections = {
     title: "Extended Reality & 3D",
     icon: <Box className="w-6 h-6" />,
     description: "3D modeling, animation, and extended reality experiences using industry-standard tools for immersive digital environments.",
-    portfolioUrl: "https://decagon-ellipse-5gen.squarespace.com/3d-design",
+    portfolioUrl: "https://decagon-ellipse-5gen.squarespace.com/xrdesign",
     projects: [
       {
         title: "Unity XR Applications",
